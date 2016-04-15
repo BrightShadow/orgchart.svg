@@ -6,10 +6,12 @@ import {OrgChartConfig} from "./org.chart.config";
 import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
 import * as d3 from "d3";
+import {ChartLevelNode} from "./chart.level.node";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
     private nodes: { [id: string] : ChartNode; } = {};
+	private levels: Array<Array<ChartLevelNode>> = new Array<Array<ChartLevelNode>>();
 
     constructor(private config?: OrgChartConfig) {
 		if (!config) {
@@ -29,12 +31,31 @@ export class OrgChartSvg {
 		this.config.nodeOptions.width = 350;
 		this.config.nodeOptions.height = 70;
 
-		this.config.nodes = [
-			{id: '1', parentId: null, data: { text: "root" }},
-			{id: '2', parentId: '1', data: { text: "node 1" }},
-			{id: '3', parentId: '1', data: { text: "node 2" }},
-			{id: '4', parentId: '3', data: { text: "node 3" }},
-		];
+		this.config.nodes = {
+			id: '1',
+			parentId: null,
+			data: { text: "root" },
+			children: [
+				{
+					id: '2',
+					parentId: null,
+					data: { text: "child 1" },
+					children: []
+				},
+				{
+					id: '3',
+					parentId: null,
+					data: { text: "child 2" },
+					children: []
+				},
+				{
+					id: '4',
+					parentId: null,
+					data: { text: "child 3" },
+					children: []
+				}
+			]
+		};
 	}
 
 	private clear() {
@@ -45,7 +66,7 @@ export class OrgChartSvg {
         //this.config.nodes.forEach((node: NodeSvg, index: number) => {
         //
         //});
-
+		d3.layout.tree()
     }
 
     private render() {
@@ -58,7 +79,7 @@ export class OrgChartSvg {
 			.attr("height", 100);
     }
 
-	public setNodes(nodes: NodeSvg[]) {
+	public setNodes(nodes: NodeSvg) {
 		this.nodes = {};
 		this.config.nodes = nodes;
 
