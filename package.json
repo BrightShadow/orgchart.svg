@@ -3,8 +3,7 @@
   "version": "1.0.0-alpha.1",
   "description": "Modern typescript organisational chart in pure SVG.",
   "main": "./dist/orgchart.svg.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BrightShadow/orgchart.svg.git"
@@ -24,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/BrightShadow/orgchart.svg/issues"
   },
-  "homepage": "https://github.com/BrightShadow/orgchart.svg#readme"
+  "homepage": "https://github.com/BrightShadow/orgchart.svg#readme",
+  "dependencies": {
+    "snapsvg": "0.4.0"
+  }
 }
