@@ -1,5 +1,5 @@
-export class NodeSvg {
-    public id: string;
-    public parentId: string;
-    public data: any;
+export interface NodeSvg {
+    id: string;
+    parentId: string;
+    data: any;
 }

@@ -1,4 +1,4 @@
-export class NodeOptions {
-    public width: number;
-    public height: number;
+export interface NodeOptions {
+    width: number;
+    height: number;
 }
