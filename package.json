@@ -2,7 +2,7 @@
   "name": "orgchart.svg",
   "version": "1.0.0-alpha.1",
   "description": "Modern typescript organisational chart in pure SVG.",
-  "main": "index.js",
+  "main": "./dist/orgchart.svg.js",
   "scripts": {
   },
   "repository": {
@@ -20,10 +20,7 @@
     "ts"
   ],
   "author": "Paweł Porombka <pporombka@gmail.com>",
-  "licenses": [{
-    "type": "Apache-2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  }],
+  "license": "Apache License v2",
   "bugs": {
     "url": "https://github.com/BrightShadow/orgchart.svg/issues"
   },
