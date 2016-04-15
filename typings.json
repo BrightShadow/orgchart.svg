@@ -1,0 +1,8 @@
+{
+  "name": "orgchart.svg",
+  "version": false,
+  "dependencies": {},
+  "ambientDependencies": {
+    "snapsvg": "registry:dt/snapsvg#0.4.1+20160317120654"
+  }
+}
