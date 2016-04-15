@@ -1,9 +1,9 @@
-import {NodeSvg} from "./node.svg";
 import {NodeOptions} from "./node.options";
+import {ChartNode} from "./chart.node";
 
 export interface OrgChartConfig {
     selector: string;
-    nodes: NodeSvg[];
+    nodes: ChartNode;
     nodeOptions: NodeOptions;
     gapH: number;
     gapV: number;
