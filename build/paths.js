@@ -1,12 +1,13 @@
 var appRoot = 'src/';
-var outputRoot = 'dist/';
+var outputRoot = 'demo/';
 
 module.exports = {
-  root: appRoot,
-  source: appRoot + '**/*.ts',
-  output: outputRoot,
-  dtsSrc: [
-    './typings/browser/**/*.d.ts',
-    './jspm_packages/**/*.d.ts'
-  ]
+	root: appRoot,
+	output: outputRoot,
+	source: appRoot + '**/*.ts',
+	demoSrc: appRoot + 'demo.html',
+	dtsSrc: [
+		'./typings/browser/**/*.d.ts',
+		'./jspm_packages/**/*.d.ts'
+	]
 }

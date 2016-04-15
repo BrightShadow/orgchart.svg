@@ -1,8 +1,11 @@
+/// <reference path="../typings/browser.d.ts" />
+
 import "d3";
 import {NodeSvg} from "./node.svg";
 import {OrgChartConfig} from "./org.chart.config";
 import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
+import * as d3 from "d3";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -42,10 +45,17 @@ export class OrgChartSvg {
         //this.config.nodes.forEach((node: NodeSvg, index: number) => {
         //
         //});
+
     }
 
     private render() {
-		//var svgContainer = d3.select("body").append("svg")
+		var svgContainer = d3.select("body")
+			.append("svg")
+			.append('rect')
+			.attr("x", 10)
+			.attr("y", 10)
+			.attr("width", 50)
+			.attr("height", 100);
     }
 
 	public setNodes(nodes: NodeSvg[]) {
