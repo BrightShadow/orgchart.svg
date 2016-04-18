@@ -1,6 +1,6 @@
 System.config({
   defaultJSExtensions: true,
-  transpiler: "none",
+  transpiler: false,
   paths: {
     "*": "demo/*",
     "npm:*": "jspm_packages/npm/*",

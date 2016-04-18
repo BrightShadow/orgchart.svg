@@ -243,10 +243,18 @@ export class OrgChartSvg {
 		var top = 10;
 		var gapX = this.config.nodeOptions.gapH;
 		var gapY = this.config.nodeOptions.gapV;
+		var hLineX1: number,
+			hLineX2: number,
+			hLineY: number,
+			hLineNodes: number = 0,
+			nextParentId = null; // number of nodes processed for the current line
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];
 			var lastLevel = levelIdx === this.levels.length - 1;
+			nextParentId = null;
+			hLineNodes = 0;
+
 			top = levelIdx * (this.config.nodeOptions.height  + gapY) + 10;
 			left = 10;
 
@@ -256,7 +264,21 @@ export class OrgChartSvg {
 				var x = left + marginLeft;
 				var y = top;
 
+				if (hLineNodes === 0) {
+					hLineX1 = x + node.width / 2;
+					hLineY = y - gapY / 2;
+				}
+
+				hLineX2 = x + node.width / 2;
+				if (i + 1 < level.nodes.length) {
+					nextParentId = level.nodes[i + 1].parentId;
+				}
+				else {
+					nextParentId = null;
+				}
+
 				if (!node.isPlaceholder) {
+					hLineNodes++; // one node more
 					this.snap.rect(x, y, node.width, node.height);
 
 					if (levelIdx !== 0) {
@@ -267,7 +289,7 @@ export class OrgChartSvg {
 						});
 					}
 
-					if (!lastLevel) {
+					if (node.children !== null && node.children.length > 0) {
 						this.snap.line(x + node.width / 2, y + node.height, x + node.width / 2, y+ node.height + gapY / 2).attr({
 							strokeWidth: 1,
 							stroke: 'red'
@@ -281,6 +303,22 @@ export class OrgChartSvg {
 					// placeholder
 					//this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
 				}
+
+				// draw horizontal lines
+				if (levelIdx > 0) {
+					if (hLineNodes > 1) {
+						if (node.parentId !== nextParentId || nextParentId === null) {
+							// parent was changed, lets draw line
+							this.snap.line(hLineX1, hLineY, hLineX2, hLineY).attr({
+								strokeWidth: 1,
+								stroke: 'red'
+							});
+
+							hLineNodes = 0;
+						}
+					}
+				}
+
 				left += node.containerWidth;
 			}
 		}
