@@ -145,10 +145,32 @@ export class OrgChartSvg {
     private calcPositions() {
 		// 1. Prepare levels info
 		this.calcChildren(this.config.nodes);
+		this.generatedPlaceholders();
 
 		console.log(this.levels);
+		console.log(this.placeholdersParents);
     }
 
+	private generatedPlaceholders() {
+		for (var i = 0; i < this.placeholdersParents.length; i++) {
+			var levelNode = this.placeholdersParents[i];
+
+			if (levelNode.level < this.levels.length - 1) {
+				for (var level = levelNode.level + 1; level < this.levels.length; level++) {
+					// add placeholder node
+					var placeholderNode = <ChartLevelNode>{};
+					placeholderNode.width = levelNode.width;
+					placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
+					placeholderNode.containerWidth = levelNode.containerWidth;
+					placeholderNode.isPlaceholder = true;
+
+					if (this.levels[level].nodes.length > 0) {
+						this.levels[level].nodes.unshift(placeholderNode);
+					}
+				}
+			}
+		}
+	}
 
 	private calcChildren(node: ChartNode, level: number = 0) : number {
 		var containerWidth = 0;
