@@ -1,11 +1,10 @@
 /// <reference path="../typings/browser.d.ts" />
 
-import "d3";
+import 'snapsvg';
 import {NodeSvg} from "./node.svg";
 import {OrgChartConfig} from "./org.chart.config";
 import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
-import * as d3 from "d3";
 import {ChartLevelNode} from "./chart.level.node";
 
 export class OrgChartSvg {
