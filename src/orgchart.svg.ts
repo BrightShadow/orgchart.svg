@@ -145,6 +145,21 @@ export class OrgChartSvg {
     private calcPositions() {
     }
 
+	private getSingleNodeWidth(node: ChartNode) : number {
+		/*
+			TODO: add handling node options overriding here, to override e.g. width of the node using
+		 	node specific styling etc.
+		*/
+		return this.config.nodeOptions.width;
+	}
+
+	private getSingleNodeHeight(node: ChartNode) : number {
+		/*
+		 TODO: add handling node options overriding here, to override e.g. width of the node using
+		 node specific styling etc.
+		 */
+		return this.config.nodeOptions.height;
+	}
     private render() {
     }
 
