@@ -6,16 +6,21 @@ import {OrgChartConfig} from "./org.chart.config";
 import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
 import {ChartLevelNode} from "./chart.level.node";
+import {ChartLevelInfo} from "./chart.level.info";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
     private nodes: { [id: string] : ChartNode; } = {};
-	private levels: Array<Array<ChartLevelNode>> = new Array<Array<ChartLevelNode>>();
+	private levels: ChartLevelInfo[] = [];
+	private snap: Snap.Paper;
+	private placeholdersParents: ChartLevelNode[] = [];
 
     constructor(private config?: OrgChartConfig) {
 		if (!config) {
 			this.initDefaultConfig();
 		}
+
+		this.snap = Snap('#orgChartSvg');
 
         this.calcPositions();
         this.render();
@@ -23,12 +28,12 @@ export class OrgChartSvg {
 
 	private initDefaultConfig() {
 		this.config = <OrgChartConfig>{};
-		this.config.gapH = 60;
-		this.config.gapV = 60;
 		this.config.selector = '#orgChartSvg';
 		this.config.nodeOptions = <NodeOptions>{};
-		this.config.nodeOptions.width = 350;
-		this.config.nodeOptions.height = 70;
+		this.config.nodeOptions.width = 150;
+		this.config.nodeOptions.height = 50;
+		this.config.nodeOptions.gapV = 20;
+		this.config.nodeOptions.gapH = 20;
 
 		this.config.nodes = {
 			id: '1',
@@ -62,25 +67,14 @@ export class OrgChartSvg {
 	}
 
     private calcPositions() {
-        //this.config.nodes.forEach((node: NodeSvg, index: number) => {
-        //
-        //});
-		d3.layout.tree()
     }
 
     private render() {
-		var svgContainer = d3.select("body")
-			.append("svg")
-			.append('rect')
-			.attr("x", 10)
-			.attr("y", 10)
-			.attr("width", 50)
-			.attr("height", 100);
     }
 
-	public setNodes(nodes: NodeSvg) {
+	public setNodes(root: ChartNode) {
 		this.nodes = {};
-		this.config.nodes = nodes;
+		this.config.nodes = root;
 
 		this.clear();
 		this.calcPositions();
