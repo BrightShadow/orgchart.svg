@@ -1,5 +1,4 @@
 /// <reference path="../typings/browser.d.ts" />
-
 import 'snapsvg';
 import {NodeSvg} from "./node.svg";
 import {OrgChartConfig} from "./org.chart.config";
@@ -235,7 +234,35 @@ export class OrgChartSvg {
 		 */
 		return this.config.nodeOptions.height;
 	}
+
     private render() {
+		var left = 10;
+		var top = 10;
+		var gapX = this.config.nodeOptions.gapH;
+		var gapY = this.config.nodeOptions.gapV;
+
+		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
+			var level = this.levels[levelIdx];
+			top = levelIdx * (this.config.nodeOptions.height  + gapY);
+			left = 10;
+
+			for (var i = 0; i < level.nodes.length; i++) {
+				var node = level.nodes[i];
+				var marginLeft = (node.containerWidth - node.width) / 2;
+				var x = left + marginLeft;
+				var y = top;
+
+				if (!node.isPlaceholder) {
+					this.snap.rect(x, y, node.width, node.height);
+					this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+				}
+				else {
+					// placeholder
+					//this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
+				}
+				left += node.containerWidth;
+			}
+		}
     }
 
 	public setNodes(root: ChartNode) {
