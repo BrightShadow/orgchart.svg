@@ -143,7 +143,60 @@ export class OrgChartSvg {
 	}
 
     private calcPositions() {
+		// 1. Prepare levels info
+		this.calcChildren(this.config.nodes);
+
+		console.log(this.levels);
     }
+
+
+	private calcChildren(node: ChartNode, level: number = 0) : number {
+		var containerWidth = 0;
+		var nodeIndexInLevel = 0;
+
+		if (this.levels.length < level + 1) {
+			this.levels.push({
+				nodes: [],
+				tipOver: false,
+				level: level
+			}); // create level record if missing
+		}
+
+		// add current node
+		var levelNode:ChartLevelNode = <ChartLevelNode>node;
+		levelNode.width = this.getSingleNodeWidth(levelNode);
+		levelNode.height = this.getSingleNodeHeight(levelNode);
+		levelNode.containerWidth = 0;
+		levelNode.level = level;
+		this.levels[level].nodes.push(levelNode);
+
+		level++; // next level - children
+		if (node.children !== null && node.children.length > 0) {
+			for (var i = 0; i < node.children.length; i++) {
+				containerWidth += this.calcChildren(node.children[i], level);
+			}
+		}
+		else {
+			containerWidth = levelNode.width + this.config.nodeOptions.gapH * 2;
+
+			if (this.levels.length < level + 1) {
+				this.levels.push({
+					nodes: [],
+					tipOver: false,
+					level: level
+				}); // create level record if missing
+			}
+
+			if (this.levels[level].nodes.length === 0) {
+				this.placeholdersParents.push(levelNode);
+			}
+		}
+
+		levelNode.containerWidth = containerWidth;
+		return containerWidth;
+	}
+
+
 
 	private getSingleNodeWidth(node: ChartNode) : number {
 		/*
