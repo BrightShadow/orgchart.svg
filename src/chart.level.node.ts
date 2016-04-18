@@ -1,7 +1,10 @@
 import {ChartNode} from "./chart.node";
 
-export interface ChartLevelNode {
-	chartNode: ChartNode;
+export interface ChartLevelNode extends ChartNode{
 	level: number;
-	x: number;
+	isPlaceholder: boolean;
+	containerWidth: number;
+	width: number;
+	height: number;
+	parentNode: ChartLevelNode;
 }

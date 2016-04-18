@@ -5,6 +5,4 @@ export interface OrgChartConfig {
     selector: string;
     nodes: ChartNode;
     nodeOptions: NodeOptions;
-    gapH: number;
-    gapV: number;
 }
