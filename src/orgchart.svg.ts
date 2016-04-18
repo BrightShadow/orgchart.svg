@@ -144,6 +144,12 @@ export class OrgChartSvg {
     private calcPositions() {
 		// 1. Prepare levels info
 		this.calcChildren(this.config.nodes);
+
+		// trim empty row if exists
+		if (this.levels[this.levels.length - 1].nodes.length === 0) {
+			this.levels.splice(this.levels.length - 1);
+		}
+
 		this.generatedPlaceholders();
 
 		console.log(this.levels);
@@ -162,10 +168,7 @@ export class OrgChartSvg {
 					placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
 					placeholderNode.containerWidth = levelNode.containerWidth;
 					placeholderNode.isPlaceholder = true;
-
-					if (this.levels[level].nodes.length > 0) {
-						this.levels[level].nodes.unshift(placeholderNode);
-					}
+					this.levels[level].nodes.unshift(placeholderNode);
 				}
 			}
 		}
@@ -243,7 +246,8 @@ export class OrgChartSvg {
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];
-			top = levelIdx * (this.config.nodeOptions.height  + gapY);
+			var lastLevel = levelIdx === this.levels.length - 1;
+			top = levelIdx * (this.config.nodeOptions.height  + gapY) + 10;
 			left = 10;
 
 			for (var i = 0; i < level.nodes.length; i++) {
@@ -254,6 +258,23 @@ export class OrgChartSvg {
 
 				if (!node.isPlaceholder) {
 					this.snap.rect(x, y, node.width, node.height);
+
+					if (levelIdx !== 0) {
+						// top line
+						this.snap.line(x + node.width / 2, y, x + node.width / 2, y - gapY / 2).attr({
+							strokeWidth: 1,
+							stroke: 'red'
+						});
+					}
+
+					if (!lastLevel) {
+						this.snap.line(x + node.width / 2, y + node.height, x + node.width / 2, y+ node.height + gapY / 2).attr({
+							strokeWidth: 1,
+							stroke: 'red'
+						});
+					}
+
+
 					this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
 				}
 				else {
