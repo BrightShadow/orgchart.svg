@@ -42,19 +42,95 @@ export class OrgChartSvg {
 			children: [
 				{
 					id: '2',
-					parentId: null,
+					parentId: '1',
 					data: { text: "child 1" },
-					children: []
+					children: [
+						{
+							id: '5',
+							parentId: '3',
+							data: { text: "child X1" },
+							children: []
+						},
+						{
+							id: '5',
+							parentId: '3',
+							data: { text: "child X1" },
+							children: []
+						}
+					]
 				},
 				{
 					id: '3',
-					parentId: null,
+					parentId: '1',
 					data: { text: "child 2" },
-					children: []
+					children: [
+						{
+							id: '5',
+							parentId: '3',
+							data: { text: "child 4" },
+							children: []
+						},
+						{
+							id: '6',
+							parentId: '3',
+							data: { text: "child 5" },
+							children: [
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: []
+								},
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: []
+								},
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: [
+										{
+											id: '5',
+											parentId: '3',
+											data: { text: "child X1" },
+											children: []
+										},
+										{
+											id: '5',
+											parentId: '3',
+											data: { text: "child X1" },
+											children: []
+										},
+									]
+								},
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: []
+								},
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: []
+								},
+								{
+									id: '5',
+									parentId: '3',
+									data: { text: "child X1" },
+									children: []
+								},
+							]
+						}
+					]
 				},
 				{
 					id: '4',
-					parentId: null,
+					parentId: '1',
 					data: { text: "child 3" },
 					children: []
 				}
