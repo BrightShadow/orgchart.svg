@@ -1,5 +1,3 @@
-import {NodeSvg} from "./node.svg";
-
 export interface ChartNode {
 	id: string;
 	parentId: string;
