@@ -7,6 +7,13 @@ export interface ChartLevelNode extends ChartNode{
 	width: number;
 	height: number;
 	parentNode: ChartLevelNode;
-	tipOver: boolean;
+	tipOverParent: boolean;
+	tipOverChild: boolean;
+	tipOverColumnIndex: number;
 	tipOverColumns: number;
+	tipOverLineIndex: number;
+	tipOverLinesCount: number;
+	tipOverHasNodeBelow: boolean;
+	tipOverLastChild: boolean;
+	leftMargin: number;
 }

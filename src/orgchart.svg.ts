@@ -33,13 +33,13 @@ export class OrgChartSvg {
 		this.config.nodeOptions.width = 150;
 		this.config.nodeOptions.height = 50;
 		this.config.nodeOptions.gapV = 60;
-		this.config.nodeOptions.gapH = 2;
+		this.config.nodeOptions.gapH = 5;
 		this.config.connectorOptions = <ConnectorOptions>{};
 		this.config.connectorOptions.strokeWidth = 1;
 		this.config.connectorOptions.color = 'red';
 		this.config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
-			maxColumnHeight: 6
+			maxColumnHeight: 3
 		};
 
 
@@ -171,6 +171,7 @@ export class OrgChartSvg {
 					placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
 					placeholderNode.containerWidth = levelNode.containerWidth;
 					placeholderNode.isPlaceholder = true;
+					placeholderNode.leftMargin = 0;
 					this.levels[level].nodes.unshift(placeholderNode);
 				}
 			}
@@ -189,21 +190,8 @@ export class OrgChartSvg {
 		var containerWidth = 0;
 		var nodeIndexInLevel = 0;
 
-		if (this.levels.length < level + 1) {
-			this.levels.push(<ChartLevelInfo>{
-				nodes: [],
-				tipOver: false,
-				level: level
-			}); // create level record if missing
-		}
-
 		// add current node
-		var levelNode:ChartLevelNode = <ChartLevelNode>node;
-		levelNode.width = this.getSingleNodeWidth(levelNode);
-		levelNode.height = this.getSingleNodeHeight(levelNode);
-		levelNode.containerWidth = 0;
-		levelNode.level = level;
-		this.levels[level].nodes.push(levelNode);
+		var levelNode = this.buildLevelNode(node, level, true);
 
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
@@ -211,34 +199,49 @@ export class OrgChartSvg {
 			var columnWidths: number[] = [];
 			var childIndex = 0;
 			var columnIndex = 0;
+			var lineIndex = 0;
+			var linesCount = 0;
 			var columns = Math.floor(node.children.length / this.config.tipOverOptions.maxColumnHeight);
 			columns += node.children.length % this.config.tipOverOptions.maxColumnHeight > 0 ? 1 : 0;
+
+			linesCount = Math.ceil(node.children.length / columns);
 
 			for (var c = 0; c < columns; c++) {
 				columnWidths[c] = 0;
 			}
 
-			levelNode.tipOver = true;
+			levelNode.tipOverParent = true;
 			levelNode.tipOverColumns = columns;
 
 			for (var i = 0; i < node.children.length; i++) {
-				var childLevelNode = <ChartLevelNode>node.children[childIndex]
-				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
-				var width = this.getSingleNodeWidth(childLevelNode);
-				columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
+				var childLevelNode = this.buildLevelNode(node.children[childIndex], level, true);
+				childLevelNode.tipOverChild = true;
+				childLevelNode.tipOverColumns = columns;
+				childLevelNode.tipOverColumnIndex = columnIndex;
+				childLevelNode.tipOverLineIndex = lineIndex;
+				childLevelNode.tipOverLinesCount = linesCount;
+				childLevelNode.tipOverLastChild = i === node.children.length - 1;
 
-				this.createLevelIfNotExists(level);
-				childLevelNode.width = this.getSingleNodeWidth(childLevelNode);
-				childLevelNode.height = this.getSingleNodeHeight(childLevelNode);
+				// not last child and not last line
+				if (!childLevelNode.tipOverLastChild && lineIndex < linesCount - 1) {
+					var emptyPlaces = linesCount * columns - node.children.length;
+					childLevelNode.tipOverHasNodeBelow = columnIndex < (columns - emptyPlaces);
+				}
+				else {
+					childLevelNode.tipOverHasNodeBelow = false;
+				}
+
+				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
+				var width = this.getSingleNodeWidth(childLevelNode) + childLevelNode.leftMargin;
+				columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
 				childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
-				childLevelNode.level = level;
-				this.levels[level].nodes.push(childLevelNode);
 
 				childIndex++;
 				columnIndex++;
 				if (columnIndex == columns) {
 					columnIndex = 0;
 					level++;
+					lineIndex++;
 				}
 			}
 
@@ -247,7 +250,6 @@ export class OrgChartSvg {
 		else
 		{
 			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
-
 			this.createLevelIfNotExists(level);
 
 			if (this.levels[level].nodes.length === 0) {
@@ -257,6 +259,34 @@ export class OrgChartSvg {
 
 		levelNode.containerWidth = containerWidth;
 		return containerWidth;
+	}
+
+	/**
+	 * Builds new level node record using existing node and level.
+	 * @param node A ChartNode record
+	 * @param level A level to be used to assign with the node
+	 * @param addNode Determines if new level node should be added to levels after creation.
+	 * @returns {ChartLevelNode} New level node with 0 containerWidth.
+     */
+	private buildLevelNode(node: ChartNode, level: number, addNode: boolean = false): ChartLevelNode {
+		var levelNode:ChartLevelNode = <ChartLevelNode>node;
+		levelNode.width = this.getSingleNodeWidth(levelNode);
+		levelNode.height = this.getSingleNodeHeight(levelNode);
+		levelNode.containerWidth = 0;
+		levelNode.leftMargin = 0;
+		levelNode.level = level;
+
+		if (addNode) {
+			try {
+				this.createLevelIfNotExists(level);
+				this.levels[level].nodes.push(levelNode);
+			}
+			catch (e) {
+				console.error('Level ' + level + ' doesn\'t exist yet.\n' + e);
+			}
+		}
+
+		return levelNode;
 	}
 
 	private getTipOverTreeWidth(columns: number[]) : number {
@@ -270,11 +300,25 @@ export class OrgChartSvg {
 		return containerWidth + gapsWidth;
 	}
 
+	/**
+	 * Calculates a special number of gaps used to position the tip-over columns.
+	 * @param columnsCount A count of columns.
+	 * @returns {number} Value which multiplied by gapH will result in the width of all gaps.
+     */
 	private getGapsCountForTipOverColumns(columnsCount: number): number {
 		// n:		1	2	3	4	5	6	7	8	9	10	11	12...
 		// result:	1	2	4	5	7	8	10	11	13	14	16	17...
 		return columnsCount + (Math.ceil(columnsCount/2) - 1) + 2;
 	}
+
+	//private isTipOverColumnCenter(columnIndex: number): boolean {
+	//	columnIndex++;
+	//	if (columnIndex % 2 === 0) {
+	//		return true; // for last always true
+	//	}
+    //
+	//	return false;
+	//}
 
 	private createLevelIfNotExists(level: number) {
 		if (this.levels.length < level + 1) {
@@ -294,28 +338,15 @@ export class OrgChartSvg {
 	 * @returns {number} A total container width for the node.
      */
 	private calcChildren(node: ChartNode, level: number = 0) : number {
+		var containerWidth = 0,
+			levelNode: ChartLevelNode;
+
 		if (node.tipOverChildren) {
 			return this.calcTipOverChildren(node, level);
 		}
 
-		var containerWidth = 0;
-		var nodeIndexInLevel = 0;
-
-		if (this.levels.length < level + 1) {
-			this.levels.push(<ChartLevelInfo>{
-				nodes: [],
-				tipOver: false,
-				level: level
-			}); // create level record if missing
-		}
-
 		// add current node
-		var levelNode:ChartLevelNode = <ChartLevelNode>node;
-		levelNode.width = this.getSingleNodeWidth(levelNode);
-		levelNode.height = this.getSingleNodeHeight(levelNode);
-		levelNode.containerWidth = 0;
-		levelNode.level = level;
-		this.levels[level].nodes.push(levelNode);
+		levelNode = this.buildLevelNode(node, level, true);
 
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
@@ -325,14 +356,7 @@ export class OrgChartSvg {
 		}
 		else {
 			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
-
-			if (this.levels.length < level + 1) {
-				this.levels.push(<ChartLevelInfo>{
-					nodes: [],
-					tipOver: false,
-					level: level
-				}); // create level record if missing
-			}
+			this.createLevelIfNotExists(level);
 
 			if (this.levels[level].nodes.length === 0) {
 				this.placeholdersParents.push(levelNode);
@@ -369,6 +393,7 @@ export class OrgChartSvg {
 			hLineY: number,
 			hLineNodes: number = 0,
 			nextParentId = null; // number of nodes processed for the current line
+		var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];
@@ -381,68 +406,127 @@ export class OrgChartSvg {
 
 			for (var i = 0; i < level.nodes.length; i++) {
 				var node = level.nodes[i];
-				var marginLeft = (node.containerWidth - node.width) / 2;
+				var marginLeft = (node.containerWidth - node.width) / 2 + node.leftMargin;
 				var x = left + marginLeft;
 				var y = top;
 
-				if (hLineNodes === 0) {
-					hLineX1 = x + node.width / 2;
-					hLineY = y - gapY / 2;
-				}
-
-				hLineX2 = x + node.width / 2;
-				if (i + 1 < level.nodes.length) {
-					nextParentId = level.nodes[i + 1].parentId;
-				}
-				else {
-					nextParentId = null;
-				}
-
-				if (!node.isPlaceholder) {
-					hLineNodes++; // one node more
-					this.snap.rect(x, y, node.width, node.height);
-
-					if (levelIdx !== 0) {
-						// top line
-						this.snap.line(x + node.width / 2, y, x + node.width / 2, y - gapY / 2).attr({
-							strokeWidth: this.config.connectorOptions.strokeWidth,
-							stroke: this.config.connectorOptions.color
-						});
+				if (!node.tipOverChild) {
+					if (hLineNodes === 0) {
+						hLineX1 = x + node.width / 2;
+						hLineY = y - gapY / 2;
 					}
 
-					if (node.children !== null && node.children.length > 0) {
-						this.snap.line(x + node.width / 2, y + node.height, x + node.width / 2, y+ node.height + gapY / 2).attr({
-							strokeWidth: this.config.connectorOptions.strokeWidth,
-							stroke: this.config.connectorOptions.color
-						});
+					hLineX2 = x + node.width / 2;
+					if (i + 1 < level.nodes.length) {
+						nextParentId = level.nodes[i + 1].parentId;
+					}
+					else {
+						nextParentId = null;
 					}
 
+					if (!node.isPlaceholder) {
+						hLineNodes++; // one node more
+						this.snap.rect(x, y, node.width, node.height);
 
-					this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+						if (levelIdx !== 0) {
+							// top line
+							this.snap.line(x + node.width / 2, y, x + node.width / 2, y - gapY / 2).attr({
+								strokeWidth: this.config.connectorOptions.strokeWidth,
+								stroke: this.config.connectorOptions.color
+							});
+						}
+
+						if (node.children !== null && node.children.length > 0) {
+							this.snap.line(x + node.width / 2, y + node.height, x + node.width / 2, y + node.height + gapY / 2).attr({
+								strokeWidth: this.config.connectorOptions.strokeWidth,
+								stroke: this.config.connectorOptions.color
+							});
+						}
+
+
+						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+					}
+					else {
+						// placeholder
+						this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
+					}
+
+					// draw horizontal lines
+					if (levelIdx > 0) {
+						if (hLineNodes > 1) {
+							if (node.parentId !== nextParentId || nextParentId === null) {
+								// parent was changed, lets draw line
+								this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
+									strokeWidth: this.config.connectorOptions.strokeWidth,
+									stroke: this.config.connectorOptions.color
+								});
+
+								hLineNodes = 0;
+							}
+						}
+					}
+
+					left += node.containerWidth;
 				}
 				else {
-					// placeholder
-					this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
-				}
+					// tip over child
+					var evenColumn = (node.tipOverColumnIndex + 1) % 2 === 0;
+					var lastColumn = node.tipOverColumnIndex === node.tipOverColumns - 1;
+					var firstLine = node.tipOverLineIndex === 0;
+					var lastLine = node.tipOverLineIndex === node.tipOverLinesCount - 1;
 
-				// draw horizontal lines
-				if (levelIdx > 0) {
-					if (hLineNodes > 1) {
-						if (node.parentId !== nextParentId || nextParentId === null) {
-							var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
+					left += node.containerWidth;
 
-							// parent was changed, lets draw line
-							this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
+					if (!node.isPlaceholder) {
+						hLineNodes++; // one node more
+						this.snap.rect(x, y, node.width, node.height);
+
+						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
+							// right line
+							this.snap.line(x + node.width, y + node.height / 2, x + node.width + gapX + halfLineWidth, y + node.height / 2).attr({
+								strokeWidth: this.config.connectorOptions.strokeWidth,
+								stroke: this.config.connectorOptions.color
+							});
+						}
+
+						if ((node.tipOverColumnIndex > 0 && evenColumn) || lastColumn) {
+							// left line
+							this.snap.line(x, y + node.height / 2, x - gapX - halfLineWidth, y + node.height / 2).attr({
 								strokeWidth: this.config.connectorOptions.strokeWidth,
 								stroke: this.config.connectorOptions.color
 							});
 
-							hLineNodes = 0;
+							if (firstLine) {
+								// up line
+								this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2).attr({
+									strokeWidth: this.config.connectorOptions.strokeWidth,
+									stroke: this.config.connectorOptions.color
+								});
+							}
+							else {
+								// up line to cross
+								this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY).attr({
+									strokeWidth: this.config.connectorOptions.strokeWidth,
+									stroke: this.config.connectorOptions.color
+								});
+							}
+
+							if (node.tipOverHasNodeBelow) {
+								// down line
+								this.snap.line(x - gapX, y + node.height / 2, x - gapX, y + node.height).attr({
+									strokeWidth: this.config.connectorOptions.strokeWidth,
+									stroke: this.config.connectorOptions.color
+								});
+							}
 						}
+
+						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+					}
+					else {
+						// placeholder
+						this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
 					}
 				}
-
-				left += node.containerWidth;
 			}
 		}
     }
