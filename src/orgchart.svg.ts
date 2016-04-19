@@ -39,7 +39,7 @@ export class OrgChartSvg {
 		this.config.connectorOptions.color = 'red';
 		this.config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
-			maxColumnHeight: 7
+			maxColumnHeight: 5
 		};
 
 
@@ -82,6 +82,7 @@ export class OrgChartSvg {
 							id: '6',
 							parentId: '3',
 							data: { text: "child 5" },
+							tipOverChildren: true,
 							children: [
 								{
 									id: '7',
@@ -124,13 +125,7 @@ export class OrgChartSvg {
 									parentId: '6',
 									data: { text: "child X7" },
 									children: []
-								},
-								{
-									id: '14',
-									parentId: '6',
-									data: { text: "child X8" },
-									children: []
-								},
+								}
 							]
 						}
 					]
@@ -182,7 +177,110 @@ export class OrgChartSvg {
 		}
 	}
 
+	/**
+	 * The same method as calcChildren but calculate a tip-over subtree, not a default subtree tree.
+	 * Traverses across the three through the children to calculate the widths of nodes and their containers.
+	 * Method adds also all node level info records to levels. It is a source info for render method.
+	 * @param node A parent node to check.
+	 * @param level Current level for the parent node.
+	 * @returns {number} A total container width for the node.
+     */
+	private calcTipOverChildren(node: ChartNode, level: number = 0) : number {
+		var containerWidth = 0;
+		var nodeIndexInLevel = 0;
+
+		if (this.levels.length < level + 1) {
+			this.levels.push({
+				nodes: [],
+				tipOver: false,
+				level: level
+			}); // create level record if missing
+		}
+
+		// add current node
+		var levelNode:ChartLevelNode = <ChartLevelNode>node;
+		levelNode.width = this.getSingleNodeWidth(levelNode);
+		levelNode.height = this.getSingleNodeHeight(levelNode);
+		levelNode.containerWidth = 0;
+		levelNode.level = level;
+		this.levels[level].nodes.push(levelNode);
+
+		level++; // next level - children
+		if (node.children !== null && node.children.length > 0) {
+			// calculate number of columns
+			var columnWidths: number[] = [];
+			var childIndex = 0;
+			var columnIndex = 0;
+			var columns = Math.floor(node.children.length / this.config.tipOverOptions.maxColumnHeight);
+			columns += node.children.length % this.config.tipOverOptions.maxColumnHeight > 0 ? 1 : 0;
+
+			for (var c = 0; c < columns; c++) {
+				columnWidths[c] = 0;
+			}
+
+			levelNode.tipOver = true;
+			levelNode.tipOverColumns = columns;
+
+
+			for (var i = 0; i < node.children.length; i++) {
+				//containerWidth += this.calcChildren(node.children[i], level);
+				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
+				var width = this.getSingleNodeWidth(node.children[childIndex]);
+				columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
+
+
+				childIndex++;
+				columnIndex++;
+				if (columnIndex == columns) {
+					columnIndex = 0;
+				}
+			}
+
+			containerWidth = this.getTipOverTreeWidth(columnWidths);
+		}
+		else
+		{
+			containerWidth = levelNode.width + this.config.nodeOptions.gapH * 2;
+
+			if (this.levels.length < level + 1) {
+				this.levels.push({
+					nodes: [],
+					tipOver: false,
+					level: level
+				}); // create level record if missing
+			}
+
+			if (this.levels[level].nodes.length === 0) {
+				this.placeholdersParents.push(levelNode);
+			}
+		}
+
+		levelNode.containerWidth = containerWidth;
+		return containerWidth;
+	}
+
+	private getTipOverTreeWidth(columns: number[]) : number {
+		var containerWidth = 0;
+
+		for (var c = 0; c < columns.length; c++) {
+			containerWidth += columns[c];
+		}
+
+		return containerWidth;
+	}
+
+	/**
+	 * Traverses into the three through the children to calculate the widths of nodes and their containers.
+	 * Method adds also all node level info records to levels. It is a source info for render method.
+	 * @param node A parent node to check.
+	 * @param level Current level for the parent node.
+	 * @returns {number} A total container width for the node.
+     */
 	private calcChildren(node: ChartNode, level: number = 0) : number {
+		if (node.tipOverChildren) {
+			return this.calcTipOverChildren(node, level);
+		}
+
 		var containerWidth = 0;
 		var nodeIndexInLevel = 0;
 
@@ -227,8 +325,6 @@ export class OrgChartSvg {
 		levelNode.containerWidth = containerWidth;
 		return containerWidth;
 	}
-
-
 
 	private getSingleNodeWidth(node: ChartNode) : number {
 		/*
