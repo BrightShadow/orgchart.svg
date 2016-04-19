@@ -1,6 +1,5 @@
 /// <reference path="../typings/browser.d.ts" />
 import 'snapsvg';
-import {NodeSvg} from "./node.svg";
 import {OrgChartConfig} from "./org.chart.config";
 import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
