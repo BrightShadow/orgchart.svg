@@ -6,6 +6,7 @@ import {NodeOptions} from "./node.options";
 import {ChartLevelNode} from "./chart.level.node";
 import {ChartLevelInfo} from "./chart.level.info";
 import {ConnectorOptions} from "./connector.options";
+import {TipOverOptions} from "./tip.over.options";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -36,6 +37,11 @@ export class OrgChartSvg {
 		this.config.connectorOptions = <ConnectorOptions>{};
 		this.config.connectorOptions.strokeWidth = 1;
 		this.config.connectorOptions.color = 'red';
+		this.config.tipOverOptions = <TipOverOptions>{
+			minChildrenCount: 3,
+			maxColumnHeight: 7
+		};
+
 
 		this.config.nodes = {
 			id: '1',
@@ -93,20 +99,7 @@ export class OrgChartSvg {
 									id: '9',
 									parentId: '6',
 									data: { text: "child X3" },
-									children: [
-										{
-											id: '5',
-											parentId: '9',
-											data: { text: "child G1" },
-											children: []
-										},
-										{
-											id: '5',
-											parentId: '9',
-											data: { text: "child G2" },
-											children: []
-										},
-									]
+									children: []
 								},
 								{
 									id: '10',
@@ -124,6 +117,18 @@ export class OrgChartSvg {
 									id: '12',
 									parentId: '6',
 									data: { text: "child X6" },
+									children: []
+								},
+								{
+									id: '13',
+									parentId: '6',
+									data: { text: "child X7" },
+									children: []
+								},
+								{
+									id: '14',
+									parentId: '6',
+									data: { text: "child X8" },
 									children: []
 								},
 							]

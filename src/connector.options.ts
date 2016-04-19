@@ -1,4 +1,4 @@
-export class ConnectorOptions {
+export interface ConnectorOptions {
 	strokeWidth: number;
 	color: string;
 }
