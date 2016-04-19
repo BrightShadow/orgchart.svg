@@ -84,20 +84,7 @@ define(["require", "exports", 'snapsvg'], function (require, exports) {
                                         id: '9',
                                         parentId: '6',
                                         data: { text: "child X3" },
-                                        children: [
-                                            {
-                                                id: '5',
-                                                parentId: '9',
-                                                data: { text: "child G1" },
-                                                children: []
-                                            },
-                                            {
-                                                id: '5',
-                                                parentId: '9',
-                                                data: { text: "child G2" },
-                                                children: []
-                                            },
-                                        ]
+                                        children: []
                                     },
                                     {
                                         id: '10',
@@ -115,6 +102,18 @@ define(["require", "exports", 'snapsvg'], function (require, exports) {
                                         id: '12',
                                         parentId: '6',
                                         data: { text: "child X6" },
+                                        children: []
+                                    },
+                                    {
+                                        id: '13',
+                                        parentId: '6',
+                                        data: { text: "child X7" },
+                                        children: []
+                                    },
+                                    {
+                                        id: '14',
+                                        parentId: '6',
+                                        data: { text: "child X8" },
                                         children: []
                                     },
                                 ]
