@@ -6,6 +6,7 @@ import {ChartNode} from "./chart.node";
 import {NodeOptions} from "./node.options";
 import {ChartLevelNode} from "./chart.level.node";
 import {ChartLevelInfo} from "./chart.level.info";
+import {ConnectorOptions} from "./connector.options";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -31,8 +32,11 @@ export class OrgChartSvg {
 		this.config.nodeOptions = <NodeOptions>{};
 		this.config.nodeOptions.width = 150;
 		this.config.nodeOptions.height = 50;
-		this.config.nodeOptions.gapV = 20;
-		this.config.nodeOptions.gapH = 20;
+		this.config.nodeOptions.gapV = 60;
+		this.config.nodeOptions.gapH = 2;
+		this.config.connectorOptions = <ConnectorOptions>{};
+		this.config.connectorOptions.strokeWidth = 1;
+		this.config.connectorOptions.color = 'red';
 
 		this.config.nodes = {
 			id: '1',
@@ -284,15 +288,15 @@ export class OrgChartSvg {
 					if (levelIdx !== 0) {
 						// top line
 						this.snap.line(x + node.width / 2, y, x + node.width / 2, y - gapY / 2).attr({
-							strokeWidth: 1,
-							stroke: 'red'
+							strokeWidth: this.config.connectorOptions.strokeWidth,
+							stroke: this.config.connectorOptions.color
 						});
 					}
 
 					if (node.children !== null && node.children.length > 0) {
 						this.snap.line(x + node.width / 2, y + node.height, x + node.width / 2, y+ node.height + gapY / 2).attr({
-							strokeWidth: 1,
-							stroke: 'red'
+							strokeWidth: this.config.connectorOptions.strokeWidth,
+							stroke: this.config.connectorOptions.color
 						});
 					}
 
@@ -308,10 +312,12 @@ export class OrgChartSvg {
 				if (levelIdx > 0) {
 					if (hLineNodes > 1) {
 						if (node.parentId !== nextParentId || nextParentId === null) {
+							var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
+
 							// parent was changed, lets draw line
-							this.snap.line(hLineX1, hLineY, hLineX2, hLineY).attr({
-								strokeWidth: 1,
-								stroke: 'red'
+							this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
+								strokeWidth: this.config.connectorOptions.strokeWidth,
+								stroke: this.config.connectorOptions.color
 							});
 
 							hLineNodes = 0;
