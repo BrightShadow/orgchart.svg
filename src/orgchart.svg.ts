@@ -45,15 +45,15 @@ export class OrgChartSvg {
 					data: { text: "child 1" },
 					children: [
 						{
-							id: '5',
-							parentId: '3',
-							data: { text: "child X1" },
+							id: '50',
+							parentId: '2',
+							data: { text: "child Y1" },
 							children: []
 						},
 						{
-							id: '5',
-							parentId: '3',
-							data: { text: "child X1" },
+							id: '51',
+							parentId: '2',
+							data: { text: "child Y2" },
 							children: []
 						}
 					]
@@ -75,52 +75,52 @@ export class OrgChartSvg {
 							data: { text: "child 5" },
 							children: [
 								{
-									id: '5',
-									parentId: '3',
+									id: '7',
+									parentId: '6',
 									data: { text: "child X1" },
 									children: []
 								},
 								{
-									id: '5',
-									parentId: '3',
-									data: { text: "child X1" },
+									id: '8',
+									parentId: '6',
+									data: { text: "child X2" },
 									children: []
 								},
 								{
-									id: '5',
-									parentId: '3',
-									data: { text: "child X1" },
+									id: '9',
+									parentId: '6',
+									data: { text: "child X3" },
 									children: [
 										{
 											id: '5',
-											parentId: '3',
-											data: { text: "child X1" },
+											parentId: '9',
+											data: { text: "child G1" },
 											children: []
 										},
 										{
 											id: '5',
-											parentId: '3',
-											data: { text: "child X1" },
+											parentId: '9',
+											data: { text: "child G2" },
 											children: []
 										},
 									]
 								},
 								{
-									id: '5',
-									parentId: '3',
-									data: { text: "child X1" },
+									id: '10',
+									parentId: '6',
+									data: { text: "child X4" },
 									children: []
 								},
 								{
-									id: '5',
-									parentId: '3',
-									data: { text: "child X1" },
+									id: '11',
+									parentId: '6',
+									data: { text: "child X5" },
 									children: []
 								},
 								{
-									id: '5',
-									parentId: '3',
-									data: { text: "child X1" },
+									id: '12',
+									parentId: '6',
+									data: { text: "child X6" },
 									children: []
 								},
 							]
