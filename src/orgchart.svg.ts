@@ -39,7 +39,7 @@ export class OrgChartSvg {
 		this.config.connectorOptions.color = 'red';
 		this.config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
-			maxColumnHeight: 5
+			maxColumnHeight: 6
 		};
 
 
@@ -190,7 +190,7 @@ export class OrgChartSvg {
 		var nodeIndexInLevel = 0;
 
 		if (this.levels.length < level + 1) {
-			this.levels.push({
+			this.levels.push(<ChartLevelInfo>{
 				nodes: [],
 				tipOver: false,
 				level: level
@@ -221,18 +221,24 @@ export class OrgChartSvg {
 			levelNode.tipOver = true;
 			levelNode.tipOverColumns = columns;
 
-
 			for (var i = 0; i < node.children.length; i++) {
-				//containerWidth += this.calcChildren(node.children[i], level);
+				var childLevelNode = <ChartLevelNode>node.children[childIndex]
 				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
-				var width = this.getSingleNodeWidth(node.children[childIndex]);
+				var width = this.getSingleNodeWidth(childLevelNode);
 				columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
 
+				this.createLevelIfNotExists(level);
+				childLevelNode.width = this.getSingleNodeWidth(childLevelNode);
+				childLevelNode.height = this.getSingleNodeHeight(childLevelNode);
+				childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
+				childLevelNode.level = level;
+				this.levels[level].nodes.push(childLevelNode);
 
 				childIndex++;
 				columnIndex++;
 				if (columnIndex == columns) {
 					columnIndex = 0;
+					level++;
 				}
 			}
 
@@ -240,15 +246,9 @@ export class OrgChartSvg {
 		}
 		else
 		{
-			containerWidth = levelNode.width + this.config.nodeOptions.gapH * 2;
+			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
 
-			if (this.levels.length < level + 1) {
-				this.levels.push({
-					nodes: [],
-					tipOver: false,
-					level: level
-				}); // create level record if missing
-			}
+			this.createLevelIfNotExists(level);
 
 			if (this.levels[level].nodes.length === 0) {
 				this.placeholdersParents.push(levelNode);
@@ -260,13 +260,30 @@ export class OrgChartSvg {
 	}
 
 	private getTipOverTreeWidth(columns: number[]) : number {
-		var containerWidth = 0;
+		var containerWidth = 0,
+			gapsWidth: number = this.config.nodeOptions.gapH * this.getGapsCountForTipOverColumns(columns.length);
 
 		for (var c = 0; c < columns.length; c++) {
 			containerWidth += columns[c];
 		}
 
-		return containerWidth;
+		return containerWidth + gapsWidth;
+	}
+
+	private getGapsCountForTipOverColumns(columnsCount: number): number {
+		// n:		1	2	3	4	5	6	7	8	9	10	11	12...
+		// result:	1	2	4	5	7	8	10	11	13	14	16	17...
+		return columnsCount + (Math.ceil(columnsCount/2) - 1) + 2;
+	}
+
+	private createLevelIfNotExists(level: number) {
+		if (this.levels.length < level + 1) {
+			this.levels.push(<ChartLevelInfo>{
+				nodes: [],
+				tipOver: false,
+				level: level
+			}); // create level record if missing
+		}
 	}
 
 	/**
@@ -285,7 +302,7 @@ export class OrgChartSvg {
 		var nodeIndexInLevel = 0;
 
 		if (this.levels.length < level + 1) {
-			this.levels.push({
+			this.levels.push(<ChartLevelInfo>{
 				nodes: [],
 				tipOver: false,
 				level: level
@@ -307,10 +324,10 @@ export class OrgChartSvg {
 			}
 		}
 		else {
-			containerWidth = levelNode.width + this.config.nodeOptions.gapH * 2;
+			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
 
 			if (this.levels.length < level + 1) {
-				this.levels.push({
+				this.levels.push(<ChartLevelInfo>{
 					nodes: [],
 					tipOver: false,
 					level: level
@@ -405,7 +422,7 @@ export class OrgChartSvg {
 				}
 				else {
 					// placeholder
-					//this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
+					this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
 				}
 
 				// draw horizontal lines
