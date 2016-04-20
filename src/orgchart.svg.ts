@@ -7,6 +7,7 @@ import {ChartLevelNode} from "./chart.level.node";
 import {ChartLevelInfo} from "./chart.level.info";
 import {ConnectorOptions} from "./connector.options";
 import {TipOverOptions} from "./tip.over.options";
+import {ConfigDebugOptions} from "./config.debug.options";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -40,6 +41,10 @@ export class OrgChartSvg {
 		this.config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
 			maxColumnHeight: 12
+		};
+		this.config.debugOptions = <ConfigDebugOptions>{
+			showPlaceholderBoxes: true,
+			placeholderBoxesColor: 'rgba(0,0,0,0.05)'
 		};
 
 
@@ -679,6 +684,96 @@ export class OrgChartSvg {
 				}
 			]
 		};
+
+		//this.config.nodes = {
+		//	id: '0',
+		//	parentId: '',
+		//	data: { text: "root" },
+		//	children: [
+		//		{
+		//			id: '1',
+		//			parentId: '0',
+		//			data: { text: "child X1" },
+		//			children: [
+		//				{
+		//					id: '10',
+		//					parentId: '1',
+		//					data: { text: "child X1" },
+		//					children: [
+		//						{
+		//							id: '14',
+		//							parentId: '10',
+		//							data: { text: "child X1" },
+		//							children: [
+		//								{
+		//								id: '16',
+		//								parentId: '14',
+		//								data: { text: "child X1" },
+		//								children: [
+		//									{
+		//									id: '17',
+		//									parentId: '16',
+		//									data: { text: "child X1" },
+		//									children: [
+		//										{
+		//										id: '18',
+		//										parentId: '17',
+		//										data: { text: "child X1" },
+		//										children: []
+		//									},]
+		//								},]
+		//							},]
+		//						}
+		//					]
+		//				},
+		//				{
+		//					id: '11',
+		//					parentId: '1',
+		//					data: { text: "child X1" },
+		//					children: []
+		//				}
+		//			]
+		//		},
+		//		{
+		//			id: '2',
+		//			parentId: '0',
+		//			data: { text: "child X2" },
+		//			children: [
+		//				{
+		//					id: '100',
+		//					parentId: '2',
+		//					data: { text: "child X1" },
+		//					children: [
+		//						{
+		//							id: '140',
+		//							parentId: '100',
+		//							data: { text: "child X1" },
+		//							children: [
+		//								{
+		//									id: '160',
+		//									parentId: '140',
+		//									data: { text: "child X1" },
+		//									children: [
+		//										{
+		//											id: '170',
+		//											parentId: '160',
+		//											data: { text: "child X1" },
+		//											children: [
+		//												{
+		//													id: '180',
+		//													parentId: '170',
+		//													data: { text: "child X1" },
+		//													children: []
+		//												},]
+		//										},]
+		//								},]
+		//						}
+		//					]
+		//				}
+		//			]
+		//		},
+		//	]
+		//};
 	}
 
 	private clear() {
@@ -989,7 +1084,9 @@ export class OrgChartSvg {
 					}
 					else {
 						// placeholder
-						this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
+						if (this.config.debugOptions.showPlaceholderBoxes) {
+							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
+						}
 					}
 
 					// draw horizontal lines
