@@ -1016,6 +1016,19 @@ export class OrgChartSvg {
 					var firstLine = node.tipOverLineIndex === 0;
 					var lastLine = node.tipOverLineIndex === node.tipOverLinesCount - 1;
 
+
+					// draw top horizontal line for the tip-over group
+					if (node.tipOverFirstChild && node.tipOverColumns > 2) {
+						var x1 = x + node.width + gapX - halfLineWidth;
+						var x2 = x + node.parentNode.containerWidth - node.parentNode.tipOverParentLastColumnWidth - gapX*3 + halfLineWidth;
+						var lineY = y - gapY / 2;
+						// parent was changed, lets draw line
+						this.snap.line(x1, lineY, x2, lineY).attr({
+							strokeWidth: this.config.connectorOptions.strokeWidth,
+							stroke: this.config.connectorOptions.color
+						});
+					}
+
 					left += node.containerWidth;
 
 					if (!node.isPlaceholder) {

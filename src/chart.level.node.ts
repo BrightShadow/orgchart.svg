@@ -8,6 +8,7 @@ export interface ChartLevelNode extends ChartNode{
 	height: number;
 	parentNode: ChartLevelNode;
 	tipOverParent: boolean;
+	tipOverParentLastColumnWidth: number;
 	tipOverChild: boolean;
 	tipOverColumnIndex: number;
 	tipOverColumns: number;
@@ -15,5 +16,6 @@ export interface ChartLevelNode extends ChartNode{
 	tipOverLinesCount: number;
 	tipOverHasNodeBelow: boolean;
 	tipOverLastChild: boolean;
+	tipOverFirstChild: boolean;
 	leftMargin: number;
 }
