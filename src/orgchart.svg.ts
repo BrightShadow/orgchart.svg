@@ -33,13 +33,13 @@ export class OrgChartSvg {
 		this.config.nodeOptions.width = 150;
 		this.config.nodeOptions.height = 50;
 		this.config.nodeOptions.gapV = 60;
-		this.config.nodeOptions.gapH = 5;
+		this.config.nodeOptions.gapH = 10;
 		this.config.connectorOptions = <ConnectorOptions>{};
 		this.config.connectorOptions.strokeWidth = 1;
 		this.config.connectorOptions.color = 'red';
 		this.config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
-			maxColumnHeight: 3
+			maxColumnHeight: 12
 		};
 
 
@@ -63,6 +63,69 @@ export class OrgChartSvg {
 							id: '51',
 							parentId: '2',
 							data: { text: "child Y2" },
+							//tipOverChildren: true,
+							//children: [
+							//	{
+							//		id: '7',
+							//		parentId: '2',
+							//		data: { text: "child X1" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '8',
+							//		parentId: '2',
+							//		data: { text: "child X2" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '9',
+							//		parentId: '2',
+							//		data: { text: "child X3" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '10',
+							//		parentId: '2',
+							//		data: { text: "child X4" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '11',
+							//		parentId: '2',
+							//		data: { text: "child X5" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '12',
+							//		parentId: '2',
+							//		data: { text: "child X6" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '13',
+							//		parentId: '2',
+							//		data: { text: "child X7" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '14',
+							//		parentId: '2',
+							//		data: { text: "child X8" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '15',
+							//		parentId: '2',
+							//		data: { text: "child X9" },
+							//		children: []
+							//	},
+							//	{
+							//		id: '16',
+							//		parentId: '2',
+							//		data: { text: "child X10" },
+							//		children: []
+							//	},
+							//]
 							children: []
 						}
 					]
@@ -124,6 +187,484 @@ export class OrgChartSvg {
 									id: '13',
 									parentId: '6',
 									data: { text: "child X7" },
+									children: []
+								},
+								{
+									id: '14',
+									parentId: '6',
+									data: { text: "child X8" },
+									children: []
+								},
+								{
+									id: '15',
+									parentId: '6',
+									data: { text: "child X9" },
+									children: []
+								},
+								{
+									id: '16',
+									parentId: '6',
+									data: { text: "child X10" },
+									children: []
+								},
+								{
+									id: '17',
+									parentId: '6',
+									data: { text: "child X11" },
+									children: []
+								},
+								{
+									id: '18',
+									parentId: '6',
+									data: { text: "child X12" },
+									children: []
+								},
+								{
+									id: '19',
+									parentId: '6',
+									data: { text: "child X13" },
+									children: []
+								},
+								{
+									id: '20',
+									parentId: '6',
+									data: { text: "child X14" },
+									children: []
+								},
+								{
+									id: '21',
+									parentId: '6',
+									data: { text: "child X15" },
+									children: []
+								},
+								{
+									id: '22',
+									parentId: '6',
+									data: { text: "child X16" },
+									children: []
+								},
+								{
+									id: '23',
+									parentId: '6',
+									data: { text: "child X17" },
+									children: []
+								},
+								{
+									id: '24',
+									parentId: '6',
+									data: { text: "child X18" },
+									children: []
+								},
+								{
+									id: '25',
+									parentId: '6',
+									data: { text: "child X19" },
+									children: []
+								},
+								{
+									id: '26',
+									parentId: '6',
+									data: { text: "child X20" },
+									children: []
+								},
+
+
+
+
+
+
+
+
+
+
+								{
+									id: '7',
+									parentId: '6',
+									data: { text: "child X21" },
+									children: []
+								},
+								{
+									id: '8',
+									parentId: '6',
+									data: { text: "child X22" },
+									children: []
+								},
+								{
+									id: '9',
+									parentId: '6',
+									data: { text: "child X23" },
+									children: []
+								},
+								{
+									id: '10',
+									parentId: '6',
+									data: { text: "child X24" },
+									children: []
+								},
+								{
+									id: '11',
+									parentId: '6',
+									data: { text: "child X25" },
+									children: []
+								},
+								{
+									id: '12',
+									parentId: '6',
+									data: { text: "child X26" },
+									children: []
+								},
+								{
+									id: '13',
+									parentId: '6',
+									data: { text: "child X27" },
+									children: []
+								},
+								{
+									id: '14',
+									parentId: '6',
+									data: { text: "child X28" },
+									children: []
+								},
+								{
+									id: '15',
+									parentId: '6',
+									data: { text: "child X29" },
+									children: []
+								},
+								{
+									id: '16',
+									parentId: '6',
+									data: { text: "child X30" },
+									children: []
+								},
+								{
+									id: '17',
+									parentId: '6',
+									data: { text: "child X31" },
+									children: []
+								},
+								{
+									id: '18',
+									parentId: '6',
+									data: { text: "child X32" },
+									children: []
+								},
+								{
+									id: '19',
+									parentId: '6',
+									data: { text: "child X33" },
+									children: []
+								},
+								{
+									id: '20',
+									parentId: '6',
+									data: { text: "child X34" },
+									children: []
+								},
+								{
+									id: '21',
+									parentId: '6',
+									data: { text: "child X35" },
+									children: []
+								},
+								{
+									id: '22',
+									parentId: '6',
+									data: { text: "child X36" },
+									children: []
+								},
+								{
+									id: '23',
+									parentId: '6',
+									data: { text: "child X37" },
+									children: []
+								},
+								{
+									id: '24',
+									parentId: '6',
+									data: { text: "child X38" },
+									children: []
+								},
+								{
+									id: '25',
+									parentId: '6',
+									data: { text: "child X39" },
+									children: []
+								},
+								{
+									id: '26',
+									parentId: '6',
+									data: { text: "child X40" },
+									children: []
+								},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								{
+									id: '7',
+									parentId: '6',
+									data: { text: "child X41" },
+									children: []
+								},
+								{
+									id: '8',
+									parentId: '6',
+									data: { text: "child X42" },
+									children: []
+								},
+								{
+									id: '9',
+									parentId: '6',
+									data: { text: "child X43" },
+									children: []
+								},
+								{
+									id: '10',
+									parentId: '6',
+									data: { text: "child X44" },
+									children: []
+								},
+								{
+									id: '11',
+									parentId: '6',
+									data: { text: "child X45" },
+									children: []
+								},
+								{
+									id: '12',
+									parentId: '6',
+									data: { text: "child X46" },
+									children: []
+								},
+								{
+									id: '13',
+									parentId: '6',
+									data: { text: "child X47" },
+									children: []
+								},
+								{
+									id: '14',
+									parentId: '6',
+									data: { text: "child X48" },
+									children: []
+								},
+								{
+									id: '15',
+									parentId: '6',
+									data: { text: "child X49" },
+									children: []
+								},
+								{
+									id: '16',
+									parentId: '6',
+									data: { text: "child X50" },
+									children: []
+								},
+								{
+									id: '17',
+									parentId: '6',
+									data: { text: "child X51" },
+									children: []
+								},
+								{
+									id: '18',
+									parentId: '6',
+									data: { text: "child X52" },
+									children: []
+								},
+								{
+									id: '19',
+									parentId: '6',
+									data: { text: "child X53" },
+									children: []
+								},
+								{
+									id: '20',
+									parentId: '6',
+									data: { text: "child X54" },
+									children: []
+								},
+								{
+									id: '21',
+									parentId: '6',
+									data: { text: "child X55" },
+									children: []
+								},
+								{
+									id: '22',
+									parentId: '6',
+									data: { text: "child X56" },
+									children: []
+								},
+								{
+									id: '23',
+									parentId: '6',
+									data: { text: "child X57" },
+									children: []
+								},
+								{
+									id: '24',
+									parentId: '6',
+									data: { text: "child X58" },
+									children: []
+								},
+								{
+									id: '25',
+									parentId: '6',
+									data: { text: "child X59" },
+									children: []
+								},
+								{
+									id: '26',
+									parentId: '6',
+									data: { text: "child X60" },
+									children: []
+								},
+
+
+
+
+
+
+
+
+
+
+								{
+									id: '7',
+									parentId: '6',
+									data: { text: "child X61" },
+									children: []
+								},
+								{
+									id: '8',
+									parentId: '6',
+									data: { text: "child X62" },
+									children: []
+								},
+								{
+									id: '9',
+									parentId: '6',
+									data: { text: "child X63" },
+									children: []
+								},
+								{
+									id: '10',
+									parentId: '6',
+									data: { text: "child X64" },
+									children: []
+								},
+								{
+									id: '11',
+									parentId: '6',
+									data: { text: "child X65" },
+									children: []
+								},
+								{
+									id: '12',
+									parentId: '6',
+									data: { text: "child X66" },
+									children: []
+								},
+								{
+									id: '13',
+									parentId: '6',
+									data: { text: "child X67" },
+									children: []
+								},
+								{
+									id: '14',
+									parentId: '6',
+									data: { text: "child X68" },
+									children: []
+								},
+								{
+									id: '15',
+									parentId: '6',
+									data: { text: "child X69" },
+									children: []
+								},
+								{
+									id: '16',
+									parentId: '6',
+									data: { text: "child X70" },
+									children: []
+								},
+								{
+									id: '17',
+									parentId: '6',
+									data: { text: "child X71" },
+									children: []
+								},
+								{
+									id: '18',
+									parentId: '6',
+									data: { text: "child X72" },
+									children: []
+								},
+								{
+									id: '19',
+									parentId: '6',
+									data: { text: "child X73" },
+									children: []
+								},
+								{
+									id: '20',
+									parentId: '6',
+									data: { text: "child X74" },
+									children: []
+								},
+								{
+									id: '21',
+									parentId: '6',
+									data: { text: "child X75" },
+									children: []
+								},
+								{
+									id: '22',
+									parentId: '6',
+									data: { text: "child X76" },
+									children: []
+								},
+								{
+									id: '23',
+									parentId: '6',
+									data: { text: "child X77" },
+									children: []
+								},
+								{
+									id: '24',
+									parentId: '6',
+									data: { text: "child X78" },
+									children: []
+								},
+								{
+									id: '25',
+									parentId: '6',
+									data: { text: "child X79" },
+									children: []
+								},
+								{
+									id: '26',
+									parentId: '6',
+									data: { text: "child X80" },
 									children: []
 								}
 							]
@@ -221,15 +762,11 @@ export class OrgChartSvg {
 				childLevelNode.tipOverLineIndex = lineIndex;
 				childLevelNode.tipOverLinesCount = linesCount;
 				childLevelNode.tipOverLastChild = i === node.children.length - 1;
+				childLevelNode.tipOverFirstChild = i === 0;
 
-				// not last child and not last line
-				if (!childLevelNode.tipOverLastChild && lineIndex < linesCount - 1) {
-					var emptyPlaces = linesCount * columns - node.children.length;
-					childLevelNode.tipOverHasNodeBelow = columnIndex < (columns - emptyPlaces);
-				}
-				else {
-					childLevelNode.tipOverHasNodeBelow = false;
-				}
+				// there is a regularity that always a number of last children
+				// equal number of columns hasn't box below
+				childLevelNode.tipOverHasNodeBelow = i < (node.children.length - columns);
 
 				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
 				var width = this.getSingleNodeWidth(childLevelNode) + childLevelNode.leftMargin;
@@ -245,6 +782,7 @@ export class OrgChartSvg {
 				}
 			}
 
+			levelNode.tipOverParentLastColumnWidth = columnWidths[columnWidths.length - 1];
 			containerWidth = this.getTipOverTreeWidth(columnWidths);
 		}
 		else
@@ -279,6 +817,7 @@ export class OrgChartSvg {
 		if (addNode) {
 			try {
 				this.createLevelIfNotExists(level);
+				levelNode.nodeIndexInLevel = this.levels[level].nodes.length;
 				this.levels[level].nodes.push(levelNode);
 			}
 			catch (e) {
@@ -308,7 +847,9 @@ export class OrgChartSvg {
 	private getGapsCountForTipOverColumns(columnsCount: number): number {
 		// n:		1	2	3	4	5	6	7	8	9	10	11	12...
 		// result:	1	2	4	5	7	8	10	11	13	14	16	17...
-		return columnsCount + (Math.ceil(columnsCount/2) - 1) + 2;
+		//return columnsCount + (Math.ceil(columnsCount/2) - 1) + 2;
+
+		return (columnsCount - 1) * 2 + 2;
 	}
 
 	//private isTipOverColumnCenter(columnIndex: number): boolean {
@@ -510,9 +1051,28 @@ export class OrgChartSvg {
 									stroke: this.config.connectorOptions.color
 								});
 							}
+						}
 
-							if (node.tipOverHasNodeBelow) {
-								// down line
+						if (node.tipOverLastChild && node.tipOverLinesCount > 1 && !evenColumn && node.tipOverColumns > 1
+							&& node.tipOverColumnIndex < node.tipOverColumns - 1) {
+							// up line to cross
+							this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY).attr({
+								strokeWidth: this.config.connectorOptions.strokeWidth,
+								stroke: this.config.connectorOptions.color
+							});
+						}
+
+						if (node.tipOverHasNodeBelow) {
+							if ((!lastColumn && !evenColumn)) {
+								// down line (on the right box site)
+								this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height).attr({
+									strokeWidth: this.config.connectorOptions.strokeWidth,
+									stroke: this.config.connectorOptions.color
+								});
+
+							}
+							else if (lastColumn && node.tipOverColumns % 2 === 1) {
+								// down line (on the left box site)
 								this.snap.line(x - gapX, y + node.height / 2, x - gapX, y + node.height).attr({
 									strokeWidth: this.config.connectorOptions.strokeWidth,
 									stroke: this.config.connectorOptions.color
@@ -520,11 +1080,14 @@ export class OrgChartSvg {
 							}
 						}
 
+
 						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
 					}
 					else {
 						// placeholder
-						this.snap.rect(x, y, node.width, node.height).attr({fill: 'red'});
+						if (this.config.debugOptions.showPlaceholderBoxes) {
+							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
+						}
 					}
 				}
 			}
