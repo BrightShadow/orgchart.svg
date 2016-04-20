@@ -888,9 +888,9 @@ export class OrgChartSvg {
 			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
 			this.createLevelIfNotExists(level);
 
-			if (this.levels[level].nodes.length === 0) {
+			//if (this.levels[level].nodes.length === 0) {
 				this.placeholdersParents.push(levelNode);
-			}
+			//}
 		}
 
 		levelNode.containerWidth = containerWidth;
@@ -998,9 +998,9 @@ export class OrgChartSvg {
 			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
 			this.createLevelIfNotExists(level);
 
-			if (this.levels[level].nodes.length === 0) {
+			//if (this.levels[level].nodes.length === 0) {
 				this.placeholdersParents.push(levelNode);
-			}
+			//}
 		}
 
 		levelNode.containerWidth = containerWidth;
@@ -1031,14 +1031,18 @@ export class OrgChartSvg {
 		var hLineX1: number,
 			hLineX2: number,
 			hLineY: number,
-			hLineNodes: number = 0,
-			nextParentId = null; // number of nodes processed for the current line
+			hLineNodes: number = 0,  // number of nodes processed for the current horizontal line
+			nextParent: ChartLevelNode = null,
+			currentNodeParentId: string = null, // actual node parent id, to check if the h line should be drawn
+			firstNodeParentId: string = null; // parent id of first node of the current h line, needed to determine if h line should be drawn
 		var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];
 			var lastLevel = levelIdx === this.levels.length - 1;
-			nextParentId = null;
+			nextParent = null;
+			currentNodeParentId = null;
+			firstNodeParentId = null;
 			hLineNodes = 0;
 
 			top = levelIdx * (this.config.nodeOptions.height  + gapY) + 10;
@@ -1054,14 +1058,17 @@ export class OrgChartSvg {
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
 						hLineY = y - gapY / 2;
+						firstNodeParentId = node.parentNode !== null && node.parentNode !== undefined ? node.parentNode.id : null;
 					}
+
+					currentNodeParentId = node.parentNode !== null && node.parentNode !== undefined ? node.parentNode.id : null;
 
 					hLineX2 = x + node.width / 2;
 					if (i + 1 < level.nodes.length) {
-						nextParentId = level.nodes[i + 1].parentId;
+						nextParent = level.nodes[i + 1];
 					}
 					else {
-						nextParentId = null;
+						nextParent = null;
 					}
 
 					if (!node.isPlaceholder) {
@@ -1096,7 +1103,8 @@ export class OrgChartSvg {
 					// draw horizontal lines
 					if (levelIdx > 0) {
 						if (hLineNodes > 1) {
-							if (node.parentId !== nextParentId || nextParentId === null) {
+							// && currentNodeParentId === firstNodeParentId
+							if ((nextParent === null || node.parentId !== nextParent.id)  ) {
 								// parent was changed, lets draw line
 								this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
 									strokeWidth: this.config.connectorOptions.strokeWidth,
