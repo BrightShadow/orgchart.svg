@@ -808,7 +808,8 @@ export class OrgChartSvg {
 					placeholderNode.containerWidth = levelNode.containerWidth;
 					placeholderNode.isPlaceholder = true;
 					placeholderNode.leftMargin = 0;
-					this.levels[level].nodes.unshift(placeholderNode);
+					//placeholderNode.nodeIndexInLevel = levelNode.nodeIndexInLevel;
+					//this.levels[level].nodes.splice(levelNode.nodeIndexInLevel, 0, placeholderNode);
 				}
 			}
 		}
@@ -822,7 +823,7 @@ export class OrgChartSvg {
 	 * @param level Current level for the parent node.
 	 * @returns {number} A total container width for the node.
      */
-	private calcTipOverChildren(node: ChartNode, level: number = 0) : number {
+	private calcTipOverChildren(node: ChartNode, level: number = 0, parentNode: ChartLevelNode = null) : number {
 		var containerWidth = 0;
 		var nodeIndexInLevel = 0;
 
@@ -848,6 +849,7 @@ export class OrgChartSvg {
 
 			levelNode.tipOverParent = true;
 			levelNode.tipOverColumns = columns;
+			levelNode.parentNode = parentNode;
 
 			for (var i = 0; i < node.children.length; i++) {
 				var childLevelNode = this.buildLevelNode(node.children[childIndex], level, true);
@@ -858,6 +860,7 @@ export class OrgChartSvg {
 				childLevelNode.tipOverLinesCount = linesCount;
 				childLevelNode.tipOverLastChild = i === node.children.length - 1;
 				childLevelNode.tipOverFirstChild = i === 0;
+				childLevelNode.parentNode = levelNode;
 
 				// there is a regularity that always a number of last children
 				// equal number of columns hasn't box below
@@ -973,21 +976,22 @@ export class OrgChartSvg {
 	 * @param level Current level for the parent node.
 	 * @returns {number} A total container width for the node.
      */
-	private calcChildren(node: ChartNode, level: number = 0) : number {
+	private calcChildren(node: ChartNode, level: number = 0, parentNode: ChartLevelNode = null) : number {
 		var containerWidth = 0,
 			levelNode: ChartLevelNode;
 
 		if (node.tipOverChildren) {
-			return this.calcTipOverChildren(node, level);
+			return this.calcTipOverChildren(node, level, parentNode);
 		}
 
 		// add current node
 		levelNode = this.buildLevelNode(node, level, true);
+		levelNode.parentNode = parentNode; // assign parent reference
 
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
 			for (var i = 0; i < node.children.length; i++) {
-				containerWidth += this.calcChildren(node.children[i], level);
+				containerWidth += this.calcChildren(node.children[i], level, levelNode);
 			}
 		}
 		else {

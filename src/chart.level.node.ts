@@ -3,6 +3,7 @@ import {ChartNode} from "./chart.node";
 export interface ChartLevelNode extends ChartNode{
 	level: number;
 	isPlaceholder: boolean;
+	nodeIndexInLevel: number;
 	containerWidth: number;
 	width: number;
 	height: number;
