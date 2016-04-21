@@ -465,6 +465,17 @@ export class OrgChartSvg {
 							stroke: this.config.connectorOptions.color
 						});
 					}
+					else if (node.tipOverFirstChild && node.tipOverColumns === 1) {
+						// one single column
+						var x1 = x - gapX - halfLineWidth;
+						var x2 = x + node.parentNode.width / 2 + halfLineWidth;
+						var lineY = y - gapY / 2;
+						// parent was changed, lets draw line
+						this.snap.line(x1, lineY, x2, lineY).attr({
+							strokeWidth: this.config.connectorOptions.strokeWidth,
+							stroke: this.config.connectorOptions.color
+						});
+					}
 
 					left += node.containerWidth;
 
