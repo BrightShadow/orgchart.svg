@@ -21,12 +21,7 @@ Modern typescript organisational chart in pure SVG.
 	jspm install
 	typings install
 	```	
-3. Run
-	```
-	gulp watch
-	or
-	gulp serve
-	```	
+3. Run `gulp watch` or `gulp serve`	
 
 Enjoy!
 
