@@ -3,4 +3,5 @@ npm-debug.log
 /jspm_packages
 /typings
 /dist
+/demo
 /.idea
