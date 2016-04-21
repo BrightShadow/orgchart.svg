@@ -23,6 +23,7 @@ export class OrgChartSvg {
 
 		this.snap = Snap('#orgChartSvg');
 
+		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
         this.calcPositions();
         this.render();
     }
@@ -780,39 +781,74 @@ export class OrgChartSvg {
 		// clear SVG content
 	}
 
+	private analyzeTreeLevels(node: ChartNode, level: number = 0) {
+		this.createLevelIfNotExists(level);
+		level++;
+
+		if (this.isNodeTipOver(node)) {
+			return this.calcTipOverChildren(node, level, null, true);
+		}
+
+		if (node.children !== null && node.children.length > 0) {
+			for (var i = 0; i < node.children.length; i++) {
+				this.analyzeTreeLevels(node.children[i], level);
+			}
+		}
+	}
+
+	/**
+	 * Checks  the node children should be stack in tip-over convention.
+	 * @param node An input node to check.
+	 * @returns {boolean} Returns true or false regarding it is a candidate to tip-over children or not.
+     */
+	private isNodeTipOver(node: ChartNode) : boolean {
+		return node.tipOverChildren;
+	}
+
     private calcPositions() {
 		// 1. Prepare levels info
 		this.calcChildren(this.config.nodes);
 
 		// trim empty row if exists
-		if (this.levels[this.levels.length - 1].nodes.length === 0) {
-			this.levels.splice(this.levels.length - 1);
-		}
+		//if (this.levels[this.levels.length - 1].nodes.length === 0) {
+		//	this.levels.splice(this.levels.length - 1);
+		//}
 
-		this.generatedPlaceholders();
+		//this.generatedPlaceholders();
 
 		console.log(this.levels);
 		console.log(this.placeholdersParents);
     }
 
-	private generatedPlaceholders() {
-		for (var i = 0; i < this.placeholdersParents.length; i++) {
-			var levelNode = this.placeholdersParents[i];
+	//private generatedPlaceholders() {
+	//	for (var i = 0; i < this.placeholdersParents.length; i++) {
+	//		var levelNode = this.placeholdersParents[i];
+    //
+	//		if (levelNode.level < this.levels.length - 1) {
+	//			for (var level = levelNode.level + 1; level < this.levels.length; level++) {
+	//				// add placeholder node
+	//				var placeholderNode = <ChartLevelNode>{};
+	//				placeholderNode.width = levelNode.width;
+	//				placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
+	//				placeholderNode.containerWidth = levelNode.containerWidth;
+	//				placeholderNode.isPlaceholder = true;
+	//				placeholderNode.leftMargin = 0;
+	//				//placeholderNode.nodeIndexInLevel = levelNode.nodeIndexInLevel;
+	//				//this.levels[level].nodes.splice(levelNode.nodeIndexInLevel, 0, placeholderNode);
+	//			}
+	//		}
+	//	}
+	//}
 
-			if (levelNode.level < this.levels.length - 1) {
-				for (var level = levelNode.level + 1; level < this.levels.length; level++) {
-					// add placeholder node
-					var placeholderNode = <ChartLevelNode>{};
-					placeholderNode.width = levelNode.width;
-					placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
-					placeholderNode.containerWidth = levelNode.containerWidth;
-					placeholderNode.isPlaceholder = true;
-					placeholderNode.leftMargin = 0;
-					//placeholderNode.nodeIndexInLevel = levelNode.nodeIndexInLevel;
-					//this.levels[level].nodes.splice(levelNode.nodeIndexInLevel, 0, placeholderNode);
-				}
-			}
-		}
+	private createPlaceholder(levelNode: ChartLevelNode, level: number): ChartLevelNode {
+		var placeholderNode = <ChartLevelNode>{};
+		placeholderNode.width = levelNode.width;
+		placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
+		placeholderNode.containerWidth = levelNode.containerWidth;
+		placeholderNode.isPlaceholder = true;
+		placeholderNode.leftMargin = 0;
+		placeholderNode.level = level;
+		return placeholderNode;
 	}
 
 	/**
@@ -823,12 +859,15 @@ export class OrgChartSvg {
 	 * @param level Current level for the parent node.
 	 * @returns {number} A total container width for the node.
      */
-	private calcTipOverChildren(node: ChartNode, level: number = 0, parentNode: ChartLevelNode = null) : number {
+	private calcTipOverChildren(node: ChartNode, level: number = 0, parentNode: ChartLevelNode = null, justAnalyze: boolean = false) : number {
 		var containerWidth = 0;
 		var nodeIndexInLevel = 0;
+		var levelNode: ChartLevelNode = null;
 
-		// add current node
-		var levelNode = this.buildLevelNode(node, level, true);
+		if (!justAnalyze) {
+			// add current node
+			levelNode = this.buildLevelNode(node, level, true);
+		}
 
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
@@ -837,63 +876,73 @@ export class OrgChartSvg {
 			var childIndex = 0;
 			var columnIndex = 0;
 			var lineIndex = 0;
-			var linesCount = 0;
+			var linesCount;
 			var columns = Math.floor(node.children.length / this.config.tipOverOptions.maxColumnHeight);
 			columns += node.children.length % this.config.tipOverOptions.maxColumnHeight > 0 ? 1 : 0;
-
 			linesCount = Math.ceil(node.children.length / columns);
 
-			for (var c = 0; c < columns; c++) {
-				columnWidths[c] = 0;
-			}
-
-			levelNode.tipOverParent = true;
-			levelNode.tipOverColumns = columns;
-			levelNode.parentNode = parentNode;
-
-			for (var i = 0; i < node.children.length; i++) {
-				var childLevelNode = this.buildLevelNode(node.children[childIndex], level, true);
-				childLevelNode.tipOverChild = true;
-				childLevelNode.tipOverColumns = columns;
-				childLevelNode.tipOverColumnIndex = columnIndex;
-				childLevelNode.tipOverLineIndex = lineIndex;
-				childLevelNode.tipOverLinesCount = linesCount;
-				childLevelNode.tipOverLastChild = i === node.children.length - 1;
-				childLevelNode.tipOverFirstChild = i === 0;
-				childLevelNode.parentNode = levelNode;
-
-				// there is a regularity that always a number of last children
-				// equal number of columns hasn't box below
-				childLevelNode.tipOverHasNodeBelow = i < (node.children.length - columns);
-
-				// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
-				var width = this.getSingleNodeWidth(childLevelNode) + childLevelNode.leftMargin;
-				columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
-				childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
-
-				childIndex++;
-				columnIndex++;
-				if (columnIndex == columns) {
-					columnIndex = 0;
+			if (justAnalyze) {
+				for (var i = 0; i < linesCount; i++) {
+					this.createLevelIfNotExists(level);
 					level++;
-					lineIndex++;
 				}
 			}
+			else {
+				for (var c = 0; c < columns; c++) {
+					columnWidths[c] = 0;
+				}
 
-			levelNode.tipOverParentLastColumnWidth = columnWidths[columnWidths.length - 1];
-			containerWidth = this.getTipOverTreeWidth(columnWidths);
+				levelNode.tipOverParent = true;
+				levelNode.tipOverColumns = columns;
+				levelNode.parentNode = parentNode;
+
+				for (var i = 0; i < node.children.length; i++) {
+					var childLevelNode = this.buildLevelNode(node.children[childIndex], level, true);
+					childLevelNode.tipOverChild = true;
+					childLevelNode.tipOverColumns = columns;
+					childLevelNode.tipOverColumnIndex = columnIndex;
+					childLevelNode.tipOverLineIndex = lineIndex;
+					childLevelNode.tipOverLinesCount = linesCount;
+					childLevelNode.tipOverLastChild = i === node.children.length - 1;
+					childLevelNode.tipOverFirstChild = i === 0;
+					childLevelNode.parentNode = levelNode;
+
+					// there is a regularity that always a number of last children
+					// equal number of columns hasn't box below
+					childLevelNode.tipOverHasNodeBelow = i < (node.children.length - columns);
+
+					// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
+					var width = this.getSingleNodeWidth(childLevelNode) + childLevelNode.leftMargin;
+					columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
+					childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
+
+
+					childIndex++;
+					columnIndex++;
+					if (columnIndex == columns) {
+						columnIndex = 0;
+						level++;
+						lineIndex++;
+					}
+				}
+
+				levelNode.tipOverParentLastColumnWidth = columnWidths[columnWidths.length - 1];
+				containerWidth = this.getTipOverTreeWidth(columnWidths);
+				levelNode.containerWidth = containerWidth;
+			}
 		}
 		else
 		{
-			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
-			this.createLevelIfNotExists(level);
-
-			//if (this.levels[level].nodes.length === 0) {
-				this.placeholdersParents.push(levelNode);
-			//}
+			if (justAnalyze) {
+				this.createLevelIfNotExists(level);
+			}
+			else {
+				containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
+				levelNode.containerWidth = containerWidth;
+				this.generateNodePlaceholders(levelNode);
+			}
 		}
 
-		levelNode.containerWidth = containerWidth;
 		return containerWidth;
 	}
 
@@ -980,7 +1029,7 @@ export class OrgChartSvg {
 		var containerWidth = 0,
 			levelNode: ChartLevelNode;
 
-		if (node.tipOverChildren) {
+		if (this.isNodeTipOver(node)) {
 			return this.calcTipOverChildren(node, level, parentNode);
 		}
 
@@ -993,18 +1042,30 @@ export class OrgChartSvg {
 			for (var i = 0; i < node.children.length; i++) {
 				containerWidth += this.calcChildren(node.children[i], level, levelNode);
 			}
+			levelNode.containerWidth = containerWidth;
 		}
 		else {
 			containerWidth = this.getSingleNodeWidth(levelNode) + this.config.nodeOptions.gapH * 2;
-			this.createLevelIfNotExists(level);
-
-			//if (this.levels[level].nodes.length === 0) {
-				this.placeholdersParents.push(levelNode);
-			//}
+			levelNode.containerWidth = containerWidth;
+			this.generateNodePlaceholders(levelNode);
 		}
-
-		levelNode.containerWidth = containerWidth;
 		return containerWidth;
+	}
+
+	/**
+	 * Generates a placeholder nodes below the node down to
+	 * last level. The node musn't have children.
+	 * @param levelNode The node to be processed.
+	 * @returns {number} A number of placeholders added below the given level node.
+     */
+	private generateNodePlaceholders(levelNode: ChartLevelNode): number {
+		var iterations = this.levels.length - levelNode.level - 1;
+		for (var i = 1; i <= iterations; i++) {
+			var currentLevel = levelNode.level + i;
+			var placeholderNode = this.createPlaceholder(levelNode, currentLevel);
+			this.levels[currentLevel].nodes.push(placeholderNode);
+		}
+		return iterations;
 	}
 
 	private getSingleNodeWidth(node: ChartNode) : number {
