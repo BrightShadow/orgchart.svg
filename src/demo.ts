@@ -534,6 +534,116 @@ config.nodes = {
 			parentId: '1',
 			data: { text: "child 3" },
 			children: []
+		},
+		{
+			id: '4000',
+			parentId: '1',
+			data: { text: "child 4" },
+			children: [
+				{
+					id: '4001',
+					parentId: '4000',
+					data: { text: "sub child 3a" },
+					children: [
+						{
+							id: '5000',
+							parentId: '4000',
+							data: { text: "sub child a3" },
+							children: []
+						},
+						{
+							id: '4002',
+							parentId: '4001',
+							data: { text: "sub child 3b" },
+							children: [
+								{
+									id: '4003',
+									parentId: '4002',
+									data: { text: "child 4" },
+									children: [
+										{
+											id: '4004',
+											parentId: '4003',
+											data: { text: "sub child 3a" },
+											children: [
+												{
+													id: '4005',
+													parentId: '4004',
+													data: { text: "sub child 3b" },
+													children: [
+														{
+															id: '4006',
+															parentId: '4005',
+															data: { text: "sub child 3a" },
+															children: [
+																{
+																	id: '4007',
+																	parentId: '4006',
+																	data: { text: "sub child 3b" },
+																	children: [
+																		{
+																			id: '4008',
+																			parentId: '4007',
+																			data: { text: "child 4" },
+																			children: [
+																				{
+																					id: '4009',
+																					parentId: '4008',
+																					data: { text: "sub child 3a" },
+																					children: [
+																						{
+																							id: '4010',
+																							parentId: '4009',
+																							data: { text: "sub child 3b" },
+																							children: [
+																								{
+																									id: '4011',
+																									parentId: '4010',
+																									data: { text: "child 4" },
+																									children: [
+																										{
+																											id: '4012',
+																											parentId: '4011',
+																											data: { text: "sub child 3a" },
+																											children: [
+																												//{
+																												//	id: '4013',
+																												//	parentId: '4012',
+																												//	data: { text: "sub child 3b" },
+																												//	children: [
+																												//		//{
+																												//		//	id: '4014',
+																												//		//	parentId: '4013',
+																												//		//	data: { text: "sub child 3b" },
+																												//		//	children: []
+																												//		//}
+																												//	]
+																												//}
+																											]
+																										}
+																									]
+																								}
+																							]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	]
 };

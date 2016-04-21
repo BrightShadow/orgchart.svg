@@ -104,9 +104,11 @@ export class OrgChartSvg {
 			var columnIndex = 0;
 			var lineIndex = 0;
 			var linesCount;
+			var tipOverPlaceholdersCount;
 			var columns = Math.floor(node.children.length / this.config.tipOverOptions.maxColumnHeight);
 			columns += node.children.length % this.config.tipOverOptions.maxColumnHeight > 0 ? 1 : 0;
 			linesCount = Math.ceil(node.children.length / columns);
+			tipOverPlaceholdersCount = columns * linesCount - node.children.length;
 
 			if (justAnalyze) {
 				for (var i = 0; i < linesCount; i++) {
@@ -152,6 +154,9 @@ export class OrgChartSvg {
 						lineIndex++;
 					}
 				}
+
+				// generate missing placeholders
+				this.generatePlaceholdersForTipOverTree(level, tipOverPlaceholdersCount, columns);
 
 				levelNode.tipOverParentLastColumnWidth = columnWidths[columnWidths.length - 1];
 				containerWidth = this.getTipOverTreeWidth(columnWidths);
@@ -286,6 +291,33 @@ export class OrgChartSvg {
 		return iterations;
 	}
 
+	private generatePlaceholdersForTipOverTree(level: number, count: number, columnsCount: number) {
+		if (count > 0) {
+			// first add missing placeholders inside a tip-over tree
+			var prevLevelNodes = this.levels[level - 1].nodes;
+			for (var i = 0; i < count; i++) {
+				var levelNodeAbove:ChartLevelNode = prevLevelNodes[prevLevelNodes.length - count + i];
+				var placeholderNode = this.createPlaceholder(levelNodeAbove, level);
+				this.levels[level].nodes.push(placeholderNode);
+			}
+		}
+		else {
+			level--; // decrease level by one because it denotes the next below tip-over tree
+		}
+
+			// missing placeholders below the tree
+			var levels = this.levels.length - level - 1;
+			for (var i = 1; i <= levels; i++) {
+				level++;
+				for (var x = 0; x < columnsCount; x++) {
+					var levelNodeAbove:ChartLevelNode = this.levels[level].nodes[x];
+					var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
+					this.levels[level].nodes.push(placeholderNode);
+				}
+			}
+
+	}
+
 	private getSingleNodeWidth(node: ChartNode) : number {
 		/*
 			TODO: add handling node options overriding here, to override e.g. width of the node using
@@ -352,7 +384,7 @@ export class OrgChartSvg {
 
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
-						this.snap.rect(x, y, node.width, node.height);
+						this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.nodeOptions.background});
 
 						if (levelIdx !== 0) {
 							// top line
@@ -369,7 +401,7 @@ export class OrgChartSvg {
 							});
 						}
 
-						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+						this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
 
 
 						// draw horizontal lines
@@ -389,6 +421,7 @@ export class OrgChartSvg {
 						}
 					}
 					else {
+						hLineNodes = 0;
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
 							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
@@ -421,7 +454,7 @@ export class OrgChartSvg {
 
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
-						this.snap.rect(x, y, node.width, node.height);
+						this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.nodeOptions.background});
 
 						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
 							// right line
@@ -482,7 +515,7 @@ export class OrgChartSvg {
 						}
 
 
-						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+						this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
 					}
 					else {
 						// placeholder

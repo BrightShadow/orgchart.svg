@@ -3,4 +3,6 @@ export interface NodeOptions {
     height: number;
 	gapH: number;
 	gapV: number;
+	background: string;
+	textColor: string;
 }

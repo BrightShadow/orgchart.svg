@@ -5,30 +5,33 @@ import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
 
 export class OrgChartConfig {
-    selector: string;
-    nodes: ChartNode;
-    nodeOptions: NodeOptions;
-	connectorOptions: ConnectorOptions;
-	tipOverOptions: TipOverOptions;
-	debugOptions: ConfigDebugOptions;
+	selector:string;
+	nodes:ChartNode;
+	nodeOptions:NodeOptions;
+	connectorOptions:ConnectorOptions;
+	tipOverOptions:TipOverOptions;
+	debugOptions:ConfigDebugOptions;
 
-	public static defaultConfig(): OrgChartConfig {
+	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
 		config.selector = '#orgChartSvg';
-		config.nodeOptions = <NodeOptions>{};
-		config.nodeOptions.width = 150;
-		config.nodeOptions.height = 50;
-		config.nodeOptions.gapV = 60;
-		config.nodeOptions.gapH = 10;
+		config.nodeOptions = <NodeOptions>{
+			width: 150,
+			height: 50,
+			gapV: 60,
+			gapH: 10,
+			background: 'rgba(10,30,200,0.5)',
+			textColor: 'white'
+		};
 		config.connectorOptions = <ConnectorOptions>{};
 		config.connectorOptions.strokeWidth = 1;
-		config.connectorOptions.color = 'red';
+		config.connectorOptions.color = 'rgba(10,30,200,0.2)';
 		config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
 			maxColumnHeight: 12
 		};
 		config.debugOptions = <ConfigDebugOptions>{
-			showPlaceholderBoxes: true,
+			showPlaceholderBoxes: false,
 			placeholderBoxesColor: 'rgba(0,0,0,0.05)'
 		};
 		config.nodes = {
