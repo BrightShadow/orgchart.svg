@@ -5,19 +5,19 @@ Modern typescript organisational chart in pure SVG.
 1. Download the whole repo
 2. Install required packages and toolset
 	* install node packages first
-	```
+	```bash
 	npm install 
 	```
 	* install JSPM, typings, gulp
-	```
+	```bash
 	npm install -g jspm typings gulp
 	```
 	* install gulp locally
-	```
+	```bash
 	npm install gulp
 	```	
 	* install packages and DefinitelyTyped
-	```
+	```bash
 	jspm install
 	typings install
 	```	
