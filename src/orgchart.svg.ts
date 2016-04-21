@@ -69,69 +69,6 @@ export class OrgChartSvg {
 							id: '51',
 							parentId: '2',
 							data: { text: "child Y2" },
-							//tipOverChildren: true,
-							//children: [
-							//	{
-							//		id: '7',
-							//		parentId: '2',
-							//		data: { text: "child X1" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '8',
-							//		parentId: '2',
-							//		data: { text: "child X2" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '9',
-							//		parentId: '2',
-							//		data: { text: "child X3" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '10',
-							//		parentId: '2',
-							//		data: { text: "child X4" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '11',
-							//		parentId: '2',
-							//		data: { text: "child X5" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '12',
-							//		parentId: '2',
-							//		data: { text: "child X6" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '13',
-							//		parentId: '2',
-							//		data: { text: "child X7" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '14',
-							//		parentId: '2',
-							//		data: { text: "child X8" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '15',
-							//		parentId: '2',
-							//		data: { text: "child X9" },
-							//		children: []
-							//	},
-							//	{
-							//		id: '16',
-							//		parentId: '2',
-							//		data: { text: "child X10" },
-							//		children: []
-							//	},
-							//]
 							children: []
 						}
 					]
@@ -273,16 +210,6 @@ export class OrgChartSvg {
 									data: { text: "child X20" },
 									children: []
 								},
-
-
-
-
-
-
-
-
-
-
 								{
 									id: '7',
 									parentId: '6',
@@ -403,26 +330,6 @@ export class OrgChartSvg {
 									data: { text: "child X40" },
 									children: []
 								},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 								{
 									id: '7',
 									parentId: '6',
@@ -543,16 +450,6 @@ export class OrgChartSvg {
 									data: { text: "child X60" },
 									children: []
 								},
-
-
-
-
-
-
-
-
-
-
 								{
 									id: '7',
 									parentId: '6',
@@ -808,37 +705,9 @@ export class OrgChartSvg {
     private calcPositions() {
 		// 1. Prepare levels info
 		this.calcChildren(this.config.nodes);
-
-		// trim empty row if exists
-		//if (this.levels[this.levels.length - 1].nodes.length === 0) {
-		//	this.levels.splice(this.levels.length - 1);
-		//}
-
-		//this.generatedPlaceholders();
-
 		console.log(this.levels);
 		console.log(this.placeholdersParents);
     }
-
-	//private generatedPlaceholders() {
-	//	for (var i = 0; i < this.placeholdersParents.length; i++) {
-	//		var levelNode = this.placeholdersParents[i];
-    //
-	//		if (levelNode.level < this.levels.length - 1) {
-	//			for (var level = levelNode.level + 1; level < this.levels.length; level++) {
-	//				// add placeholder node
-	//				var placeholderNode = <ChartLevelNode>{};
-	//				placeholderNode.width = levelNode.width;
-	//				placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
-	//				placeholderNode.containerWidth = levelNode.containerWidth;
-	//				placeholderNode.isPlaceholder = true;
-	//				placeholderNode.leftMargin = 0;
-	//				//placeholderNode.nodeIndexInLevel = levelNode.nodeIndexInLevel;
-	//				//this.levels[level].nodes.splice(levelNode.nodeIndexInLevel, 0, placeholderNode);
-	//			}
-	//		}
-	//	}
-	//}
 
 	private createPlaceholder(levelNode: ChartLevelNode, level: number): ChartLevelNode {
 		var placeholderNode = <ChartLevelNode>{};
@@ -999,15 +868,6 @@ export class OrgChartSvg {
 		return (columnsCount - 1) * 2 + 2;
 	}
 
-	//private isTipOverColumnCenter(columnIndex: number): boolean {
-	//	columnIndex++;
-	//	if (columnIndex % 2 === 0) {
-	//		return true; // for last always true
-	//	}
-    //
-	//	return false;
-	//}
-
 	private createLevelIfNotExists(level: number) {
 		if (this.levels.length < level + 1) {
 			this.levels.push(<ChartLevelInfo>{
@@ -1151,29 +1011,29 @@ export class OrgChartSvg {
 							});
 						}
 
-
 						this.snap.text(x + 3, y + 16, [node.data.text]).attr({fill: 'white'});
+
+
+						// draw horizontal lines
+						if (levelIdx > 0) {
+							if (hLineNodes > 1) {
+								// && currentNodeParentId === firstNodeParentId
+								if ((nextParent === null || (node.parentId !== nextParent.parentId))  ) {
+									// parent was changed, lets draw line
+									this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
+										strokeWidth: this.config.connectorOptions.strokeWidth,
+										stroke: this.config.connectorOptions.color
+									});
+
+									hLineNodes = 0;
+								}
+							}
+						}
 					}
 					else {
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
 							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
-						}
-					}
-
-					// draw horizontal lines
-					if (levelIdx > 0) {
-						if (hLineNodes > 1) {
-							// && currentNodeParentId === firstNodeParentId
-							if ((nextParent === null || node.parentId !== nextParent.id)  ) {
-								// parent was changed, lets draw line
-								this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
-									strokeWidth: this.config.connectorOptions.strokeWidth,
-									stroke: this.config.connectorOptions.color
-								});
-
-								hLineNodes = 0;
-							}
 						}
 					}
 
