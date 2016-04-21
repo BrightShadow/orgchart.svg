@@ -8,6 +8,8 @@ import {ChartLevelInfo} from "./chart.level.info";
 import {ConnectorOptions} from "./connector.options";
 import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
+import {RenderBoxEventArgs} from "./chart.events";
+import {RenderedChartNode} from "./chart.events";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -365,6 +367,21 @@ export class OrgChartSvg {
 				var x = left + marginLeft;
 				var y = top;
 
+				var onRenderBoxArgs = <RenderBoxEventArgs>{};
+				onRenderBoxArgs.x = x;
+				onRenderBoxArgs.y = y;
+				onRenderBoxArgs.width = node.width;
+				onRenderBoxArgs.height = node.height;
+				onRenderBoxArgs.node = <RenderedChartNode>{};
+				onRenderBoxArgs.node.id = node.id;
+				onRenderBoxArgs.node.parentId = node.parentId;
+				onRenderBoxArgs.node.data = node.data;
+				onRenderBoxArgs.node.tipOverChildren = node.tipOverChildren;
+				onRenderBoxArgs.node.children = node.children;
+				onRenderBoxArgs.node.isPlaceholder = node.isPlaceholder;
+				onRenderBoxArgs.paper = this.snap;
+				onRenderBoxArgs.config = this.config;
+
 				if (!node.tipOverChild) {
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
@@ -384,7 +401,8 @@ export class OrgChartSvg {
 
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
-						this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.nodeOptions.background});
+
+						if (this.config.onBoxRender) this.config.onBoxRender(onRenderBoxArgs);
 
 						if (levelIdx !== 0) {
 							// top line
@@ -400,9 +418,6 @@ export class OrgChartSvg {
 								stroke: this.config.connectorOptions.color
 							});
 						}
-
-						this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
-
 
 						// draw horizontal lines
 						if (levelIdx > 0) {
@@ -424,7 +439,8 @@ export class OrgChartSvg {
 						hLineNodes = 0;
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
-							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
+							if (this.config.onBoxRender) this.config.onBoxRender(onRenderBoxArgs);
+							//this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
 						}
 					}
 
@@ -454,7 +470,8 @@ export class OrgChartSvg {
 
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
-						this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.nodeOptions.background});
+
+						if (this.config.onBoxRender) this.config.onBoxRender(onRenderBoxArgs);
 
 						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
 							// right line
@@ -515,12 +532,13 @@ export class OrgChartSvg {
 						}
 
 
-						this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
+						//this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
 					}
 					else {
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
-							this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
+							if (this.config.onBoxRender) this.config.onBoxRender(onRenderBoxArgs);
+							//this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
 						}
 					}
 				}

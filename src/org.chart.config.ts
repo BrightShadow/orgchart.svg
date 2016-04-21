@@ -3,6 +3,7 @@ import {ChartNode} from "./chart.node";
 import {ConnectorOptions} from "./connector.options";
 import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
+import {RenderBoxEventArgs} from "./chart.events";
 
 export class OrgChartConfig {
 	selector:string;
@@ -11,6 +12,7 @@ export class OrgChartConfig {
 	connectorOptions:ConnectorOptions;
 	tipOverOptions:TipOverOptions;
 	debugOptions:ConfigDebugOptions;
+	onBoxRender: (args: RenderBoxEventArgs) => void;
 
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
@@ -39,6 +41,16 @@ export class OrgChartConfig {
 			parentId: null,
 			data: {text: "Root"},
 			children: []
+		};
+
+		config.onBoxRender = (args: RenderBoxEventArgs) => {
+			if (args.node.isPlaceholder) {
+				args.paper.rect(args.x, args.y, args.width, args.height).attr({fill: args.config.debugOptions.placeholderBoxesColor});
+			}
+			else {
+				args.paper.rect(args.x, args.y, args.width, args.height).attr({fill: args.config.nodeOptions.background});
+				args.paper.text(args.x + 20, args.y + 26, [args.node.data.text]).attr({fill: args.config.nodeOptions.textColor});
+			}
 		};
 
 		return config;
