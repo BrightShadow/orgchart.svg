@@ -2,9 +2,24 @@ import {OrgChartNode} from "./orgchart.node";
 import {OrgChartConfig} from "./org.chart.config";
 
 /**
+ * Provides information about rendering environment.
+ */
+export interface RenderEventArgs {
+	/**
+	 * A Snap.svg Paper object giving an access to the current underlying SVG paper.
+	 */
+	paper: Snap.Paper;
+
+	/**
+	 * A configuration settings actual used.
+	 */
+	config: OrgChartConfig;
+}
+
+/**
  * Provides additional information about currently rendered node box.
  */
-export interface RenderBoxEventArgs {
+export interface RenderBoxEventArgs extends RenderEventArgs {
 	/**
 	 * Position X of the left upper corner of the node box.
 	 */
@@ -29,16 +44,6 @@ export interface RenderBoxEventArgs {
 	 * The node associated with currently rendered box.
 	 */
 	node: RenderedChartNode;
-
-	/**
-	 * A Snap.svg Paper object giving an access to the current underlying SVG paper.
-	 */
-	paper: Snap.Paper;
-
-	/**
-	 * A configuration settings actual used.
-	 */
-	config: OrgChartConfig;
 }
 
 export interface RenderedChartNode extends OrgChartNode {

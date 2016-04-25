@@ -11,6 +11,7 @@ import {ConfigDebugOptions} from "./config.debug.options";
 import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderedChartNode} from "./orgchart.events";
 import {OrgChartTemplate} from "./orgchart.template";
+import {RenderEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
     private nodesSpacing: number;
@@ -365,6 +366,20 @@ export class OrgChartSvg {
 			currentNodeParentId: string = null, // actual node parent id, to check if the h line should be drawn
 			firstNodeParentId: string = null; // parent id of first node of the current h line, needed to determine if h line should be drawn
 		var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
+
+		// BEFORE RENDER EVENT
+		if (this.config.onBeforeRender) {
+			var onRenderArgs = <RenderEventArgs>{};
+			onRenderArgs.paper = this.snap;
+			onRenderArgs.config = this.config;
+
+			var tpl = this.config.onBeforeRender(onRenderArgs);
+
+			if (tpl && tpl !== null) {
+				templatesFragment += tpl;
+			}
+		}
+
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];

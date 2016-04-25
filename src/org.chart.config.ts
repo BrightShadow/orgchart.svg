@@ -4,6 +4,8 @@ import {OrgChartConnectorOptions} from "./orghcart.connector.options";
 import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
 import {RenderBoxEventArgs} from "./orgchart.events";
+import {RenderEventArgs} from "./orgchart.events";
+import {NodeMargin} from "./node.options";
 
 export class OrgChartConfig {
 	selector:string;
@@ -12,7 +14,22 @@ export class OrgChartConfig {
 	connectorOptions:OrgChartConnectorOptions;
 	tipOverOptions:TipOverOptions;
 	debugOptions:ConfigDebugOptions;
+
+	/**
+	 * An event handler called each time the node box is drawn to the SVG canvas.
+	 * The handler can return a string containing a valid SVG fragment. If so, the fragment
+	 * will be used as a template and will be rendered to the SVG.
+	 */
 	onBoxRender: (args: RenderBoxEventArgs) => string;
+
+	/**
+	 * An event handler called before nodes are drawn to the SVG canvas.
+	 * The handler can return a string containing a valid SVG fragment. If so, the fragment
+	 * will be used as a template and will be rendered to the SVG before everything else.
+	 *
+	 * NOTE: Use this method to add defs to the SVG, to render some background effects etc.
+	 */
+	onBeforeRender: (args: RenderEventArgs) => string;
 
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
@@ -22,12 +39,7 @@ export class OrgChartConfig {
 			height: 45,
 			gapV: 40,
 			gapH: 10,
-			margin: {
-				top: 0,
-				right: 0,
-				bottom: 0,
-				left: 0
-			},
+			margin: new NodeMargin(),
 			background: 'rgba(10,30,200,0.5)',
 			textColor: 'white'
 		};
