@@ -1,4 +1,4 @@
-import {ChartNode} from "./chart.node";
+import {OrgChartNode} from "./orgchart.node";
 import {OrgChartConfig} from "./org.chart.config";
 
 /**
@@ -41,6 +41,6 @@ export interface RenderBoxEventArgs {
 	config: OrgChartConfig;
 }
 
-export interface RenderedChartNode extends ChartNode {
+export interface RenderedChartNode extends OrgChartNode {
 	isPlaceholder: boolean;
 }

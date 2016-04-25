@@ -1,13 +1,13 @@
-import {ChartNode} from "./chart.node";
+import {OrgChartNode} from "./orgchart.node";
 
-export interface ChartLevelNode extends ChartNode{
+export interface OrgChartLevelNode extends OrgChartNode{
 	level: number;
 	isPlaceholder: boolean;
 	nodeIndexInLevel: number;
 	containerWidth: number;
 	width: number;
 	height: number;
-	parentNode: ChartLevelNode;
+	parentNode: OrgChartLevelNode;
 	tipOverParent: boolean;
 	tipOverParentLastColumnWidth: number;
 	tipOverChild: boolean;
