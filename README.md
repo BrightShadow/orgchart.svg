@@ -4,6 +4,8 @@
 Modern typescript organisational chart in pure SVG.
 
 ## Demo
+You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Working demo example") or try to build it yourself using the steps below:
+
 1. Download the whole repo
 2. Install required packages and toolset
 	* install node packages first
