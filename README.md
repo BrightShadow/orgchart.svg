@@ -27,6 +27,9 @@ Modern typescript organisational chart in pure SVG.
 
 Enjoy!
 
+## Full custom templating (SVG)
+![alt text][example_template]
+
 ## Example layouts
 ![alt text][example1]
 
@@ -40,7 +43,7 @@ Enjoy!
 
 
 
-
+[example_template]: https://ddbsoa-bn1305.files.1drv.com/y3msAD-TLtOjFEx5eCdJMsc0GFANmOrPbclzcDOJmKfHVKHvTmouLgNckXjlYLffWYEspixaJhgs327jDuTX5QknHrkuWnEBzqCrPFQeudzDNUcHCZtndGttUcrljDnQ_t5ktW19bIiCbUDnkvoY1mTHfv_fc6WZ64FAk6Nl1JhmHA?width=3162&height=896&cropmode=none "Example templated layout using custom SVG code"
 
 [example1]: https://zajiug-bn1305.files.1drv.com/y3mbrSSK3JtxHwyOpCwRJnssCgJwyPOI70sLtI4iB1GZpdhjm_yLArqjCkpiq1LFizL6FlmzjZAZJ7u6K__ihm1YVO_F3XarplXt6uoe1FNq_JaPmsMEY1kZetwWM90PcC1KlQqG99A7cJdJ9uuVFHJuaanLHACD36YUtfvJAAcZEc?width=1078&height=653&cropmode=none "Example nodes 1"
 [example2]: https://zqjiug-bn1305.files.1drv.com/y3mJ5RQmH5Ms2i7AUi_Qz_DSnOEk08ylPzX9Bv1FOsuPLJMYfh44ES_4Por00RsDGKqPINf48OcEx88dxngG3OsI_hwhdt6htMvkj0ioCUH0EXFVbqbljRejtG66n1oFGy_Dfew_sCgeoruiu5-qp3yTnDHC1NN3qIUSPH7U0deSZY?width=1473&height=587&cropmode=none "Example nodes 2"
