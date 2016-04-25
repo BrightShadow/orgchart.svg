@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BrightShadow/orgchart.svg.svg?branch=travis)](https://travis-ci.org/BrightShadow/orgchart.svg) 
+
 # orgchart.svg
 Modern typescript organisational chart in pure SVG.
 
