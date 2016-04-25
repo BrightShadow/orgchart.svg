@@ -11,11 +11,11 @@ gulp.task('test', function (done) {
 	}, function() { done(); }).start();
 });
 
-/**
- * Watch for file changes and re-run tests on each change
- */
-gulp.task('tdd', function (done) {
-	new Karma({
-		configFile: __dirname + '/../../karma.conf.js'
-	}, function() { done(); }).start();
-});
+///**
+// * Watch for file changes and re-run tests on each change
+// */
+//gulp.task('tdd', function (done) {
+//	new Karma({
+//		configFile: __dirname + '/../../karma.conf.js'
+//	}, function() { done(); }).start();
+//});
