@@ -3,6 +3,8 @@
 # orgchart.svg
 Modern typescript organisational chart in pure SVG.
 
+Currently there is no documentation or API reference. Sorry for that. The documentation will be provided as soon as possible. Now I'm really busy with pure development of this component.
+
 ## Demo
 You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Working demo example") or try to build it yourself using the steps below:
 
@@ -30,9 +32,16 @@ You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Worki
 Enjoy!
 
 ## Full custom templating (SVG)
+Library supports a very useful feature, **custom SVG string templates**. You can create your own design in Adobe Illustrator or other vector tool, export your node box to SVG and after slight changes adopt it as a template to the OrgChart.svg.
+
 ![alt text][example_template]
 
 ## Example layouts
+
+I have ambitious plan, to support more complicated trees, where each node in tip-over subtree (those stacked) can have its own subtree. This is possible but not trivial.
+
+Below you can find some example layouts created using OrgChart.svg.
+
 ![alt text][example1]
 
 ![alt text][example2]
