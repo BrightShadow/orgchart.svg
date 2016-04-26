@@ -404,8 +404,6 @@ export class OrgChartSvg {
 						hLineNodes = 0;
 					}
 
-
-
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
 						hLineY = y - gapY / 2;
