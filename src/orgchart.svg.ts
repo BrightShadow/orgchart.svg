@@ -400,6 +400,11 @@ export class OrgChartSvg {
 				onRenderBoxArgs.config = this.config;
 
 				if (!node.tipOverChild) {
+					if (i > 0 && level.nodes[i - 1].tipOverChild) {
+						hLineNodes = 0;
+					}
+
+
 
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
