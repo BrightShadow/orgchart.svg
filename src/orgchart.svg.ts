@@ -1,5 +1,6 @@
 /// <reference path="../typings/browser.d.ts" />
 import 'snapsvg';
+import 'jquery.svg.pan.zoom';
 import {OrgChartConfig} from "./org.chart.config";
 import {OrgChartNode} from "./orgchart.node";
 import {NodeOptions} from "./node.options";
