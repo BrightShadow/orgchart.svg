@@ -47,7 +47,6 @@ config.nodes = {
 					id: '6',
 					parentId: '3',
 					data: { text: "child 5", sex: 'F' },
-					tipOverChildren: true,
 					children: [
 						{
 							id: '7',
@@ -793,11 +792,14 @@ let defs = '<clipPath id="a"><circle cx="45.17" cy="46.33" r="23.5" fill="none"/
 config.nodeOptions.width = 220;
 config.nodeOptions.height = 93;
 config.nodeOptions.margin = new NodeMargin(-10); // the template has background shadow and we need to make connectors a little bit longer
+//config.tipOverOptions.tipOverChildrenCount = 10000;
+
 
 // add definitions
 config.onBeforeRender = (args: RenderEventArgs) => {
-	args.paper.append(Snap.parse(defs));
+	args.paper.append(<any>Snap.parse(defs));
 	args.paper.select('#a').toDefs();
+	return null;
 };
 
 // use SVG string template

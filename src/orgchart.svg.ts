@@ -1,5 +1,6 @@
 /// <reference path="../typings/browser.d.ts" />
 import 'snapsvg';
+import 'snap.svg.zpd';
 import {OrgChartConfig} from "./org.chart.config";
 import {OrgChartNode} from "./orgchart.node";
 import {NodeOptions} from "./node.options";
@@ -25,10 +26,25 @@ export class OrgChartSvg {
 		if (!config) {
 			this.initDefaultConfig();
 		}
+		//
 		this.snap = Snap('#orgChartSvg');
 		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
         this.calcPositions();
         this.render();
+		(<any>this.snap).zpd({
+			zoom: true,
+			pan: true,
+			zoomScale: 0.3,
+			zoomThreshold: [
+				0.3,
+				3
+			]
+		});
+
+		//var canvas: Snap.Element = Snap.select('#snapsvg-zpd-'+ (<any>this.snap).id);
+		//console.log(canvas.getBBox());
+        //
+		//(<any>this.snap).panTo(10, 200, 300, mina.bounce);
     }
 
 	private initDefaultConfig() {
@@ -66,8 +82,6 @@ export class OrgChartSvg {
     private calcPositions() {
 		// 1. Prepare levels info
 		this.calcChildren(this.config.nodes);
-		console.log(this.levels);
-		console.log(this.placeholdersParents);
     }
 
 	private createPlaceholder(levelNode: OrgChartLevelNode, level: number): OrgChartLevelNode {

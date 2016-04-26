@@ -17,6 +17,7 @@ System.config({
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "core-js": "npm:core-js@1.2.6",
+    "snap.svg.zpd": "npm:snap.svg.zpd@0.0.11",
     "snapsvg": "npm:snapsvg@0.4.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -50,6 +51,9 @@ System.config({
     },
     "npm:process@0.11.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0"
+    },
+    "npm:snap.svg.zpd@0.0.11": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:snapsvg@0.4.0": {
       "eve": "npm:eve@0.4.2",
