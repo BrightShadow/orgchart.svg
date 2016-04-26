@@ -10,7 +10,6 @@ import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
 import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderedChartNode} from "./orgchart.events";
-import {OrgChartTemplate} from "./orgchart.template";
 import {RenderEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
@@ -18,7 +17,6 @@ export class OrgChartSvg {
     private nodes: { [id: string] : OrgChartNode; } = {};
 	private levels: ChartLevelInfo[] = [];
 	private snap: Snap.Paper;
-	private template: OrgChartTemplate;
 	private placeholdersParents: OrgChartLevelNode[] = [];
 
     constructor(private config?: OrgChartConfig) {
@@ -27,18 +25,6 @@ export class OrgChartSvg {
 			this.initDefaultConfig();
 		}
 		this.snap = Snap('#orgChartSvg');
-		//this.template = new OrgChartTemplate(this.snap);
-		//this.config.onBoxRender = (args: RenderBoxEventArgs) => {
-		//	if (args.node.isPlaceholder) {
-		//		//args.paper.rect(args.x, args.y, args.width, args.height).attr({fill: args.config.debugOptions.placeholderBoxesColor});
-		//	}
-		//	else {
-		//		self.template.collect(args);
-		//		//args.paper.rect(args.x, args.y, args.width, args.height).attr({fill: args.config.nodeOptions.background});
-		//		//args.paper.text(args.x + 20, args.y + 26, [args.node.data.text]).attr({fill: args.config.nodeOptions.textColor});
-		//	}
-		//};
-
 		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
         this.calcPositions();
         this.render();
@@ -73,7 +59,7 @@ export class OrgChartSvg {
 	 * @returns {boolean} Returns true or false regarding it is a candidate to tip-over children or not.
      */
 	private isNodeTipOver(node: OrgChartNode) : boolean {
-		return node.tipOverChildren;
+		return node.tipOverChildren || node.children.length >= this.config.tipOverOptions.tipOverChildrenCount;
 	}
 
     private calcPositions() {
@@ -414,6 +400,7 @@ export class OrgChartSvg {
 				onRenderBoxArgs.config = this.config;
 
 				if (!node.tipOverChild) {
+
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
 						hLineY = y - gapY / 2;

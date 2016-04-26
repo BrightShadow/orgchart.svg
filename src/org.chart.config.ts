@@ -48,7 +48,8 @@ export class OrgChartConfig {
 		config.connectorOptions.color = '#bcbec0';
 		config.tipOverOptions = <TipOverOptions>{
 			minChildrenCount: 3,
-			maxColumnHeight: 12
+			maxColumnHeight: 12,
+			tipOverChildrenCount: 30
 		};
 		config.debugOptions = <ConfigDebugOptions>{
 			showPlaceholderBoxes: false,

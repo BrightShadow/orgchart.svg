@@ -8,4 +8,9 @@ export interface TipOverOptions {
 	 * Maximum number of nodes in one stacked column.
 	 */
 	maxColumnHeight: number;
+
+	/**
+	 * NUmber of children determining that the parent node should use tipping-over strategy for all those children.
+	 */
+	tipOverChildrenCount: number;
 }
