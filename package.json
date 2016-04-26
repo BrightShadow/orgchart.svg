@@ -54,7 +54,6 @@
   },
   "jspm": {
     "dependencies": {
-      "jquery.svg.pan.zoom": "github:DanielHoffmann/jquery-svg-pan-zoom@^1.0.3",
       "snapsvg": "npm:snapsvg@^0.4.0"
     },
     "devDependencies": {

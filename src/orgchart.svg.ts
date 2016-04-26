@@ -1,6 +1,5 @@
 /// <reference path="../typings/browser.d.ts" />
 import 'snapsvg';
-import 'jquery.svg.pan.zoom';
 import {OrgChartConfig} from "./org.chart.config";
 import {OrgChartNode} from "./orgchart.node";
 import {NodeOptions} from "./node.options";
@@ -18,6 +17,7 @@ export class OrgChartSvg {
     private nodes: { [id: string] : OrgChartNode; } = {};
 	private levels: ChartLevelInfo[] = [];
 	private snap: Snap.Paper;
+
 	private placeholdersParents: OrgChartLevelNode[] = [];
 
     constructor(private config?: OrgChartConfig) {
