@@ -359,7 +359,7 @@ export class OrgChartSvg {
 		return this.config.nodeOptions.height;
 	}
 
-	private addTemplateInfoGroup(template: string, args: RenderBoxEventArgs) : string {
+	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs, groups?: {[id: string]: string}) : string {
 
 		return 	'<g width="' + args.width + '" ' +
 			'height="' + args.height + '" ' +
@@ -479,7 +479,7 @@ export class OrgChartSvg {
 							var tpl = this.config.onBoxRender(onRenderBoxArgs);
 
 							if (tpl && tpl !== null) {
-								templatesFragment += this.addTemplateInfoGroup(tpl, onRenderBoxArgs);
+								templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
 							}
 						}
 
@@ -530,7 +530,7 @@ export class OrgChartSvg {
 								var tpl = this.config.onBoxRender(onRenderBoxArgs);
 
 								if (tpl && tpl !== null) {
-									templatesFragment += this.addTemplateInfoGroup(tpl, onRenderBoxArgs);
+									templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
 								}
 							}
 						}
@@ -584,7 +584,7 @@ export class OrgChartSvg {
 							var tpl = this.config.onBoxRender(onRenderBoxArgs);
 
 							if (tpl && tpl !== null) {
-								templatesFragment += this.addTemplateInfoGroup(tpl, onRenderBoxArgs);
+								templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
 							}
 						}
 
@@ -671,7 +671,7 @@ export class OrgChartSvg {
 								var tpl = this.config.onBoxRender(onRenderBoxArgs);
 
 								if (tpl && tpl !== null) {
-									templatesFragment += this.addTemplateInfoGroup(tpl, onRenderBoxArgs);
+									templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
 								}
 							}
 							//this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
