@@ -100,7 +100,6 @@ export class OrgChartSvg {
 		placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
 		placeholderNode.containerWidth = levelNode.containerWidth;
 		placeholderNode.isPlaceholder = true;
-		placeholderNode.leftMargin = 0;
 		placeholderNode.level = level;
 		return placeholderNode;
 	}
@@ -168,7 +167,7 @@ export class OrgChartSvg {
 					childLevelNode.tipOverHasNodeBelow = i < (node.children.length - columns);
 
 					// TODO: Calc subtrees of children, here now we assume that stacked children do not have own children
-					var width = this.getSingleNodeWidth(childLevelNode) + childLevelNode.leftMargin;
+					var width = this.getSingleNodeWidth(childLevelNode);
 					columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
 					childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
 
@@ -217,7 +216,6 @@ export class OrgChartSvg {
 		levelNode.width = this.getSingleNodeWidth(levelNode);
 		levelNode.height = this.getSingleNodeHeight(levelNode);
 		levelNode.containerWidth = 0;
-		levelNode.leftMargin = 0;
 		levelNode.level = level;
 
 		if (addNode) {
@@ -423,7 +421,7 @@ export class OrgChartSvg {
 
 			for (var i = 0; i < level.nodes.length; i++) {
 				var node = level.nodes[i];
-				var marginLeft = (node.containerWidth - node.width) / 2 + node.leftMargin;
+				var marginLeft = (node.containerWidth - node.width) / 2;
 				var x = left + marginLeft;
 				var y = top;
 

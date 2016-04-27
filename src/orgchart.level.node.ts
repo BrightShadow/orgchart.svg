@@ -18,5 +18,4 @@ export interface OrgChartLevelNode extends OrgChartNode{
 	tipOverHasNodeBelow: boolean;
 	tipOverLastChild: boolean;
 	tipOverFirstChild: boolean;
-	leftMargin: number;
 }
