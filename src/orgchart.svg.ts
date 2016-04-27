@@ -245,8 +245,8 @@ export class OrgChartSvg {
 
 	/**
 	 * Calculates a special number of gaps used to position the tip-over columns.
-	 * @param columnsCount A count of columns.
-	 * @returns {number} Value which multiplied by gapH will result in the width of all gaps.
+	 * @param columnsCount A number of columns.
+	 * @returns {number} Value which multiplied by gapH will result in the width of all column gaps.
      */
 	private getGapsCountForTipOverColumns(columnsCount: number): number {
 		// n:		1	2	3	4	5	6	7	8	9	10	11	12...
@@ -256,6 +256,10 @@ export class OrgChartSvg {
 		return (columnsCount - 1) * 2 + 2;
 	}
 
+	/**
+	 * Creates new level of nodes in a set, if not exists.
+	 * @param level A level index which is required to exist.
+     */
 	private createLevelIfNotExists(level: number) {
 		if (this.levels.length < level + 1) {
 			this.levels.push(<ChartLevelInfo>{
