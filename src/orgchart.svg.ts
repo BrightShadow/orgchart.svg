@@ -112,6 +112,9 @@ export class OrgChartSvg {
 		if (!justAnalyze) {
 			// add current node
 			levelNode = this.buildLevelNode(node, level, true);
+			if (parentNode && parentNode !== null) {
+				parentNode.childNodes.push(levelNode); // add level node child
+			}
 		}
 
 		level++; // next level - children
@@ -163,6 +166,7 @@ export class OrgChartSvg {
 					columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], width);
 					childLevelNode.containerWidth = width + this.config.nodeOptions.gapH * 2;
 
+					levelNode.childNodes.push(childLevelNode); // add level node child
 
 					childIndex++;
 					columnIndex++;
@@ -210,6 +214,7 @@ export class OrgChartSvg {
 		levelNode.height = this.getSingleNodeHeight(levelNode);
 		levelNode.containerWidth = 0;
 		levelNode.level = level;
+		levelNode.childNodes = [];
 
 		if (addNode) {
 			try {
@@ -281,6 +286,9 @@ export class OrgChartSvg {
 		// add current node
 		levelNode = this.buildLevelNode(node, level, true);
 		levelNode.parentNode = parentNode; // assign parent reference
+		if (parentNode && parentNode !== null) {
+			parentNode.childNodes.push(levelNode); // add level node child
+		}
 
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
