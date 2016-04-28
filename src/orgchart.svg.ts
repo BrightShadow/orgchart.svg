@@ -771,22 +771,33 @@ export class OrgChartSvg {
 					}
 
 					if (self.config.nodeOptions.collapsible) {
-						self.expandCollapseChildren(levelNode);
+						self.expandCollapseChildren(levelNode, info);
 					}
 				});
 			}
 		}
 	}
 
-	private expandCollapseChildren(levelNode: OrgChartLevelNode) {
-		var p = new Promise((resolve) => {
-
-		});
+	private expandCollapseChildren(levelNode: OrgChartLevelNode, infoRectord: number[]) {
+		// [0] = x
+		// [1] = y
+		// [2] = width
+		// [3] = height
+		// [4] = index
+		// [5] = level
+		var x = infoRectord[0],
+			y = infoRectord[1];
 		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
 
+		if (levelNode.childrenCollapsed) {
+			x = -x;
+		}
+		else {
+			x = 0;
+		}
 		// collapse
-		this.snap.select('#orgchartGroup'+levelNode.id)
-			.animate({opacity: levelNode.childrenCollapsed ? 0.2 : 1}, 300);
+		this.snap.select('#orgchartGroup'+levelNode.id + ' ')
+			.animate({transform: 't'+x+' 0'}, 300);
 
 
 	}
