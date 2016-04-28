@@ -702,7 +702,8 @@ export class OrgChartSvg {
 		var prefix = '',
 			suffix = '';
 
-		prefix = '<g data-column-parent="'+parent.id+'">';
+		//  data-column-parent="'+parent.id+'"
+		prefix = '<g id="orgchartGroup'+parent.id+'">';
 		suffix = '</g>';
 
 		return prefix + fragment + suffix;
@@ -778,10 +779,15 @@ export class OrgChartSvg {
 	}
 
 	private expandCollapseChildren(levelNode: OrgChartLevelNode) {
+		var p = new Promise((resolve) => {
+
+		});
 		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
 
 		// collapse
-		this.snap.select('[data-column-parent="'+levelNode.id+'"]')
+		this.snap.select('#orgchartGroup'+levelNode.id)
 			.animate({opacity: levelNode.childrenCollapsed ? 0.2 : 1}, 300);
+
+
 	}
 }
