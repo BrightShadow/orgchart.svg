@@ -453,14 +453,7 @@ export class OrgChartSvg {
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
 
-						if (this.config.onBoxRender) {
-
-							var tpl = this.config.onBoxRender(onRenderBoxArgs);
-
-							if (tpl && tpl !== null) {
-								templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
-							}
-						}
+						this.fireEventBoxRender(onRenderBoxArgs, node);
 
 						if (levelIdx !== 0) {
 							// top line
@@ -505,13 +498,7 @@ export class OrgChartSvg {
 						hLineNodes = 0;
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
-							if (this.config.onBoxRender) {
-								var tpl = this.config.onBoxRender(onRenderBoxArgs);
-
-								if (tpl && tpl !== null) {
-									templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
-								}
-							}
+							this.fireEventBoxRender(onRenderBoxArgs, node);
 						}
 					}
 
@@ -558,14 +545,7 @@ export class OrgChartSvg {
 
 					if (!node.isPlaceholder) {
 						hLineNodes++; // one node more
-
-						if (this.config.onBoxRender) {
-							var tpl = this.config.onBoxRender(onRenderBoxArgs);
-
-							if (tpl && tpl !== null) {
-								templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
-							}
-						}
+						this.fireEventBoxRender(onRenderBoxArgs, node);
 
 						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
 							// right line
@@ -640,19 +620,12 @@ export class OrgChartSvg {
 							}
 						}
 
-
 						//this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
 					}
 					else {
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
-							if (this.config.onBoxRender) {
-								var tpl = this.config.onBoxRender(onRenderBoxArgs);
-
-								if (tpl && tpl !== null) {
-									templatesFragment += this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
-								}
-							}
+							this.fireEventBoxRender(onRenderBoxArgs, node);
 							//this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
 						}
 					}
@@ -660,14 +633,32 @@ export class OrgChartSvg {
 			}
 		}
 
-		// parse fragment
-		parsedFragment = Snap.parse(templatesFragment);
-		this.snap.append(parsedFragment);
+		// render all boxes
+		if (this.levels.length > 0 && this.levels[0].nodes.length > 0) {
+			var str = this.joinTemplatesFragments(this.levels[0].nodes[0], templatesFragment);
+			parsedFragment = Snap.parse(str);
+			this.snap.append(parsedFragment);
+		}
     }
 
-	public setNodes(root: OrgChartNode) {
-		this.nodes = {};
-		this.config.nodes = root;
+	/**
+	 * Joins all node templates and fragments into one single string ready to render.
+	 * Nodes are joined wrapping them in SVG groups, to allow further tree manipulation after render.
+	 * @param rootNode A root node of the whole tree.
+	 * @param fragment An initial fragment which will be concatenated with other fragments.
+	 * @returns {string} A final fragment ready to render.
+     */
+	private joinTemplatesFragments(rootNode: OrgChartLevelNode, fragment: string = '') : string {
+		var childrenFragment = '';
+		if (rootNode.childNodes !== null && rootNode.childNodes.length > 0) {
+			for (var i = 0; i < rootNode.childNodes.length; i++) {
+				childrenFragment = this.joinTemplatesFragments(rootNode.childNodes[i], childrenFragment);
+			}
+		}
+
+		return fragment + rootNode.representationString + childrenFragment;
+	}
+
 
 	private fireEventBeforeRender(templatesFragment: string) : string {
 		if (this.config.onBeforeRender) {
@@ -684,5 +675,18 @@ export class OrgChartSvg {
 
 		return templatesFragment;
 	}
+
+	private fireEventBoxRender(onRenderBoxArgs: RenderBoxEventArgs, node: OrgChartLevelNode) {
+		if (this.config.onBoxRender) {
+
+			var tpl = this.config.onBoxRender(onRenderBoxArgs);
+
+			if (tpl !== undefined && tpl !== null) {
+				// save representation string for future use in render
+				node.representationString = this.wrapTemplateInfoGroup(tpl, onRenderBoxArgs);
+			}
+		}
+	};
+
 	}
 }

@@ -19,4 +19,10 @@ export interface OrgChartLevelNode extends OrgChartNode{
 	tipOverHasNodeBelow: boolean;
 	tipOverLastChild: boolean;
 	tipOverFirstChild: boolean;
+
+	/**
+	 * The value is filled in with ready SVG fragment to add
+	 * to the SVG DOM, just after the renderBox event.
+	 */
+	representationString: string;
 }
