@@ -9,6 +9,9 @@ export interface OrgChartLevelNode extends OrgChartNode{
 	height: number;
 	parentNode: OrgChartLevelNode;
 	childNodes: OrgChartLevelNode[];
+
+	childrenCollapsed: boolean;
+
 	tipOverParent: boolean;
 	tipOverParentLastColumnWidth: number;
 	tipOverChild: boolean;

@@ -40,15 +40,15 @@ export interface RenderBoxEventArgs extends RenderEventArgs {
 	 */
 	height: number;
 
-	/**
-	 * An index of level in which the node is located.
-	 */
-	level: number;
-
-	/**
-	 * An index of node in the level.
-	 */
-	index: number;
+	///**
+	// * An index of level in which the node is located.
+	// */
+	//level: number;
+    //
+	///**
+	// * An index of node in the level.
+	// */
+	//index: number;
 
 	/**
 	 * The node associated with currently rendered box.
@@ -58,6 +58,8 @@ export interface RenderBoxEventArgs extends RenderEventArgs {
 
 export interface RenderedChartNode extends OrgChartNode {
 	isPlaceholder: boolean;
+	rowIndex: number;
+	columnIndex: number;
 }
 
 export interface BoxClickEventArgs {

@@ -417,11 +417,9 @@ export class OrgChartSvg {
 				var onRenderBoxArgs = <RenderBoxEventArgs>{};
 				onRenderBoxArgs.x = x;
 				onRenderBoxArgs.y = y;
-				onRenderBoxArgs.index = i;
-				onRenderBoxArgs.level = levelIdx;
 				onRenderBoxArgs.width = node.width;
 				onRenderBoxArgs.height = node.height;
-				onRenderBoxArgs.node = this.buildRenderedChartNode(node);
+				onRenderBoxArgs.node = this.buildRenderedChartNode(node, levelIdx, i);
 				onRenderBoxArgs.paper = this.snap;
 				onRenderBoxArgs.config = this.config;
 
@@ -639,7 +637,7 @@ export class OrgChartSvg {
 		}
     }
 
-	private buildRenderedChartNode(node: OrgChartLevelNode) : RenderedChartNode {
+	private buildRenderedChartNode(node: OrgChartLevelNode, level: number, index: number) : RenderedChartNode {
 		var renderedNode = <RenderedChartNode>{};
 		renderedNode.id = node.id;
 		renderedNode.parentId = node.parentId;
@@ -647,6 +645,8 @@ export class OrgChartSvg {
 		renderedNode.tipOverChildren = node.tipOverChildren;
 		renderedNode.children = node.children;
 		renderedNode.isPlaceholder = node.isPlaceholder;
+		renderedNode.rowIndex = level;
+		renderedNode.columnIndex = index;
 		return renderedNode;
 	}
 
@@ -685,8 +685,8 @@ export class OrgChartSvg {
 			args.y,
 			args.width,
 			args.height,
-			args.index,
-			args.level
+			args.node.columnIndex,
+			args.node.rowIndex
 		];
 
 		var group = '<g class="' + this.config.nodeOptions.nodeClass + '" width="' + args.width + '" ' +
@@ -762,14 +762,26 @@ export class OrgChartSvg {
 						index = info[4],
 						levelNode = self.levels[level].nodes[index];
 
-					args.node = this.buildRenderedChartNode(levelNode),
+					args.node = this.buildRenderedChartNode(levelNode, level, index);
 					args.event = event;
 
 					if (self.config.onBoxClick) {
 						self.config.onBoxClick(args);
 					}
+
+					if (self.config.nodeOptions.collapsible) {
+						self.expandCollapseChildren(levelNode);
+					}
 				});
 			}
 		}
+	}
+
+	private expandCollapseChildren(levelNode: OrgChartLevelNode) {
+		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
+
+		// collapse
+		this.snap.select('[data-column-parent="'+levelNode.id+'"]')
+			.animate({opacity: levelNode.childrenCollapsed ? 0.2 : 1}, 300);
 	}
 }
