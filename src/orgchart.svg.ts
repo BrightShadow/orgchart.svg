@@ -280,6 +280,7 @@ export class OrgChartSvg {
 			levelNode: OrgChartLevelNode;
 
 		if (this.isNodeTipOver(node)) {
+
 			return this.calcTipOverChildren(node, level, parentNode);
 		}
 
@@ -638,6 +639,8 @@ export class OrgChartSvg {
 			var str = this.joinTemplatesFragments(this.levels[0].nodes[0], templatesFragment);
 			parsedFragment = Snap.parse(str);
 			this.snap.append(parsedFragment);
+
+			this.attachOrgChartEvents();
 		}
     }
 
@@ -725,5 +728,13 @@ export class OrgChartSvg {
 		}
 	};
 
+	private attachOrgChartEvents() {
+		if (this.config.onBoxClick) {
+			//var self = this;
+			//var nodesSet: any = this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
+			//nodesSet.click((event: MouseEvent) => {
+			//
+			//});
+		}
 	}
 }

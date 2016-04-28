@@ -6,6 +6,8 @@ export interface NodeOptions {
 	margin: NodeMargin;
 	background: string;
 	textColor: string;
+	nodeClass: string;
+	clickableBoxClass: string;
 }
 
 export class NodeMargin {

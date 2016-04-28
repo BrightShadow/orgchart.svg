@@ -59,3 +59,10 @@ export interface RenderBoxEventArgs extends RenderEventArgs {
 export interface RenderedChartNode extends OrgChartNode {
 	isPlaceholder: boolean;
 }
+
+export interface BoxClickEventArgs {
+	/**
+	 * The node associated with currently rendered box.
+	 */
+	node: RenderedChartNode;
+}

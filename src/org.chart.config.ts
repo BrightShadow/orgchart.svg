@@ -6,6 +6,7 @@ import {ConfigDebugOptions} from "./config.debug.options";
 import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
 import {NodeMargin} from "./node.options";
+import {BoxClickEventArgs} from "./orgchart.events";
 
 export class OrgChartConfig {
 	selector:string;
@@ -31,6 +32,13 @@ export class OrgChartConfig {
 	 */
 	onBeforeRender: (args: RenderEventArgs) => string;
 
+	/**
+	 * An event handler called when a node box SVG tag was clicked.
+	 * NOTE: Remember that only boxes with a class "orgchart-box" defined are used.
+	 * So if you are using custom template remember to add this class to the clickable area.
+	 */
+	onBoxClick: (args: BoxClickEventArgs) => void;
+
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
 		config.selector = '#orgChartSvg';
@@ -41,7 +49,9 @@ export class OrgChartConfig {
 			gapH: 10,
 			margin: new NodeMargin(),
 			background: 'rgba(10,30,200,0.5)',
-			textColor: 'white'
+			textColor: 'white',
+			nodeClass: 'orgchart-node',
+			clickableBoxClass: 'orgchart-box'
 		};
 		config.connectorOptions = <OrgChartConnectorOptions>{};
 		config.connectorOptions.strokeWidth = 1;
