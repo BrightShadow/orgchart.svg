@@ -8,6 +8,8 @@ export interface NodeOptions {
 	textColor: string;
 	nodeClass: string;
 	clickableBoxClass: string;
+	nodeAttribute: string;
+	collapsible: boolean;
 }
 
 export class NodeMargin {

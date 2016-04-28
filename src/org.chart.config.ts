@@ -51,6 +51,7 @@ export class OrgChartConfig {
 			background: 'rgba(10,30,200,0.5)',
 			textColor: 'white',
 			nodeClass: 'orgchart-node',
+			nodeAttribute: 'orgchart-node',
 			clickableBoxClass: 'orgchart-box'
 		};
 		config.connectorOptions = <OrgChartConnectorOptions>{};

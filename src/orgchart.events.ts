@@ -62,6 +62,10 @@ export interface RenderedChartNode extends OrgChartNode {
 
 export interface BoxClickEventArgs {
 	/**
+	 * A native mouse event details.
+	 */
+	event: MouseEvent;
+	/**
 	 * The node associated with currently rendered box.
 	 */
 	node: RenderedChartNode;

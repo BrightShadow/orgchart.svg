@@ -12,6 +12,7 @@ import {ConfigDebugOptions} from "./config.debug.options";
 import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderedChartNode} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
+import {BoxClickEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
 	private levels: ChartLevelInfo[] = [];
@@ -420,13 +421,7 @@ export class OrgChartSvg {
 				onRenderBoxArgs.level = levelIdx;
 				onRenderBoxArgs.width = node.width;
 				onRenderBoxArgs.height = node.height;
-				onRenderBoxArgs.node = <RenderedChartNode>{};
-				onRenderBoxArgs.node.id = node.id;
-				onRenderBoxArgs.node.parentId = node.parentId;
-				onRenderBoxArgs.node.data = node.data;
-				onRenderBoxArgs.node.tipOverChildren = node.tipOverChildren;
-				onRenderBoxArgs.node.children = node.children;
-				onRenderBoxArgs.node.isPlaceholder = node.isPlaceholder;
+				onRenderBoxArgs.node = this.buildRenderedChartNode(node);
 				onRenderBoxArgs.paper = this.snap;
 				onRenderBoxArgs.config = this.config;
 
@@ -644,6 +639,17 @@ export class OrgChartSvg {
 		}
     }
 
+	private buildRenderedChartNode(node: OrgChartLevelNode) : RenderedChartNode {
+		var renderedNode = <RenderedChartNode>{};
+		renderedNode.id = node.id;
+		renderedNode.parentId = node.parentId;
+		renderedNode.data = node.data;
+		renderedNode.tipOverChildren = node.tipOverChildren;
+		renderedNode.children = node.children;
+		renderedNode.isPlaceholder = node.isPlaceholder;
+		return renderedNode;
+	}
+
 	/**
 	 * Joins all node templates and fragments into one single string ready to render.
 	 * Nodes are joined wrapping them in SVG groups, to allow further tree manipulation after render.
@@ -674,17 +680,19 @@ export class OrgChartSvg {
 	 */
 	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs) : string {
 
-		var nodeInfo = [
+		var nodeInfo: Array<number> = [
 			args.x,
 			args.y,
 			args.width,
-			args.height
+			args.height,
+			args.index,
+			args.level
 		];
 
 		var group = '<g class="' + this.config.nodeOptions.nodeClass + '" width="' + args.width + '" ' +
 			'height="' + args.height + '" ' +
 			'transform="translate(' + args.x + ', ' + args.y + ')" ' +
-			'orgchart-node="' + JSON.stringify(nodeInfo) + '" ' +
+			this.config.nodeOptions.nodeAttribute + '="' + JSON.stringify(nodeInfo) + '" ' +
 			'>' + template + '</g>';
 
 		return group;
@@ -729,12 +737,39 @@ export class OrgChartSvg {
 	};
 
 	private attachOrgChartEvents() {
-		if (this.config.onBoxClick) {
-			//var self = this;
-			//var nodesSet: any = this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
-			//nodesSet.click((event: MouseEvent) => {
-			//
-			//});
+		if (this.config.onBoxClick || this.config.nodeOptions.collapsible) {
+			var self = this;
+			var nodesSet: Snap.Element[] = <any>this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
+			for (var i = 0; i < nodesSet.length; i++) {
+				nodesSet[i].click((event:MouseEvent) => {
+					var args = <BoxClickEventArgs>{};
+					var element = <HTMLElement>event.currentTarget;
+					var tagName = element.tagName.toUpperCase();
+
+					// find parent wrapping group for node box
+					while (tagName !== 'BODY' && !element.hasAttribute(self.config.nodeOptions.nodeAttribute)) {
+						element = element.parentElement;
+					}
+
+					var info: Array<number> = JSON.parse(element.getAttribute(self.config.nodeOptions.nodeAttribute));
+					// [0] = x
+					// [1] = y
+					// [2] = width
+					// [3] = height
+					// [4] = index
+					// [5] = level
+					var level = info[5],
+						index = info[4],
+						levelNode = self.levels[level].nodes[index];
+
+					args.node = this.buildRenderedChartNode(levelNode),
+					args.event = event;
+
+					if (self.config.onBoxClick) {
+						self.config.onBoxClick(args);
+					}
+				});
+			}
 		}
 	}
 }
