@@ -654,6 +654,8 @@ export class OrgChartSvg {
 			for (var i = 0; i < rootNode.childNodes.length; i++) {
 				childrenFragment = this.joinTemplatesFragments(rootNode.childNodes[i], childrenFragment);
 			}
+
+			childrenFragment = this.surroundWithColumnGroup(childrenFragment, rootNode);
 		}
 
 		return fragment + rootNode.representationString + childrenFragment;
@@ -685,6 +687,15 @@ export class OrgChartSvg {
 		return group;
 	}
 
+	private surroundWithColumnGroup(fragment: string, parent: OrgChartLevelNode): string {
+		var prefix = '',
+			suffix = '';
+
+		prefix = '<g data-column-parent="'+parent.id+'">';
+		suffix = '</g>';
+
+		return prefix + fragment + suffix;
+	}
 
 	private fireEventBeforeRender(templatesFragment: string) : string {
 		if (this.config.onBeforeRender) {
