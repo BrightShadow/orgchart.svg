@@ -659,6 +659,32 @@ export class OrgChartSvg {
 		return fragment + rootNode.representationString + childrenFragment;
 	}
 
+	/**
+	 * Wraps template of node box in group tag with additional information about the node,
+	 * e.g. the x,y coordinates and width,height of the node box.
+	 * Note: The information is used in collapse/expand behavior and to position the box in the diagram.
+	 * @param template The template of the node - filled in with data.
+	 * @param args Arguments used to extract information for attributes.
+	 * @returns {string} Wrapped template string ready to add to the SVG DOM.
+	 */
+	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs) : string {
+
+		var nodeInfo = [
+			args.x,
+			args.y,
+			args.width,
+			args.height
+		];
+
+		var group = '<g class="' + this.config.nodeOptions.nodeClass + '" width="' + args.width + '" ' +
+			'height="' + args.height + '" ' +
+			'transform="translate(' + args.x + ', ' + args.y + ')" ' +
+			'orgchart-node="' + JSON.stringify(nodeInfo) + '" ' +
+			'>' + template + '</g>';
+
+		return group;
+	}
+
 
 	private fireEventBeforeRender(templatesFragment: string) : string {
 		if (this.config.onBeforeRender) {
