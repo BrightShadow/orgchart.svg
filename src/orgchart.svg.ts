@@ -417,6 +417,8 @@ export class OrgChartSvg {
 				var onRenderBoxArgs = <RenderBoxEventArgs>{};
 				onRenderBoxArgs.x = x;
 				onRenderBoxArgs.y = y;
+				onRenderBoxArgs.index = i;
+				onRenderBoxArgs.level = levelIdx;
 				onRenderBoxArgs.width = node.width;
 				onRenderBoxArgs.height = node.height;
 				onRenderBoxArgs.node = <RenderedChartNode>{};

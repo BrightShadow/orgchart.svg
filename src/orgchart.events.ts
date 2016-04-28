@@ -41,6 +41,16 @@ export interface RenderBoxEventArgs extends RenderEventArgs {
 	height: number;
 
 	/**
+	 * An index of level in which the node is located.
+	 */
+	level: number;
+
+	/**
+	 * An index of node in the level.
+	 */
+	index: number;
+
+	/**
 	 * The node associated with currently rendered box.
 	 */
 	node: RenderedChartNode;
