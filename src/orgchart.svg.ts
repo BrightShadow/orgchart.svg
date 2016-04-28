@@ -14,8 +14,6 @@ import {RenderedChartNode} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
-    private nodesSpacing: number;
-    private nodes: { [id: string] : OrgChartNode; } = {};
 	private levels: ChartLevelInfo[] = [];
 	private snap: Snap.Paper;
 	private rootNodePosition: {
@@ -24,7 +22,6 @@ export class OrgChartSvg {
 		width: number,
 		height: number
 	};
-	private placeholdersParents: OrgChartLevelNode[] = [];
 
     constructor(private config?: OrgChartConfig) {
 		var self = this;
@@ -34,7 +31,7 @@ export class OrgChartSvg {
 		//
 		this.snap = Snap('#orgChartSvg');
 		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
-        this.calcPositions();
+		this.calcChildren(this.config.nodes);
         this.render();
 		(<any>this.snap).zpd({
 			zoom: true,
@@ -88,11 +85,6 @@ export class OrgChartSvg {
 	private isNodeTipOver(node: OrgChartNode) : boolean {
 		return node.tipOverChildren || node.children.length >= this.config.tipOverOptions.tipOverChildrenCount;
 	}
-
-    private calcPositions() {
-		// 1. Prepare levels info
-		this.calcChildren(this.config.nodes);
-    }
 
 	private createPlaceholder(levelNode: OrgChartLevelNode, level: number): OrgChartLevelNode {
 		var placeholderNode = <OrgChartLevelNode>{};
@@ -205,7 +197,8 @@ export class OrgChartSvg {
 	}
 
 	/**
-	 * Builds new level node record using existing node and level.
+	 * Builds new level node record using existing node and level,
+	 * creates also level if it is needed to create a level node.
 	 * @param node A ChartNode record
 	 * @param level A level to be used to assign with the node
 	 * @param addNode Determines if new level node should be added to levels after creation.
@@ -361,24 +354,6 @@ export class OrgChartSvg {
 		 node specific styling etc.
 		 */
 		return this.config.nodeOptions.height;
-	}
-
-	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs, groups?: {[id: string]: string}) : string {
-
-		return 	'<g width="' + args.width + '" ' +
-			'height="' + args.height + '" ' +
-			'transform="translate(' + args.x + ', ' + args.y + ')" ' +
-			'data-node-id="' + args.node.id + '" ' +
-			'data-node-parent-id="' + args.node.parentId + '" ' +
-			'data-node-x="' + args.x + '" ' +
-			'data-node-y="' + args.y + '" ' +
-			'data-node-width="' + args.width + '" ' +
-			'data-node-height="' + args.height + '" ' +
-			'>' + template + '</g>';
-	}
-
-	private addLineInfo() {
-
 	}
 
     private render() {
