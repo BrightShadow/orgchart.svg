@@ -375,17 +375,7 @@ export class OrgChartSvg {
 		var groupsCount = 0;
 
 		// BEFORE RENDER EVENT
-		if (this.config.onBeforeRender) {
-			var onRenderArgs = <RenderEventArgs>{};
-			onRenderArgs.paper = this.snap;
-			onRenderArgs.config = this.config;
-
-			var tpl = this.config.onBeforeRender(onRenderArgs);
-
-			if (tpl && tpl !== null) {
-				templatesFragment += tpl;
-			}
-		}
+		templatesFragment = this.fireEventBeforeRender(templatesFragment);
 
 		for (var levelIdx = 0; levelIdx < this.levels.length; levelIdx++) {
 			var level = this.levels[levelIdx];
@@ -671,8 +661,20 @@ export class OrgChartSvg {
 		this.nodes = {};
 		this.config.nodes = root;
 
-		this.clear();
-		this.calcPositions();
-		this.render();
+	private fireEventBeforeRender(templatesFragment: string) : string {
+		if (this.config.onBeforeRender) {
+			var onRenderArgs = <RenderEventArgs>{};
+			onRenderArgs.paper = this.snap;
+			onRenderArgs.config = this.config;
+
+			var tpl = this.config.onBeforeRender(onRenderArgs);
+
+			if (tpl && tpl !== null) {
+				templatesFragment += tpl;
+			}
+		}
+
+		return templatesFragment;
+	}
 	}
 }
