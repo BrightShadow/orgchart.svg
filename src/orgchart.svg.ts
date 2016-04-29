@@ -657,39 +657,56 @@ export class OrgChartSvg {
 			strokeWidth: this.config.connectorOptions.strokeWidth,
 			stroke: this.config.connectorOptions.color,
 			"data-node-parent-id": node.parentId,
-			"data-line-type": connectorType
+			"data-line-type": ConnectorType[connectorType]
 		});
+		var id, parentId;
 		var group: Snap.Element;
 
-		//if (connectorType === ConnectorType.down) {
-		//	group = this.lineGroups[node.id];
-		//	if (!group) {
-		//		var params = {};
-		//		params[this.lineIdAttribute] = node.id;
-		//		group = this.snap.group().attr(params);
-		//		this.lineGroups[node.id] = group;
-        //
-		//		//if (node.parentId && node.parentId !== null) {
-		//		//	this.lineGroups[node.parentNode.parentId].add(group);
-		//		//}
-		//	}
-		//}
-		//else {
-			group = this.lineGroups[node.parentId];
-			if (!group) {
-				var params = {};
-				params[this.lineIdAttribute] = node.parentId;
-				group = this.snap.group().attr(params);
-				this.lineGroups[node.parentId] = group;
+		if (connectorType === ConnectorType.down) {
+			id = node.id;
+			parentId = node.parentId ? node.parentId : null;
 
-				if (node.parentNode && node.parentNode.parentId && node.parentNode.parentId !== null) {
-					this.lineGroups[node.parentNode.parentId].add(group);
-				}
+
+			//group = this.lineGroups[node.id];
+			//if (!group) {
+			//	var params = {};
+			//	params[this.lineIdAttribute] = node.id;
+			//	group = this.snap.group().attr(params);
+			//	this.lineGroups[node.id] = group;
+            //
+			//	if (node.parentId && node.parentId !== null) {
+			//		this.lineGroups[node.parentId].add(group);
+			//	}
+			//}
+		}
+		else {
+			id = node.parentId;
+			parentId = node.parentNode && node.parentNode.parentId ? node.parentNode.parentId : null;
+
+			//group = this.lineGroups[node.parentId];
+			//if (!group) {
+			//	var params = {};
+			//	params[this.lineIdAttribute] = node.parentId;
+			//	group = this.snap.group().attr(params);
+			//	this.lineGroups[node.parentId] = group;
+            //
+			//	if (node.parentNode && node.parentNode.parentId && node.parentNode.parentId !== null) {
+			//		this.lineGroups[node.parentNode.parentId].add(group);
+			//	}
+			//}
+		}
+
+		group = this.lineGroups[id];
+		if (!group) {
+			var params = {};
+			params[this.lineIdAttribute] = id;
+			group = this.snap.group().attr(params);
+			this.lineGroups[id] = group;
+
+			if (parentId !== null) {
+				this.lineGroups[parentId].add(group);
 			}
-		//}
-        //
-
-
+		}
 
 		group.add(line);
 	}
@@ -870,11 +887,14 @@ export class OrgChartSvg {
 		// expand collapse nodes
 		groupNode.animate({transform: myMatrix}, animDuration);
 
-		var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
-		for (var i = 0; i < linesSet.length; i++) {
-			var line = linesSet[i];
-			line.animate({opacity: linesTargetOpacity}, animDuration - animDuration / 3);
-		}
+		var line = this.snap.select('[' + this.lineIdAttribute + '="'+levelNode.id+'"');
+		line.animate({transform: myMatrix}, animDuration);
+
+		//var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
+		//for (var i = 0; i < linesSet.length; i++) {
+		//	var line = linesSet[i];
+		//	line.animate({opacity: linesTargetOpacity}, animDuration - animDuration / 3);
+		//}
 
 		//var selector = '#orgchartGroup'+levelNode.id + ' .' + this.config.nodeOptions.nodeClass;
 		//var nodesSet: Snap.Element[] = <any>this.snap.selectAll(selector);
