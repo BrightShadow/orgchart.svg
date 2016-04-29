@@ -736,7 +736,6 @@ export class OrgChartSvg {
 	 * @returns {string} Wrapped template string ready to add to the SVG DOM.
 	 */
 	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs) : string {
-
 		var nodeInfo: Array<number> = [
 			args.x,
 			args.y,
@@ -758,8 +757,7 @@ export class OrgChartSvg {
 	private surroundWithColumnGroup(fragment: string, parent: OrgChartLevelNode): string {
 		var prefix = '',
 			suffix = '';
-		//  data-column-parent="'+parent.id+'"
-		prefix = '<g id="orgchartGroup'+parent.id+'">';
+		prefix = '<g id="' + this.groupIdPrefix + parent.id + '">';
 		suffix = '</g>';
 
 		return prefix + fragment + suffix;
@@ -872,7 +870,7 @@ export class OrgChartSvg {
 		// expand collapse nodes
 		groupNode.animate({transform: myMatrix}, animDuration);
 
-		var linesSet: Snap.Element[] = <any>this.snap.selectAll('[data-node-parent-id="' + levelNode.id + '"]');
+		var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
 		for (var i = 0; i < linesSet.length; i++) {
 			var line = linesSet[i];
 			line.animate({opacity: linesTargetOpacity}, animDuration - animDuration / 3);
