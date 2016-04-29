@@ -13,10 +13,14 @@ import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderedChartNode} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
 import {BoxClickEventArgs} from "./orgchart.events";
+import {ConnectorType} from "./connector.type";
 
 export class OrgChartSvg {
 	private levels: ChartLevelInfo[] = [];
 	private snap: Snap.Paper;
+	private lineGroups: {[id: string] : Snap.Element} = {};
+	private lineIdAttribute: string = 'orgchart-line-id';
+	private groupIdPrefix: string = 'orgchartGroup';
 	private rootNodePosition: {
 		x: number,
 		y: number,
@@ -451,7 +455,7 @@ export class OrgChartSvg {
 
 						if (levelIdx !== 0) {
 							// top line
-							this.renderConnectorLine(x + node.width / 2, y - gapY / 2, x + node.width / 2, y - margin.top, node, 'up');
+							this.renderConnectorLine(x + node.width / 2, y - gapY / 2, x + node.width / 2, y - margin.top, node, ConnectorType.up);
 							//this.snap.line(x + node.width / 2, y - gapY / 2, x + node.width / 2, y - margin.top).attr({
 							//	strokeWidth: this.config.connectorOptions.strokeWidth,
 							//	stroke: this.config.connectorOptions.color,
@@ -462,7 +466,7 @@ export class OrgChartSvg {
 
 						if (node.children !== null && node.children.length > 0) {
 							// bottom line
-							this.renderConnectorLine(x + node.width / 2, y + node.height + gapY / 2, x + node.width / 2, y + node.height + margin.bottom, node.childNodes[0], 'down');
+							this.renderConnectorLine(x + node.width / 2, y + node.height + gapY / 2, x + node.width / 2, y + node.height + margin.bottom, node, ConnectorType.down);
 							//this.snap.line(x + node.width / 2, y + node.height + gapY / 2, x + node.width / 2, y + node.height + margin.bottom).attr({
 							//	strokeWidth: this.config.connectorOptions.strokeWidth,
 							//	stroke: this.config.connectorOptions.color,
@@ -478,7 +482,7 @@ export class OrgChartSvg {
 								if ((nextParent === null || (node.parentId !== nextParent.parentId))  ) {
 									// parent was changed, lets draw line
 									// horizontal line - default
-									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, 'h');
+									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, ConnectorType.horizontal);
 									//this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
 									//	strokeWidth: this.config.connectorOptions.strokeWidth,
 									//	stroke: this.config.connectorOptions.color,
@@ -515,7 +519,7 @@ export class OrgChartSvg {
 						var lineY = y - gapY / 2;
 						// parent was changed, lets draw line
 						// horizontal line - tip-over
-						this.renderConnectorLine(x1, lineY, x2, lineY, node, 'left-up');
+						this.renderConnectorLine(x1, lineY, x2, lineY, node, ConnectorType.horizontalTipOver);
 						//this.snap.line(x1, lineY, x2, lineY).attr({
 						//	strokeWidth: this.config.connectorOptions.strokeWidth,
 						//	stroke: this.config.connectorOptions.color,
@@ -530,7 +534,7 @@ export class OrgChartSvg {
 						var lineY = y - gapY / 2;
 						// parent was changed, lets draw line
 						// horizontal line - tip-over
-						this.renderConnectorLine(x1, lineY, x2, lineY, node, 'left-up');
+						this.renderConnectorLine(x1, lineY, x2, lineY, node, ConnectorType.horizontalSingleTipOver);
 						//this.snap.line(x1, lineY, x2, lineY).attr({
 						//	strokeWidth: this.config.connectorOptions.strokeWidth,
 						//	stroke: this.config.connectorOptions.color,
@@ -547,7 +551,7 @@ export class OrgChartSvg {
 
 						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
 							// right line
-							this.renderConnectorLine(x + node.width + gapX + halfLineWidth, y + node.height / 2, x + node.width + margin.right, y + node.height / 2, node, 'left-up');
+							this.renderConnectorLine(x + node.width + gapX + halfLineWidth, y + node.height / 2, x + node.width + margin.right, y + node.height / 2, node, ConnectorType.right);
 							//this.snap.line(x + node.width + gapX + halfLineWidth, y + node.height / 2, x + node.width + margin.right, y + node.height / 2).attr({
 							//	strokeWidth: this.config.connectorOptions.strokeWidth,
 							//	stroke: this.config.connectorOptions.color,
@@ -558,7 +562,7 @@ export class OrgChartSvg {
 
 						if ((node.tipOverColumnIndex > 0 && evenColumn) || lastColumn) {
 							// left line
-							this.renderConnectorLine(x - gapX - halfLineWidth, y + node.height / 2, x - margin.left, y + node.height / 2, node, 'left-up');
+							this.renderConnectorLine(x - gapX - halfLineWidth, y + node.height / 2, x - margin.left, y + node.height / 2, node, ConnectorType.left);
 							//this.snap.line(x - gapX - halfLineWidth, y + node.height / 2, x - margin.left, y + node.height / 2).attr({
 							//	strokeWidth: this.config.connectorOptions.strokeWidth,
 							//	stroke: this.config.connectorOptions.color,
@@ -568,7 +572,7 @@ export class OrgChartSvg {
 
 							if (firstLine) {
 								// up line
-								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2, node, 'left-up');
+								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2, node, ConnectorType.leftUp);
 								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2).attr({
 								//	strokeWidth: this.config.connectorOptions.strokeWidth,
 								//	stroke: this.config.connectorOptions.color,
@@ -579,7 +583,7 @@ export class OrgChartSvg {
 							}
 							else {
 								// up line to cross
-								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY, node, 'left-up');
+								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY, node, ConnectorType.leftUp);
 								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY).attr({
 								//	strokeWidth: this.config.connectorOptions.strokeWidth,
 								//	stroke: this.config.connectorOptions.color,
@@ -592,7 +596,7 @@ export class OrgChartSvg {
 						if (node.tipOverLastChild && node.tipOverLinesCount > 1 && !evenColumn && node.tipOverColumns > 1
 							&& node.tipOverColumnIndex < node.tipOverColumns - 1) {
 							// up line to cross
-							this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY, node, 'right-up');
+							this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY, node, ConnectorType.rightUp);
 							//this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY).attr({
 							//	strokeWidth: this.config.connectorOptions.strokeWidth,
 							//	stroke: this.config.connectorOptions.color,
@@ -604,7 +608,7 @@ export class OrgChartSvg {
 						if (node.tipOverHasNodeBelow) {
 							if ((!lastColumn && !evenColumn)) {
 								// down line (on the right box site)
-								this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height, node, 'right-up');
+								this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height, node, ConnectorType.rightUp);
 								//this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height).attr({
 								//	strokeWidth: this.config.connectorOptions.strokeWidth,
 								//	stroke: this.config.connectorOptions.color,
@@ -615,7 +619,7 @@ export class OrgChartSvg {
 							}
 							else if (lastColumn && node.tipOverColumns % 2 === 1) {
 								// down line (on the left box site)
-								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y + node.height, node, 'left-down');								//
+								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y + node.height, node, ConnectorType.leftDown);								//
 								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y + node.height).attr({
 								//	strokeWidth: this.config.connectorOptions.strokeWidth,
 								//	stroke: this.config.connectorOptions.color,
@@ -648,13 +652,46 @@ export class OrgChartSvg {
 		}
     }
 
-	private renderConnectorLine(x: number, y: number, x2: number, y2: number, node: OrgChartLevelNode, connectorType: string) {
-		this.snap.line(x,y,x2,y2).attr({
+	private renderConnectorLine(x: number, y: number, x2: number, y2: number, node: OrgChartLevelNode, connectorType: ConnectorType) {
+		var line = this.snap.line(x,y,x2,y2).attr({
 			strokeWidth: this.config.connectorOptions.strokeWidth,
 			stroke: this.config.connectorOptions.color,
 			"data-node-parent-id": node.parentId,
 			"data-line-type": connectorType
 		});
+		var group: Snap.Element;
+
+		//if (connectorType === ConnectorType.down) {
+		//	group = this.lineGroups[node.id];
+		//	if (!group) {
+		//		var params = {};
+		//		params[this.lineIdAttribute] = node.id;
+		//		group = this.snap.group().attr(params);
+		//		this.lineGroups[node.id] = group;
+        //
+		//		//if (node.parentId && node.parentId !== null) {
+		//		//	this.lineGroups[node.parentNode.parentId].add(group);
+		//		//}
+		//	}
+		//}
+		//else {
+			group = this.lineGroups[node.parentId];
+			if (!group) {
+				var params = {};
+				params[this.lineIdAttribute] = node.parentId;
+				group = this.snap.group().attr(params);
+				this.lineGroups[node.parentId] = group;
+
+				if (node.parentNode && node.parentNode.parentId && node.parentNode.parentId !== null) {
+					this.lineGroups[node.parentNode.parentId].add(group);
+				}
+			}
+		//}
+        //
+
+
+
+		group.add(line);
 	}
 
 	private buildRenderedChartNode(node: OrgChartLevelNode, level: number, index: number) : RenderedChartNode {
