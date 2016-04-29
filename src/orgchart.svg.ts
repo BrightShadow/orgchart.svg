@@ -721,7 +721,6 @@ export class OrgChartSvg {
 	private surroundWithColumnGroup(fragment: string, parent: OrgChartLevelNode): string {
 		var prefix = '',
 			suffix = '';
-
 		//  data-column-parent="'+parent.id+'"
 		prefix = '<g id="orgchartGroup'+parent.id+'">';
 		suffix = '</g>';
@@ -806,18 +805,67 @@ export class OrgChartSvg {
 		// [4] = index
 		// [5] = level
 		var x = infoRectord[0],
-			y = infoRectord[1];
+			y = infoRectord[1],
+			width = infoRectord[2],
+			height = infoRectord[3];
+		var selector = '#orgchartGroup' + levelNode.id;
+		var groupNode;
+		var myMatrix = new Snap.Matrix();
+		var linesTargetOpacity = 0;
+		var animDuration = 300;
+
 		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
+		groupNode = this.snap.select(selector);
 
 		if (levelNode.childrenCollapsed) {
-			x = -x;
+			var box = groupNode.getBBox();
+			var groupInfo: number[] = [];
+			groupInfo[0] = box.x;
+			groupInfo[1] = box.y;
+			groupInfo[2] = box.width;
+			groupInfo[3] = box.height;
+			myMatrix.scale(0, 0, x + width / 2, y + height / 2);
+			linesTargetOpacity = 0;
 		}
 		else {
-			x = 0;
+			myMatrix.scale(1,1);
+			linesTargetOpacity = 1;
 		}
-		// collapse
-		this.snap.select('#orgchartGroup'+levelNode.id + ' ')
-			.animate({transform: 't'+x+' 0'}, 300);
+
+		// expand collapse nodes
+		groupNode.animate({transform: myMatrix}, animDuration);
+
+		var linesSet: Snap.Element[] = <any>this.snap.selectAll('[data-node-parent-id="' + levelNode.id + '"]');
+		for (var i = 0; i < linesSet.length; i++) {
+			var line = linesSet[i];
+			line.animate({opacity: linesTargetOpacity}, animDuration - animDuration / 3);
+		}
+
+		//var selector = '#orgchartGroup'+levelNode.id + ' .' + this.config.nodeOptions.nodeClass;
+		//var nodesSet: Snap.Element[] = <any>this.snap.selectAll(selector);
+		//for (var i = 0; i < nodesSet.length; i++) {
+		//	var childNode = nodesSet[i];
+		//	var info: Array<number> = JSON.parse(childNode.attr(this.config.nodeOptions.nodeAttribute));
+		//	var childX = info[0],
+		//		childY = info[1];
+		//	var targetX = x,
+		//		targetY = y,
+		//		targetOpacity = 1;
+        //
+		//	if (!levelNode.childrenCollapsed) {
+		//		targetX = childX;
+		//		targetY = childY;
+		//		//targetOpacity = 1;
+		//		childNode.attr({display: ''});
+		//	}
+        //
+		//	childNode.animate({transform: 't' + targetX + ' ' + targetY, opacity: targetOpacity}, 600, function() {
+		//		if (levelNode.childrenCollapsed) {
+		//			childNode.attr({display: 'none'});
+		//		}
+		//	});
+		//}
+		//
 
 
 	}
