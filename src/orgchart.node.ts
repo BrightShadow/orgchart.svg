@@ -4,4 +4,5 @@ export interface OrgChartNode {
 	data: any;
 	tipOverChildren?: boolean;
 	children: OrgChartNode[];
+	childrenCollapsed?: boolean;
 }
