@@ -869,6 +869,8 @@ export class OrgChartSvg {
 		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
 		groupNode = this.snap.select(selector);
 
+		if (!groupNode || groupNode === null) return;
+
 		if (levelNode.childrenCollapsed) {
 			var box = groupNode.getBBox();
 			var groupInfo: number[] = [];
@@ -885,7 +887,9 @@ export class OrgChartSvg {
 		}
 
 		// expand collapse nodes
-		groupNode.animate({transform: myMatrix}, animDuration);
+		groupNode.animate({transform: myMatrix}, animDuration, () => {
+			console.log('Animation done.');
+		});
 
 		var line = this.snap.select('[' + this.lineIdAttribute + '="'+levelNode.id+'"');
 		line.animate({transform: myMatrix}, animDuration);
