@@ -16,19 +16,19 @@ import {BoxClickEventArgs} from "./orgchart.events";
 import {ConnectorType} from "./connector.type";
 
 export class OrgChartSvg {
-	private levels: ChartLevelInfo[] = [];
-	private snap: Snap.Paper;
-	private lineGroups: {[id: string] : Snap.Element} = {};
-	private lineIdAttribute: string = 'orgchart-line-id';
-	private groupIdPrefix: string = 'orgchartGroup';
-	private rootNodePosition: {
+	private levels:ChartLevelInfo[] = [];
+	private snap:Snap.Paper;
+	private lineGroups:{[id: string] : Snap.Element} = {};
+	private lineIdAttribute:string = 'orgchart-line-id';
+	private groupIdPrefix:string = 'orgchartGroup';
+	private rootNodePosition:{
 		x: number,
 		y: number,
 		width: number,
 		height: number
 	};
 
-    constructor(private config?: OrgChartConfig) {
+	constructor(private config?:OrgChartConfig) {
 		var self = this;
 		if (!config) {
 			this.initDefaultConfig();
@@ -37,7 +37,7 @@ export class OrgChartSvg {
 		this.snap = Snap('#orgChartSvg');
 		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
 		this.calcChildren(this.config.nodes);
-        this.render();
+		this.render();
 		(<any>this.snap).zpd({
 			zoom: true,
 			pan: true,
@@ -57,7 +57,7 @@ export class OrgChartSvg {
 		//canvas.attr({
 		//	transform: "matrix(1,0,0,1," + (-this.rootNodePosition.x) + "," + (-this.rootNodePosition.y) + ")"
 		//});
-    }
+	}
 
 	private initDefaultConfig() {
 		this.config = OrgChartConfig.defaultConfig();
@@ -67,7 +67,7 @@ export class OrgChartSvg {
 		// clear SVG content
 	}
 
-	private analyzeTreeLevels(node: OrgChartNode, level: number = 0) {
+	private analyzeTreeLevels(node:OrgChartNode, level:number = 0) {
 		this.createLevelIfNotExists(level);
 		level++;
 
@@ -86,12 +86,12 @@ export class OrgChartSvg {
 	 * Checks  the node children should be stack in tip-over convention.
 	 * @param node An input node to check.
 	 * @returns {boolean} Returns true or false regarding it is a candidate to tip-over children or not.
-     */
-	private isNodeTipOver(node: OrgChartNode) : boolean {
+	 */
+	private isNodeTipOver(node:OrgChartNode):boolean {
 		return node.tipOverChildren || node.children.length >= this.config.tipOverOptions.tipOverChildrenCount;
 	}
 
-	private createPlaceholder(levelNode: OrgChartLevelNode, level: number): OrgChartLevelNode {
+	private createPlaceholder(levelNode:OrgChartLevelNode, level:number):OrgChartLevelNode {
 		var placeholderNode = <OrgChartLevelNode>{};
 		placeholderNode.width = levelNode.width;
 		placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
@@ -108,11 +108,11 @@ export class OrgChartSvg {
 	 * @param node A parent node to check.
 	 * @param level Current level for the parent node.
 	 * @returns {number} A total container width for the node.
-     */
-	private calcTipOverChildren(node: OrgChartNode, level: number = 0, parentNode: OrgChartLevelNode = null, justAnalyze: boolean = false) : number {
+	 */
+	private calcTipOverChildren(node:OrgChartNode, level:number = 0, parentNode:OrgChartLevelNode = null, justAnalyze:boolean = false):number {
 		var containerWidth = 0;
 		var nodeIndexInLevel = 0;
-		var levelNode: OrgChartLevelNode = null;
+		var levelNode:OrgChartLevelNode = null;
 
 		if (!justAnalyze) {
 			// add current node
@@ -125,7 +125,7 @@ export class OrgChartSvg {
 		level++; // next level - children
 		if (node.children !== null && node.children.length > 0) {
 			// calculate number of columns
-			var columnWidths: number[] = [];
+			var columnWidths:number[] = [];
 			var childIndex = 0;
 			var columnIndex = 0;
 			var lineIndex = 0;
@@ -190,8 +190,7 @@ export class OrgChartSvg {
 				levelNode.containerWidth = containerWidth;
 			}
 		}
-		else
-		{
+		else {
 			if (justAnalyze) {
 				this.createLevelIfNotExists(level);
 			}
@@ -212,8 +211,8 @@ export class OrgChartSvg {
 	 * @param level A level to be used to assign with the node
 	 * @param addNode Determines if new level node should be added to levels after creation.
 	 * @returns {OrgChartLevelNode} New level node with 0 containerWidth.
-     */
-	private buildLevelNode(node: OrgChartNode, level: number, addNode: boolean = false): OrgChartLevelNode {
+	 */
+	private buildLevelNode(node:OrgChartNode, level:number, addNode:boolean = false):OrgChartLevelNode {
 		var levelNode = <OrgChartLevelNode>node;
 		levelNode.width = this.getSingleNodeWidth(levelNode);
 		levelNode.height = this.getSingleNodeHeight(levelNode);
@@ -235,9 +234,9 @@ export class OrgChartSvg {
 		return levelNode;
 	}
 
-	private getTipOverTreeWidth(columns: number[]) : number {
+	private getTipOverTreeWidth(columns:number[]):number {
 		var containerWidth = 0,
-			gapsWidth: number = this.config.nodeOptions.gapH * this.getGapsCountForTipOverColumns(columns.length);
+			gapsWidth:number = this.config.nodeOptions.gapH * this.getGapsCountForTipOverColumns(columns.length);
 
 		for (var c = 0; c < columns.length; c++) {
 			containerWidth += columns[c];
@@ -250,8 +249,8 @@ export class OrgChartSvg {
 	 * Calculates a special number of gaps used to position the tip-over columns.
 	 * @param columnsCount A number of columns.
 	 * @returns {number} Value which multiplied by gapH will result in the width of all column gaps.
-     */
-	private getGapsCountForTipOverColumns(columnsCount: number): number {
+	 */
+	private getGapsCountForTipOverColumns(columnsCount:number):number {
 		// n:		1	2	3	4	5	6	7	8	9	10	11	12...
 		// result:	1	2	4	5	7	8	10	11	13	14	16	17...
 		//return columnsCount + (Math.ceil(columnsCount/2) - 1) + 2;
@@ -262,8 +261,8 @@ export class OrgChartSvg {
 	/**
 	 * Creates new level of nodes in a set, if not exists.
 	 * @param level A level index which is required to exist.
-     */
-	private createLevelIfNotExists(level: number) {
+	 */
+	private createLevelIfNotExists(level:number) {
 		if (this.levels.length < level + 1) {
 			this.levels.push(<ChartLevelInfo>{
 				nodes: [],
@@ -279,10 +278,10 @@ export class OrgChartSvg {
 	 * @param node A parent node to check.
 	 * @param level Current level for the parent node.
 	 * @returns {number} A total container width for the node.
-     */
-	private calcChildren(node: OrgChartNode, level: number = 0, parentNode: OrgChartLevelNode = null) : number {
+	 */
+	private calcChildren(node:OrgChartNode, level:number = 0, parentNode:OrgChartLevelNode = null):number {
 		var containerWidth = 0,
-			levelNode: OrgChartLevelNode;
+			levelNode:OrgChartLevelNode;
 
 		if (this.isNodeTipOver(node)) {
 
@@ -316,8 +315,8 @@ export class OrgChartSvg {
 	 * last level. The node musn't have children.
 	 * @param levelNode The node to be processed.
 	 * @returns {number} A number of placeholders added below the given level node.
-     */
-	private generateNodePlaceholders(levelNode: OrgChartLevelNode): number {
+	 */
+	private generateNodePlaceholders(levelNode:OrgChartLevelNode):number {
 		var iterations = this.levels.length - levelNode.level - 1;
 		for (var i = 1; i <= iterations; i++) {
 			var currentLevel = levelNode.level + i;
@@ -327,7 +326,7 @@ export class OrgChartSvg {
 		return iterations;
 	}
 
-	private generatePlaceholdersForTipOverTree(level: number, count: number, columnsCount: number) {
+	private generatePlaceholdersForTipOverTree(level:number, count:number, columnsCount:number) {
 		if (count > 0) {
 			// first add missing placeholders inside a tip-over tree
 			var prevLevelNodes = this.levels[level - 1].nodes;
@@ -341,28 +340,28 @@ export class OrgChartSvg {
 			level--; // decrease level by one because it denotes the next below tip-over tree
 		}
 
-			// missing placeholders below the tree
-			var levels = this.levels.length - level - 1;
-			for (var i = 1; i <= levels; i++) {
-				level++;
-				for (var x = 0; x < columnsCount; x++) {
-					var levelNodeAbove:OrgChartLevelNode = this.levels[level].nodes[x];
-					var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
-					this.levels[level].nodes.push(placeholderNode);
-				}
+		// missing placeholders below the tree
+		var levels = this.levels.length - level - 1;
+		for (var i = 1; i <= levels; i++) {
+			level++;
+			for (var x = 0; x < columnsCount; x++) {
+				var levelNodeAbove:OrgChartLevelNode = this.levels[level].nodes[x];
+				var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
+				this.levels[level].nodes.push(placeholderNode);
 			}
+		}
 
 	}
 
-	private getSingleNodeWidth(node: OrgChartNode) : number {
+	private getSingleNodeWidth(node:OrgChartNode):number {
 		/*
-			TODO: add handling node options overriding here, to override e.g. width of the node using
-		 	node specific styling etc.
-		*/
+		 TODO: add handling node options overriding here, to override e.g. width of the node using
+		 node specific styling etc.
+		 */
 		return this.config.nodeOptions.width;
 	}
 
-	private getSingleNodeHeight(node: OrgChartNode) : number {
+	private getSingleNodeHeight(node:OrgChartNode):number {
 		/*
 		 TODO: add handling node options overriding here, to override e.g. width of the node using
 		 node specific styling etc.
@@ -370,21 +369,21 @@ export class OrgChartSvg {
 		return this.config.nodeOptions.height;
 	}
 
-    private render() {
+	private render() {
 		var margin = this.config.nodeOptions.margin;
-		var templatesFragment: string = '';
-		var parsedFragment: any;
+		var templatesFragment:string = '';
+		var parsedFragment:any;
 		var left = 10;
 		var top = 10;
 		var gapX = this.config.nodeOptions.gapH;
 		var gapY = this.config.nodeOptions.gapV;
-		var hLineX1: number,
-			hLineX2: number,
-			hLineY: number,
-			hLineNodes: number = 0,  // number of nodes processed for the current horizontal line
-			nextParent: OrgChartLevelNode = null,
-			currentNodeParentId: string = null, // actual node parent id, to check if the h line should be drawn
-			firstNodeParentId: string = null; // parent id of first node of the current h line, needed to determine if h line should be drawn
+		var hLineX1:number,
+			hLineX2:number,
+			hLineY:number,
+			hLineNodes:number = 0,  // number of nodes processed for the current horizontal line
+			nextParent:OrgChartLevelNode = null,
+			currentNodeParentId:string = null, // actual node parent id, to check if the h line should be drawn
+			firstNodeParentId:string = null; // parent id of first node of the current h line, needed to determine if h line should be drawn
 		var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
 		var groupsCount = 0;
 
@@ -399,7 +398,7 @@ export class OrgChartSvg {
 			firstNodeParentId = null;
 			hLineNodes = 0;
 
-			top = levelIdx * (this.config.nodeOptions.height  + gapY) + 10;
+			top = levelIdx * (this.config.nodeOptions.height + gapY) + 10;
 			left = 10;
 
 			for (var i = 0; i < level.nodes.length; i++) {
@@ -479,7 +478,7 @@ export class OrgChartSvg {
 						if (levelIdx > 0) {
 							if (hLineNodes > 1) {
 								// && currentNodeParentId === firstNodeParentId
-								if ((nextParent === null || (node.parentId !== nextParent.parentId))  ) {
+								if ((nextParent === null || (node.parentId !== nextParent.parentId))) {
 									// parent was changed, lets draw line
 									// horizontal line - default
 									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, ConnectorType.horizontal);
@@ -515,7 +514,7 @@ export class OrgChartSvg {
 					// draw top horizontal line for the tip-over group
 					if (node.tipOverFirstChild && node.tipOverColumns > 2) {
 						var x1 = x + node.width + gapX - halfLineWidth;
-						var x2 = x + node.parentNode.containerWidth - node.parentNode.tipOverParentLastColumnWidth - gapX*3 + halfLineWidth;
+						var x2 = x + node.parentNode.containerWidth - node.parentNode.tipOverParentLastColumnWidth - gapX * 3 + halfLineWidth;
 						var lineY = y - gapY / 2;
 						// parent was changed, lets draw line
 						// horizontal line - tip-over
@@ -650,17 +649,17 @@ export class OrgChartSvg {
 
 			this.attachOrgChartEvents();
 		}
-    }
+	}
 
-	private renderConnectorLine(x: number, y: number, x2: number, y2: number, node: OrgChartLevelNode, connectorType: ConnectorType) {
-		var line = this.snap.line(x,y,x2,y2).attr({
+	private renderConnectorLine(x:number, y:number, x2:number, y2:number, node:OrgChartLevelNode, connectorType:ConnectorType) {
+		var line = this.snap.line(x, y, x2, y2).attr({
 			strokeWidth: this.config.connectorOptions.strokeWidth,
 			stroke: this.config.connectorOptions.color,
 			"data-node-parent-id": node.parentId,
 			"data-line-type": ConnectorType[connectorType]
 		});
 		var id, parentId;
-		var group: Snap.Element;
+		var group:Snap.Element;
 
 		if (connectorType === ConnectorType.down) {
 			id = node.id;
@@ -673,7 +672,7 @@ export class OrgChartSvg {
 			//	params[this.lineIdAttribute] = node.id;
 			//	group = this.snap.group().attr(params);
 			//	this.lineGroups[node.id] = group;
-            //
+			//
 			//	if (node.parentId && node.parentId !== null) {
 			//		this.lineGroups[node.parentId].add(group);
 			//	}
@@ -689,7 +688,7 @@ export class OrgChartSvg {
 			//	params[this.lineIdAttribute] = node.parentId;
 			//	group = this.snap.group().attr(params);
 			//	this.lineGroups[node.parentId] = group;
-            //
+			//
 			//	if (node.parentNode && node.parentNode.parentId && node.parentNode.parentId !== null) {
 			//		this.lineGroups[node.parentNode.parentId].add(group);
 			//	}
@@ -711,7 +710,7 @@ export class OrgChartSvg {
 		group.add(line);
 	}
 
-	private buildRenderedChartNode(node: OrgChartLevelNode, level: number, index: number) : RenderedChartNode {
+	private buildRenderedChartNode(node:OrgChartLevelNode, level:number, index:number):RenderedChartNode {
 		var renderedNode = <RenderedChartNode>{};
 		renderedNode.id = node.id;
 		renderedNode.parentId = node.parentId;
@@ -730,8 +729,8 @@ export class OrgChartSvg {
 	 * @param rootNode A root node of the whole tree.
 	 * @param fragment An initial fragment which will be concatenated with other fragments.
 	 * @returns {string} A final fragment ready to render.
-     */
-	private joinTemplatesFragments(rootNode: OrgChartLevelNode, fragment: string = '') : string {
+	 */
+	private joinTemplatesFragments(rootNode:OrgChartLevelNode, fragment:string = ''):string {
 		var childrenFragment = '';
 		if (rootNode.childNodes !== null && rootNode.childNodes.length > 0) {
 			for (var i = 0; i < rootNode.childNodes.length; i++) {
@@ -752,8 +751,8 @@ export class OrgChartSvg {
 	 * @param args Arguments used to extract information for attributes.
 	 * @returns {string} Wrapped template string ready to add to the SVG DOM.
 	 */
-	private wrapTemplateInfoGroup(template: string, args: RenderBoxEventArgs) : string {
-		var nodeInfo: Array<number> = [
+	private wrapTemplateInfoGroup(template:string, args:RenderBoxEventArgs):string {
+		var nodeInfo:Array<number> = [
 			args.x,
 			args.y,
 			args.width,
@@ -771,7 +770,7 @@ export class OrgChartSvg {
 		return group;
 	}
 
-	private surroundWithColumnGroup(fragment: string, parent: OrgChartLevelNode): string {
+	private surroundWithColumnGroup(fragment:string, parent:OrgChartLevelNode):string {
 		var prefix = '',
 			suffix = '';
 		prefix = '<g id="' + this.groupIdPrefix + parent.id + '">';
@@ -780,7 +779,7 @@ export class OrgChartSvg {
 		return prefix + fragment + suffix;
 	}
 
-	private fireEventBeforeRender(templatesFragment: string) : string {
+	private fireEventBeforeRender(templatesFragment:string):string {
 		if (this.config.onBeforeRender) {
 			var onRenderArgs = <RenderEventArgs>{};
 			onRenderArgs.paper = this.snap;
@@ -796,7 +795,7 @@ export class OrgChartSvg {
 		return templatesFragment;
 	}
 
-	private fireEventBoxRender(onRenderBoxArgs: RenderBoxEventArgs, node: OrgChartLevelNode) {
+	private fireEventBoxRender(onRenderBoxArgs:RenderBoxEventArgs, node:OrgChartLevelNode) {
 		if (this.config.onBoxRender) {
 
 			var tpl = this.config.onBoxRender(onRenderBoxArgs);
@@ -811,7 +810,7 @@ export class OrgChartSvg {
 	private attachOrgChartEvents() {
 		if (this.config.onBoxClick || this.config.nodeOptions.collapsible) {
 			var self = this;
-			var nodesSet: Snap.Element[] = <any>this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
+			var nodesSet:Snap.Element[] = <any>this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
 			for (var i = 0; i < nodesSet.length; i++) {
 				nodesSet[i].click((event:MouseEvent) => {
 					var args = <BoxClickEventArgs>{};
@@ -823,7 +822,7 @@ export class OrgChartSvg {
 						element = element.parentElement;
 					}
 
-					var info: Array<number> = JSON.parse(element.getAttribute(self.config.nodeOptions.nodeAttribute));
+					var info:Array<number> = JSON.parse(element.getAttribute(self.config.nodeOptions.nodeAttribute));
 					// [0] = x
 					// [1] = y
 					// [2] = width
@@ -849,7 +848,7 @@ export class OrgChartSvg {
 		}
 	}
 
-	private expandCollapseChildren(levelNode: OrgChartLevelNode, infoRectord: number[]) {
+	private expandCollapseChildren(levelNode:OrgChartLevelNode, infoRectord:number[]) {
 		// [0] = x
 		// [1] = y
 		// [2] = width
@@ -873,7 +872,7 @@ export class OrgChartSvg {
 
 		if (levelNode.childrenCollapsed) {
 			var box = groupNode.getBBox();
-			var groupInfo: number[] = [];
+			var groupInfo:number[] = [];
 			groupInfo[0] = box.x;
 			groupInfo[1] = box.y;
 			groupInfo[2] = box.width;
@@ -882,7 +881,7 @@ export class OrgChartSvg {
 			linesTargetOpacity = 0;
 		}
 		else {
-			myMatrix.scale(1,1);
+			myMatrix.scale(1, 1);
 			linesTargetOpacity = 1;
 		}
 
@@ -891,7 +890,7 @@ export class OrgChartSvg {
 			console.log('Animation done.');
 		});
 
-		var line = this.snap.select('[' + this.lineIdAttribute + '="'+levelNode.id+'"');
+		var line = this.snap.select('[' + this.lineIdAttribute + '="' + levelNode.id + '"');
 		line.animate({transform: myMatrix}, animDuration);
 
 		//var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
@@ -910,14 +909,14 @@ export class OrgChartSvg {
 		//	var targetX = x,
 		//		targetY = y,
 		//		targetOpacity = 1;
-        //
+		//
 		//	if (!levelNode.childrenCollapsed) {
 		//		targetX = childX;
 		//		targetY = childY;
 		//		//targetOpacity = 1;
 		//		childNode.attr({display: ''});
 		//	}
-        //
+		//
 		//	childNode.animate({transform: 't' + targetX + ' ' + targetY, opacity: targetOpacity}, 600, function() {
 		//		if (levelNode.childrenCollapsed) {
 		//			childNode.attr({display: 'none'});
@@ -925,7 +924,5 @@ export class OrgChartSvg {
 		//	});
 		//}
 		//
-
-
 	}
 }
