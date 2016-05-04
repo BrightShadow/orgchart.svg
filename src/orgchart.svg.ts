@@ -23,6 +23,8 @@ export class OrgChartSvg {
 	private lineParentIdAttribute:string = 'orgchart-line-parent-id';
 	private lineToAttr:string = 'orgchart-line-to';
 	private lineHorizontal:string = 'orgchart-line-horizontal';
+	private nodesGroupIdPrefix:string = 'orgchartGroup';
+	private nodeIdPrefix:string = 'orgchartNode';
 	private rootNodePosition:{
 		x: number,
 		y: number,
@@ -771,50 +773,341 @@ export class OrgChartSvg {
 		}
 	}
 
-	private expandCollapseChildren(levelNode:OrgChartLevelNode, infoRectord:number[]) {
+	private expandCollapseChildren(levelNode:OrgChartLevelNode, infoRecord:number[]) {
 		// [0] = x
 		// [1] = y
 		// [2] = width
 		// [3] = height
 		// [4] = index
 		// [5] = level
-		var x = infoRectord[0],
-			y = infoRectord[1],
-			width = infoRectord[2],
-			height = infoRectord[3];
-		var selector = '#orgchartGroup' + levelNode.id;
+		var x = infoRecord[0],
+			y = infoRecord[1],
+			width = infoRecord[2],
+			height = infoRecord[3];
+		//var selector = '#orgchartGroup' + levelNode.id;
 		var groupNode;
-		var myMatrix = new Snap.Matrix();
+
+		var collapseMatrix = new Snap.Matrix().scale(0, 0, x + width / 2, y + height / 2);
+
+		var groupMatrix = new Snap.Matrix();
+		var lineMatrix = new Snap.Matrix();
+		var groupNodeMatrix: Snap.Matrix;
 		var linesTargetOpacity = 0;
 		var animDuration = 300;
 
 		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
-		groupNode = this.snap.select(selector);
+		groupNode = this.findNodesGroupByParentId(levelNode.id);// this.snap.select(selector);
+		groupNode.attr({
+			'is-collapsed': JSON.stringify(levelNode.childrenCollapsed)
+		});
+
 
 		if (!groupNode || groupNode === null) return;
 
+		groupNodeMatrix = groupNode.transform().localMatrix;
+		var levelNodeElement = this.findNodeById(levelNode.id);
+		var groupNodeDeltaX = parseFloat(levelNodeElement.attr('delta-x') ? levelNodeElement.attr('delta-x') : '0');
+		var lineGroupNode = this.findLinesGroupById(levelNode.id);
+		var lineNodeMatrix = lineGroupNode.transform().localMatrix;
+
 		if (levelNode.childrenCollapsed) {
-			var box = groupNode.getBBox();
-			var groupInfo:number[] = [];
-			groupInfo[0] = box.x;
-			groupInfo[1] = box.y;
-			groupInfo[2] = box.width;
-			groupInfo[3] = box.height;
-			myMatrix.scale(0, 0, x + width / 2, y + height / 2);
-			linesTargetOpacity = 0;
+			groupMatrix = groupNodeMatrix.scale(0,0, x + width / 2, y + height / 2);
+			lineMatrix = lineNodeMatrix.scale(0,0, x + width / 2, y + height / 2);
+			groupNode.animate({transform: groupMatrix}, animDuration, () => {
+				groupNode.attr({ opacity: 0});
+				groupNode.transform('s1,1');
+			});
+
+			lineGroupNode.animate({transform: lineMatrix}, animDuration, mina.easein, () => {
+				lineGroupNode.attr({opacity: 0});
+				lineGroupNode.transform('s1,1');
+			});
+		} else {
+			groupNode.animate({ transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0,0, x + width / 2, y + height / 2) }, 0, mina.easein, () => {
+				groupNode.attr({ opacity: 1});
+				groupMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
+				groupNode.animate({transform: groupMatrix}, animDuration);
+			});
+
+			lineGroupNode.animate({ transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0,0, x + width / 2, y + height / 2) }, 0, mina.easein, () => {
+				lineGroupNode.attr({opacity: 1});
+				lineMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
+				lineGroupNode.animate({transform: lineMatrix}, animDuration);
+			});
+		}
+
+		// transforming neighbors
+		var widthDelta = levelNode.containerWidth - levelNode.width;
+		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
+
+		var getNeighbors = (levelNode:OrgChartLevelNode): Neighbors => {
+			var result = <Neighbors>{
+				left: [],
+				right: []
+			};
+
+			if (levelNode.parentNode && levelNode.parentNode !== null) {
+				var left = true;
+				for (var i = 0; i < levelNode.parentNode.childNodes.length; i++) {
+					var child = levelNode.parentNode.childNodes[i];
+					if (child.id === levelNode.id) {
+						left = false;
+					}
+					else {
+						if (left) {
+							result.left.push(child);
+						} else {
+							result.right.push(child);
+						}
+					}
+				}
+			}
+
+			return result;
+		};
+
+		var neighbors = getNeighbors(levelNode);
+
+		var startNode = neighbors.left.length > 0 ? neighbors.left[0] : levelNode,
+			endNode = neighbors.right.length > 0 ? neighbors.right[neighbors.right.length - 1] : levelNode;
+
+		if (levelNode.childrenCollapsed) {
+			// when collapsing
+
+			// collapse horizontal line
+			if (startNode.id != endNode.id) {
+				var line = this.snap.select('['+this.lineHorizontal+'="' + startNode.id + '-' + endNode.id + '"]');
+				if (line !== null) {
+					var attrs: any = {};
+
+					if (startNode.id !== levelNode.id) { //
+						attrs.x1 = parseFloat(line.attr('x1')) + moveDelta;
+					}
+
+					if (endNode.id !== levelNode.id) { //
+						attrs.x2 = parseFloat(line.attr('x2')) - moveDelta;
+					}
+
+					line.animate(attrs, animDuration);
+				}
+			}
+
+			for (var i = 0; i < neighbors.left.length; i++) {
+				var id = neighbors.left[i].id;
+				var node = this.findNodeById(id);
+				node.animate({
+					transform: node.transform().localMatrix.translate(moveDelta, 0)
+				}, animDuration);
+
+				var childNodesGroup = this.findNodesGroupByParentId(id);
+				if (childNodesGroup !== null) {
+					childNodesGroup.animate({
+						transform: childNodesGroup.transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration);
+				}
+
+				var childLinesGroup = this.findLinesGroupById(id);
+				if (childLinesGroup && childLinesGroup !== null) {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration);
+				}
+
+				var filter = new FindLinesFilter();
+				filter.lineTo = id;
+				var topLines = this.findLinesByFilter(filter);
+				if (topLines && topLines !== null) {
+					for (var c = 0; c < topLines.length; c++) {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
+						}, animDuration);
+					}
+				}
+
+				if (node.attr('delta-x')) {
+					var delta = parseFloat(node.attr('delta-x'));
+					node.attr({
+						'delta-x': delta + moveDelta
+					});
+				}
+				else {
+					node.attr({
+						'delta-x': moveDelta
+					});
+				}
+			}
+
+			for (var i = 0; i < neighbors.right.length; i++) {
+				var id = neighbors.right[i].id;
+				var node = this.findNodeById(id);
+				var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
+				node.animate({
+					transform: matrix
+				}, animDuration);
+
+				var childNodesGroup = this.findNodesGroupByParentId(id);
+				if (childNodesGroup !== null) {
+					matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
+					childNodesGroup.animate({
+						transform: matrix
+					}, animDuration);
+				}
+
+				var childLinesGroup = this.findLinesGroupById(id);
+				if (childLinesGroup && childLinesGroup !== null) {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
+					}, animDuration);
+				}
+
+				var filter = new FindLinesFilter();
+				filter.lineTo = id;
+				var topLines = this.findLinesByFilter(filter);
+				if (topLines && topLines !== null) {
+					for (var c = 0; c < topLines.length; c++) {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
+						}, animDuration);
+					}
+				}
+
+				if (node.attr('delta-x')) {
+					var delta = parseFloat(node.attr('delta-x'));
+					node.attr({
+						'delta-x': delta - moveDelta
+					});
+				}
+				else {
+					node.attr({
+						'delta-x': -moveDelta
+					});
+				}
+			}
+
+
 		}
 		else {
-			myMatrix.scale(1, 1);
-			linesTargetOpacity = 1;
+			// expand horizontal line
+			if (startNode.id != endNode.id) {
+				var line = this.snap.select('['+this.lineHorizontal+'="' + startNode.id + '-' + endNode.id + '"]');
+				if (line !== null) {
+					var attrs: any = {};
+
+					if (startNode.id !== levelNode.id) { //
+						attrs.x1 = parseFloat(line.attr('x1')) - moveDelta;
+					}
+
+					if (endNode.id !== levelNode.id) { //
+						attrs.x2 = parseFloat(line.attr('x2')) + moveDelta;
+					}
+
+					line.animate(attrs, animDuration);
+				}
+			}
+
+			for (var i = 0; i < neighbors.left.length; i++) {
+				var id = neighbors.left[i].id;
+				var node = this.findNodeById(id);
+				var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
+				node.animate({
+					transform: matrix
+				}, animDuration);
+
+				var childNodesGroup = this.findNodesGroupByParentId(id);
+				if (childNodesGroup !== null) {
+					matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
+					childNodesGroup.animate({
+						transform: matrix
+					}, animDuration);
+				}
+
+				var childLinesGroup = this.findLinesGroupById(id);
+				if (childLinesGroup && childLinesGroup !== null) {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
+					}, animDuration);
+				}
+
+				var filter = new FindLinesFilter();
+				filter.lineTo = id;
+				var topLines = this.findLinesByFilter(filter);
+				if (topLines && topLines !== null) {
+					for (var c = 0; c < topLines.length; c++) {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
+						}, animDuration);
+					}
+				}
+
+				if (node.attr('delta-x')) {
+					var delta = parseFloat(node.attr('delta-x'));
+					node.attr({
+						'delta-x': delta - moveDelta
+					});
+				}
+				else {
+					node.attr({
+						'delta-x': -moveDelta
+					});
+				}
+			}
+
+			for (var i = 0; i < neighbors.right.length; i++) {
+				var id = neighbors.right[i].id;
+				var node = this.findNodeById(id);
+				var matrix = node.transform().localMatrix.translate(moveDelta, 0);
+				node.animate({
+					transform: matrix
+				}, animDuration);
+
+				var childNodesGroup = this.findNodesGroupByParentId(id);
+				if (childNodesGroup !== null) {
+					matrix = childNodesGroup.transform().localMatrix.translate(moveDelta, 0);
+					childNodesGroup.animate({
+						transform: matrix
+					}, animDuration);
+				}
+
+				var childLinesGroup = this.findLinesGroupById(id);
+				if (childLinesGroup && childLinesGroup !== null) {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration);
+				}
+
+				var filter = new FindLinesFilter();
+				filter.lineTo = id;
+				var topLines = this.findLinesByFilter(filter);
+				if (topLines && topLines !== null) {
+					for (var c = 0; c < topLines.length; c++) {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
+						}, animDuration);
+					}
+				}
+
+				if (node.attr('delta-x')) {
+					var delta = parseFloat(node.attr('delta-x'));
+					node.attr({
+						'delta-x': delta + moveDelta
+					});
+				}
+				else {
+					node.attr({
+						'delta-x': moveDelta
+					});
+				}
+			}
 		}
 
-		// expand collapse nodes
-		groupNode.animate({transform: myMatrix}, animDuration, () => {
-			console.log('Animation done.');
-		});
 
-		var line = this.snap.select('[' + this.lineIdAttribute + '="' + levelNode.id + '"');
-		line.animate({transform: myMatrix}, animDuration);
+
+
+
+
+
+
+
 
 		//var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
 		//for (var i = 0; i < linesSet.length; i++) {
@@ -848,4 +1141,53 @@ export class OrgChartSvg {
 		//}
 		//
 	}
+
+	private findLinesByFilter(filter: FindLinesFilter) : Snap.Element[] {
+		var typeSelector = '',
+			fromToSelector = '',
+			parentIdSelector = '',
+			selector;
+
+		if (filter.connectorType && filter.connectorType !== null) {
+			typeSelector = '[orgchart-line-type="' + ConnectorType[filter.connectorType] + '"]';
+		}
+
+		if (filter.lineTo && filter.lineTo !== null) {
+			fromToSelector = '[' + this.lineToAttr + '="' + filter.lineTo + '"]';
+		}
+
+		if (filter.parentNodeId && filter.parentNodeId !== null) {
+			parentIdSelector = '[' + this.lineParentIdAttribute + '="' + filter.parentNodeId + '"]';
+		}
+
+		selector = parentIdSelector + typeSelector + fromToSelector;
+		if (selector === '') {
+			return null;
+		}
+
+		return <any>this.snap.selectAll(selector);
+	}
+
+	private findLinesGroupById(parentNodeId: string) : Snap.Element {
+		return <any>this.snap.select('#' + this.linesGroupIdPrefix + parentNodeId);
+	}
+
+	private findNodesGroupByParentId(parentNodeId: string) : Snap.Element {
+		return <any>this.snap.select('#' + this.nodesGroupIdPrefix + parentNodeId);
+	}
+
+	private findNodeById(nodeId: string) : Snap.Element {
+		return <any>this.snap.select('#' + this.nodeIdPrefix + nodeId);
+	}
+}
+
+interface Neighbors {
+	left: OrgChartLevelNode[];
+	right: OrgChartLevelNode[];
+}
+
+class FindLinesFilter {
+	public parentNodeId: string = null;
+	public connectorType: ConnectorType = null;
+	public lineTo: string = null;
 }
