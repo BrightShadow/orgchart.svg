@@ -732,6 +732,10 @@ export class OrgChartSvg {
 		}
 	};
 
+	/**
+	 * A post render event attacher. Attaches all events handled by the chart, called
+	 * user interaction events.
+	 */
 	private attachOrgChartEvents() {
 		if (this.config.onBoxClick || this.config.nodeOptions.collapsible) {
 			var self = this;
@@ -766,14 +770,68 @@ export class OrgChartSvg {
 					}
 
 					if (self.config.nodeOptions.collapsible) {
-						self.expandCollapseChildren(levelNode, info);
+						self.toggleNodeCollapse(levelNode, info);
 					}
 				});
 			}
 		}
 	}
 
-	private expandCollapseChildren(levelNode:OrgChartLevelNode, infoRecord:number[]) {
+	/**
+	 * Performs a toggle collapse/expand behavior.
+	 * @param levelNode A node which will be treated as central node.
+	 * @param infoRecord Additional information record for node - it is saved in the node element attribute.
+     */
+	private toggleNodeCollapse(levelNode:OrgChartLevelNode, infoRecord:number[]) {
+		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
+
+		if (!this.collapseCentralNode(levelNode, infoRecord)) return; // cancel
+
+		// transforming neighbors
+		var widthDelta = levelNode.containerWidth - levelNode.width;
+		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
+		var siblings = this.getNodeSiblings(levelNode);
+		this.adjustSiblingNodesByDelta(levelNode, moveDelta, siblings);
+	}
+
+	/**
+	 * Founds all siblings for the given central node.
+	 * @param levelNode A central node whom siblings are searched for.
+	 * @returns {SiblingNodesSet} A set of siblings on the left and right side.
+     */
+	private getNodeSiblings(levelNode: OrgChartLevelNode): SiblingNodesSet{
+		var result = <SiblingNodesSet>{
+			left: [],
+			right: []
+		};
+
+		if (levelNode.parentNode && levelNode.parentNode !== null) {
+			var left = true;
+			for (var i = 0; i < levelNode.parentNode.childNodes.length; i++) {
+				var child = levelNode.parentNode.childNodes[i];
+				if (child.id === levelNode.id) {
+					left = false;
+				}
+				else {
+					if (left) {
+						result.left.push(child);
+					} else {
+						result.right.push(child);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Collapses given node, by collapsing all its children - using animation.
+	 * @param levelNode A central node whom children will be collapsed/expanded.
+	 * @param infoRecord An additional record information.
+	 * @returns {boolean} True if the operation succeeded or false when not or when was canceled.
+     */
+	private collapseCentralNode(levelNode: OrgChartLevelNode, infoRecord:number[]) : boolean {
 		// [0] = x
 		// [1] = y
 		// [2] = width
@@ -784,25 +842,15 @@ export class OrgChartSvg {
 			y = infoRecord[1],
 			width = infoRecord[2],
 			height = infoRecord[3];
-		//var selector = '#orgchartGroup' + levelNode.id;
-		var groupNode;
-
-		var collapseMatrix = new Snap.Matrix().scale(0, 0, x + width / 2, y + height / 2);
-
+		var groupNode: Snap.Element;
 		var groupMatrix = new Snap.Matrix();
 		var lineMatrix = new Snap.Matrix();
-		var groupNodeMatrix: Snap.Matrix;
-		var linesTargetOpacity = 0;
-		var animDuration = 300;
+		var groupNodeMatrix:Snap.Matrix;
+		var animDuration = this.config.collapsingDuration;
 
-		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
 		groupNode = this.findNodesGroupByParentId(levelNode.id);// this.snap.select(selector);
-		groupNode.attr({
-			'is-collapsed': JSON.stringify(levelNode.childrenCollapsed)
-		});
 
-
-		if (!groupNode || groupNode === null) return;
+		if (!groupNode || groupNode === null) return false;
 
 		groupNodeMatrix = groupNode.transform().localMatrix;
 		var levelNodeElement = this.findNodeById(levelNode.id);
@@ -811,10 +859,10 @@ export class OrgChartSvg {
 		var lineNodeMatrix = lineGroupNode.transform().localMatrix;
 
 		if (levelNode.childrenCollapsed) {
-			groupMatrix = groupNodeMatrix.scale(0,0, x + width / 2, y + height / 2);
-			lineMatrix = lineNodeMatrix.scale(0,0, x + width / 2, y + height / 2);
+			groupMatrix = groupNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
+			lineMatrix = lineNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
 			groupNode.animate({transform: groupMatrix}, animDuration, () => {
-				groupNode.attr({ opacity: 0});
+				groupNode.attr({opacity: 0});
 				groupNode.transform('s1,1');
 			});
 
@@ -823,325 +871,156 @@ export class OrgChartSvg {
 				lineGroupNode.transform('s1,1');
 			});
 		} else {
-			groupNode.animate({ transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0,0, x + width / 2, y + height / 2) }, 0, mina.easein, () => {
-				groupNode.attr({ opacity: 1});
+			groupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
+				groupNode.attr({opacity: 1});
 				groupMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
 				groupNode.animate({transform: groupMatrix}, animDuration);
 			});
 
-			lineGroupNode.animate({ transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0,0, x + width / 2, y + height / 2) }, 0, mina.easein, () => {
+			lineGroupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
 				lineGroupNode.attr({opacity: 1});
 				lineMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
 				lineGroupNode.animate({transform: lineMatrix}, animDuration);
 			});
 		}
 
-		// transforming neighbors
-		var widthDelta = levelNode.containerWidth - levelNode.width;
-		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
+		return true;
+	}
 
-		var getNeighbors = (levelNode:OrgChartLevelNode): Neighbors => {
-			var result = <Neighbors>{
-				left: [],
-				right: []
-			};
-
-			if (levelNode.parentNode && levelNode.parentNode !== null) {
-				var left = true;
-				for (var i = 0; i < levelNode.parentNode.childNodes.length; i++) {
-					var child = levelNode.parentNode.childNodes[i];
-					if (child.id === levelNode.id) {
-						left = false;
-					}
-					else {
-						if (left) {
-							result.left.push(child);
-						} else {
-							result.right.push(child);
-						}
-					}
-				}
-			}
-
-			return result;
-		};
-
-		var neighbors = getNeighbors(levelNode);
-
+	/**
+	 * Moves closer for collapse, further for expand, all sibling nodes - groups.
+	 * @param levelNode A central node - expanded or collapsed.
+	 * @param moveDelta A width by whom the sibling nodes are moved.
+	 * @param siblings A collection of siblings found for levelNode.
+     */
+	private adjustSiblingNodesByDelta(levelNode: OrgChartLevelNode, moveDelta: number, siblings: SiblingNodesSet) {
+		var animDuration = this.config.collapsingDuration;
+		var neighbors = siblings;
 		var startNode = neighbors.left.length > 0 ? neighbors.left[0] : levelNode,
 			endNode = neighbors.right.length > 0 ? neighbors.right[neighbors.right.length - 1] : levelNode;
 
-		if (levelNode.childrenCollapsed) {
-			// when collapsing
-
-			// collapse horizontal line
-			if (startNode.id != endNode.id) {
-				var line = this.snap.select('['+this.lineHorizontal+'="' + startNode.id + '-' + endNode.id + '"]');
-				if (line !== null) {
-					var attrs: any = {};
-
-					if (startNode.id !== levelNode.id) { //
-						attrs.x1 = parseFloat(line.attr('x1')) + moveDelta;
-					}
-
-					if (endNode.id !== levelNode.id) { //
-						attrs.x2 = parseFloat(line.attr('x2')) - moveDelta;
-					}
-
-					line.animate(attrs, animDuration);
-				}
-			}
-
-			for (var i = 0; i < neighbors.left.length; i++) {
-				var id = neighbors.left[i].id;
-				var node = this.findNodeById(id);
-				node.animate({
-					transform: node.transform().localMatrix.translate(moveDelta, 0)
-				}, animDuration);
-
-				var childNodesGroup = this.findNodesGroupByParentId(id);
-				if (childNodesGroup !== null) {
-					childNodesGroup.animate({
-						transform: childNodesGroup.transform().localMatrix.translate(moveDelta, 0)
-					}, animDuration);
-				}
-
-				var childLinesGroup = this.findLinesGroupById(id);
-				if (childLinesGroup && childLinesGroup !== null) {
-					childLinesGroup.animate({
-						transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
-					}, animDuration);
-				}
-
-				var filter = new FindLinesFilter();
-				filter.lineTo = id;
-				var topLines = this.findLinesByFilter(filter);
-				if (topLines && topLines !== null) {
-					for (var c = 0; c < topLines.length; c++) {
-						topLines[c].animate({
-							transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
-						}, animDuration);
-					}
-				}
-
-				if (node.attr('delta-x')) {
-					var delta = parseFloat(node.attr('delta-x'));
-					node.attr({
-						'delta-x': delta + moveDelta
-					});
-				}
-				else {
-					node.attr({
-						'delta-x': moveDelta
-					});
-				}
-			}
-
-			for (var i = 0; i < neighbors.right.length; i++) {
-				var id = neighbors.right[i].id;
-				var node = this.findNodeById(id);
-				var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
-				node.animate({
-					transform: matrix
-				}, animDuration);
-
-				var childNodesGroup = this.findNodesGroupByParentId(id);
-				if (childNodesGroup !== null) {
-					matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
-					childNodesGroup.animate({
-						transform: matrix
-					}, animDuration);
-				}
-
-				var childLinesGroup = this.findLinesGroupById(id);
-				if (childLinesGroup && childLinesGroup !== null) {
-					childLinesGroup.animate({
-						transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
-					}, animDuration);
-				}
-
-				var filter = new FindLinesFilter();
-				filter.lineTo = id;
-				var topLines = this.findLinesByFilter(filter);
-				if (topLines && topLines !== null) {
-					for (var c = 0; c < topLines.length; c++) {
-						topLines[c].animate({
-							transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
-						}, animDuration);
-					}
-				}
-
-				if (node.attr('delta-x')) {
-					var delta = parseFloat(node.attr('delta-x'));
-					node.attr({
-						'delta-x': delta - moveDelta
-					});
-				}
-				else {
-					node.attr({
-						'delta-x': -moveDelta
-					});
-				}
-			}
-
-
+		if (!levelNode.childrenCollapsed) {
+			moveDelta = -moveDelta;
 		}
-		else {
-			// expand horizontal line
-			if (startNode.id != endNode.id) {
-				var line = this.snap.select('['+this.lineHorizontal+'="' + startNode.id + '-' + endNode.id + '"]');
-				if (line !== null) {
-					var attrs: any = {};
 
-					if (startNode.id !== levelNode.id) { //
-						attrs.x1 = parseFloat(line.attr('x1')) - moveDelta;
-					}
+		// collapse horizontal line
+		if (startNode.id != endNode.id) {
+			var line = this.snap.select('['+this.lineHorizontal+'="' + startNode.id + '-' + endNode.id + '"]');
+			if (line !== null) {
+				var attrs: any = {};
 
-					if (endNode.id !== levelNode.id) { //
-						attrs.x2 = parseFloat(line.attr('x2')) + moveDelta;
-					}
-
-					line.animate(attrs, animDuration);
-				}
-			}
-
-			for (var i = 0; i < neighbors.left.length; i++) {
-				var id = neighbors.left[i].id;
-				var node = this.findNodeById(id);
-				var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
-				node.animate({
-					transform: matrix
-				}, animDuration);
-
-				var childNodesGroup = this.findNodesGroupByParentId(id);
-				if (childNodesGroup !== null) {
-					matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
-					childNodesGroup.animate({
-						transform: matrix
-					}, animDuration);
+				if (startNode.id !== levelNode.id) { //
+					attrs.x1 = parseFloat(line.attr('x1')) + moveDelta;
 				}
 
-				var childLinesGroup = this.findLinesGroupById(id);
-				if (childLinesGroup && childLinesGroup !== null) {
-					childLinesGroup.animate({
-						transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
-					}, animDuration);
+				if (endNode.id !== levelNode.id) { //
+					attrs.x2 = parseFloat(line.attr('x2')) - moveDelta;
 				}
 
-				var filter = new FindLinesFilter();
-				filter.lineTo = id;
-				var topLines = this.findLinesByFilter(filter);
-				if (topLines && topLines !== null) {
-					for (var c = 0; c < topLines.length; c++) {
-						topLines[c].animate({
-							transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
-						}, animDuration);
-					}
-				}
-
-				if (node.attr('delta-x')) {
-					var delta = parseFloat(node.attr('delta-x'));
-					node.attr({
-						'delta-x': delta - moveDelta
-					});
-				}
-				else {
-					node.attr({
-						'delta-x': -moveDelta
-					});
-				}
-			}
-
-			for (var i = 0; i < neighbors.right.length; i++) {
-				var id = neighbors.right[i].id;
-				var node = this.findNodeById(id);
-				var matrix = node.transform().localMatrix.translate(moveDelta, 0);
-				node.animate({
-					transform: matrix
-				}, animDuration);
-
-				var childNodesGroup = this.findNodesGroupByParentId(id);
-				if (childNodesGroup !== null) {
-					matrix = childNodesGroup.transform().localMatrix.translate(moveDelta, 0);
-					childNodesGroup.animate({
-						transform: matrix
-					}, animDuration);
-				}
-
-				var childLinesGroup = this.findLinesGroupById(id);
-				if (childLinesGroup && childLinesGroup !== null) {
-					childLinesGroup.animate({
-						transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
-					}, animDuration);
-				}
-
-				var filter = new FindLinesFilter();
-				filter.lineTo = id;
-				var topLines = this.findLinesByFilter(filter);
-				if (topLines && topLines !== null) {
-					for (var c = 0; c < topLines.length; c++) {
-						topLines[c].animate({
-							transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
-						}, animDuration);
-					}
-				}
-
-				if (node.attr('delta-x')) {
-					var delta = parseFloat(node.attr('delta-x'));
-					node.attr({
-						'delta-x': delta + moveDelta
-					});
-				}
-				else {
-					node.attr({
-						'delta-x': moveDelta
-					});
-				}
+				line.animate(attrs, animDuration);
 			}
 		}
 
+		// nodes on left
+		for (var i = 0; i < neighbors.left.length; i++) {
+			var id = neighbors.left[i].id;
+			var node = this.findNodeById(id);
+			node.animate({
+				transform: node.transform().localMatrix.translate(moveDelta, 0)
+			}, this.config.collapsingDuration);
 
+			var childNodesGroup = this.findNodesGroupByParentId(id);
+			if (childNodesGroup !== null) {
+				childNodesGroup.animate({
+					transform: childNodesGroup.transform().localMatrix.translate(moveDelta, 0)
+				}, animDuration);
+			}
 
+			var childLinesGroup = this.findLinesGroupById(id);
+			if (childLinesGroup && childLinesGroup !== null) {
+				childLinesGroup.animate({
+					transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
+				}, animDuration);
+			}
 
+			var filter = new FindLinesFilter();
+			filter.lineTo = id;
+			var topLines = this.findLinesByFilter(filter);
+			if (topLines && topLines !== null) {
+				for (var c = 0; c < topLines.length; c++) {
+					topLines[c].animate({
+						transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration);
+				}
+			}
 
+			if (node.attr('delta-x')) {
+				var delta = parseFloat(node.attr('delta-x'));
+				node.attr({
+					'delta-x': delta + moveDelta
+				});
+			}
+			else {
+				node.attr({
+					'delta-x': moveDelta
+				});
+			}
+		}
 
+		// nodes on right
+		for (var i = 0; i < neighbors.right.length; i++) {
+			var id = neighbors.right[i].id;
+			var node = this.findNodeById(id);
+			var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
+			node.animate({
+				transform: matrix
+			}, animDuration);
 
+			var childNodesGroup = this.findNodesGroupByParentId(id);
+			if (childNodesGroup !== null) {
+				matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
+				childNodesGroup.animate({
+					transform: matrix
+				}, animDuration);
+			}
 
+			var childLinesGroup = this.findLinesGroupById(id);
+			if (childLinesGroup && childLinesGroup !== null) {
+				childLinesGroup.animate({
+					transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
+				}, animDuration);
+			}
 
+			var filter = new FindLinesFilter();
+			filter.lineTo = id;
+			var topLines = this.findLinesByFilter(filter);
+			if (topLines && topLines !== null) {
+				for (var c = 0; c < topLines.length; c++) {
+					topLines[c].animate({
+						transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
+					}, animDuration);
+				}
+			}
 
-		//var linesSet: Snap.Element[] = <any>this.snap.selectAll('[' + this.lineIdAttribute + '="' + levelNode.id + '"]');
-		//for (var i = 0; i < linesSet.length; i++) {
-		//	var line = linesSet[i];
-		//	line.animate({opacity: linesTargetOpacity}, animDuration - animDuration / 3);
-		//}
-
-		//var selector = '#orgchartGroup'+levelNode.id + ' .' + this.config.nodeOptions.nodeClass;
-		//var nodesSet: Snap.Element[] = <any>this.snap.selectAll(selector);
-		//for (var i = 0; i < nodesSet.length; i++) {
-		//	var childNode = nodesSet[i];
-		//	var info: Array<number> = JSON.parse(childNode.attr(this.config.nodeOptions.nodeAttribute));
-		//	var childX = info[0],
-		//		childY = info[1];
-		//	var targetX = x,
-		//		targetY = y,
-		//		targetOpacity = 1;
-		//
-		//	if (!levelNode.childrenCollapsed) {
-		//		targetX = childX;
-		//		targetY = childY;
-		//		//targetOpacity = 1;
-		//		childNode.attr({display: ''});
-		//	}
-		//
-		//	childNode.animate({transform: 't' + targetX + ' ' + targetY, opacity: targetOpacity}, 600, function() {
-		//		if (levelNode.childrenCollapsed) {
-		//			childNode.attr({display: 'none'});
-		//		}
-		//	});
-		//}
-		//
+			if (node.attr('delta-x')) {
+				var delta = parseFloat(node.attr('delta-x'));
+				node.attr({
+					'delta-x': delta - moveDelta
+				});
+			}
+			else {
+				node.attr({
+					'delta-x': -moveDelta
+				});
+			}
+		}
 	}
 
+	/**
+	 * Finds all line elements matching the given filter.
+	 * @param filter One of the filters in this object must used.
+	 * @returns {Snap.Element[]}  A set of line elements.
+     */
 	private findLinesByFilter(filter: FindLinesFilter) : Snap.Element[] {
 		var typeSelector = '',
 			fromToSelector = '',
@@ -1168,20 +1047,35 @@ export class OrgChartSvg {
 		return <any>this.snap.selectAll(selector);
 	}
 
+	/**
+	 * Searches a group of lines for given parent node id.
+	 * @param parentNodeId An id of node which is a parent of all nodes connected by those lines.
+	 * @returns {Snap.Element} A nodes group element.
+     */
 	private findLinesGroupById(parentNodeId: string) : Snap.Element {
 		return <any>this.snap.select('#' + this.linesGroupIdPrefix + parentNodeId);
 	}
 
+	/**
+	* Searches a group of nodes for given parent node id.
+	* @param parentNodeId An id of node which is a parent of all child nodes below the.
+	* @returns {Snap.Element} A nodes group element.
+	*/
 	private findNodesGroupByParentId(parentNodeId: string) : Snap.Element {
 		return <any>this.snap.select('#' + this.nodesGroupIdPrefix + parentNodeId);
 	}
 
+	/**
+	 * Searches a single node element by its id.
+	 * @param nodeId An id of node to find.
+	 * @returns {Snap.Element} An element of the node.
+     */
 	private findNodeById(nodeId: string) : Snap.Element {
 		return <any>this.snap.select('#' + this.nodeIdPrefix + nodeId);
 	}
 }
 
-interface Neighbors {
+interface SiblingNodesSet {
 	left: OrgChartLevelNode[];
 	right: OrgChartLevelNode[];
 }

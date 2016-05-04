@@ -17,6 +17,11 @@ export class OrgChartConfig {
 	debugOptions:ConfigDebugOptions;
 
 	/**
+	 * Duration of expand/collapse animation in milliseconds. Default set to 300ms.
+	 */
+	collapsingDuration: number;
+
+	/**
 	 * An event handler called each time the node box is drawn to the SVG canvas.
 	 * The handler can return a string containing a valid SVG fragment. If so, the fragment
 	 * will be used as a template and will be rendered to the SVG.
@@ -42,6 +47,7 @@ export class OrgChartConfig {
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
 		config.selector = '#orgChartSvg';
+		config.collapsingDuration = 300;
 		config.nodeOptions = <NodeOptions>{
 			width: 150,
 			height: 45,
