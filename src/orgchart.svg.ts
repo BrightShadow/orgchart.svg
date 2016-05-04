@@ -861,7 +861,7 @@ export class OrgChartSvg {
 		if (levelNode.childrenCollapsed) {
 			groupMatrix = groupNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
 			lineMatrix = lineNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
-			groupNode.animate({transform: groupMatrix}, animDuration, () => {
+			groupNode.animate({transform: groupMatrix}, animDuration, mina.easein, () => {
 				groupNode.attr({opacity: 0});
 				groupNode.transform('s1,1');
 			});
