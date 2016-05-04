@@ -7,6 +7,7 @@ import {RenderBoxEventArgs} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
 import {NodeMargin} from "./node.options";
 import {BoxClickEventArgs} from "./orgchart.events";
+import {NodeToggleEventArgs} from "./orgchart.events";
 
 export class OrgChartConfig {
 	selector:string;
@@ -39,10 +40,17 @@ export class OrgChartConfig {
 
 	/**
 	 * An event handler called when a node box SVG tag was clicked.
-	 * NOTE: Remember that only boxes with a class "orgchart-box" defined are used.
+	 * NOTE: Remember that only boxes with a class set in config.clickableBoxClass are used.
 	 * So if you are using custom template remember to add this class to the clickable area.
 	 */
 	onBoxClick: (args: BoxClickEventArgs) => void;
+
+	/**
+	 * An event handler called when a collapse button was clicked and the node is beaing collapsed.
+	 * NOTE: Remember that only boxes with a class set in config.collapseButtonClass are used.
+	 * So if you are using custom template remember to add this class to the clickable area.
+	 */
+	onNodeToggle: (args: NodeToggleEventArgs) => void;
 
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
@@ -58,7 +66,9 @@ export class OrgChartConfig {
 			textColor: 'white',
 			nodeClass: 'orgchart-node',
 			nodeAttribute: 'orgchart-node',
-			clickableBoxClass: 'orgchart-box'
+			collapsible: false,
+			clickableBoxClass: 'orgchart-box',
+			collapseButtonClass: 'orgchart-collapse-btn'
 		};
 		config.connectorOptions = <OrgChartConnectorOptions>{};
 		config.connectorOptions.strokeWidth = 1;

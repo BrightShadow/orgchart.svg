@@ -14,6 +14,7 @@ import {RenderedChartNode} from "./orgchart.events";
 import {RenderEventArgs} from "./orgchart.events";
 import {BoxClickEventArgs} from "./orgchart.events";
 import {ConnectorType} from "./connector.type";
+import {NodeToggleEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
 	private levels:ChartLevelInfo[] = [];
@@ -737,7 +738,7 @@ export class OrgChartSvg {
 	 * user interaction events.
 	 */
 	private attachOrgChartEvents() {
-		if (this.config.onBoxClick || this.config.nodeOptions.collapsible) {
+		if (this.config.onBoxClick) {
 			var self = this;
 			var nodesSet:Snap.Element[] = <any>this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.clickableBoxClass);
 			for (var i = 0; i < nodesSet.length; i++) {
@@ -768,6 +769,42 @@ export class OrgChartSvg {
 					if (self.config.onBoxClick) {
 						self.config.onBoxClick(args);
 					}
+				});
+			}
+		}
+
+		if (this.config.onNodeToggle || this.config.nodeOptions.collapsible) {
+			var self = this;
+			var nodesSet:Snap.Element[] = <any>this.snap.selectAll('.' + this.config.nodeOptions.nodeClass + ' .' + this.config.nodeOptions.collapseButtonClass);
+			for (var i = 0; i < nodesSet.length; i++) {
+				nodesSet[i].click((event:MouseEvent) => {
+					var args = <NodeToggleEventArgs>{};
+					var element = <HTMLElement>event.currentTarget;
+					var tagName = element.tagName.toUpperCase();
+
+					// find parent wrapping group for node box
+					while (tagName !== 'BODY' && !element.hasAttribute(self.config.nodeOptions.nodeAttribute)) {
+						element = element.parentElement;
+					}
+
+					var info:Array<number> = JSON.parse(element.getAttribute(self.config.nodeOptions.nodeAttribute));
+					// [0] = x
+					// [1] = y
+					// [2] = width
+					// [3] = height
+					// [4] = index
+					// [5] = level
+					var level = info[5],
+						index = info[4],
+						levelNode = self.levels[level].nodes[index];
+
+					args.node = this.buildRenderedChartNode(levelNode, level, index);
+					args.event = event;
+					args.isCollapsed = levelNode.childNodes && levelNode.childNodes !== null && levelNode.childNodes.length > 0 ? !levelNode.childrenCollapsed : false;
+
+					if (self.config.onNodeToggle) {
+						self.config.onNodeToggle(args);
+					}
 
 					if (self.config.nodeOptions.collapsible) {
 						self.toggleNodeCollapse(levelNode, info);
@@ -790,8 +827,15 @@ export class OrgChartSvg {
 		// transforming neighbors
 		var widthDelta = levelNode.containerWidth - levelNode.width;
 		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
-		var siblings = this.getNodeSiblings(levelNode);
-		this.adjustSiblingNodesByDelta(levelNode, moveDelta, siblings);
+		var isCollapsed = levelNode.childrenCollapsed;
+
+		// adjust all siblings of center node and its parents
+		while (levelNode !== null) {
+			var siblings = this.getNodeSiblings(levelNode);
+			this.adjustSiblingNodesByDelta(levelNode, isCollapsed, moveDelta, siblings);
+
+			levelNode = levelNode.parentNode;
+		}
 	}
 
 	/**
@@ -893,13 +937,13 @@ export class OrgChartSvg {
 	 * @param moveDelta A width by whom the sibling nodes are moved.
 	 * @param siblings A collection of siblings found for levelNode.
      */
-	private adjustSiblingNodesByDelta(levelNode: OrgChartLevelNode, moveDelta: number, siblings: SiblingNodesSet) {
+	private adjustSiblingNodesByDelta(levelNode: OrgChartLevelNode, isCollapsed: boolean, moveDelta: number, siblings: SiblingNodesSet) {
 		var animDuration = this.config.collapsingDuration;
 		var neighbors = siblings;
 		var startNode = neighbors.left.length > 0 ? neighbors.left[0] : levelNode,
 			endNode = neighbors.right.length > 0 ? neighbors.right[neighbors.right.length - 1] : levelNode;
 
-		if (!levelNode.childrenCollapsed) {
+		if (!isCollapsed) {
 			moveDelta = -moveDelta;
 		}
 
@@ -927,7 +971,7 @@ export class OrgChartSvg {
 			var node = this.findNodeById(id);
 			node.animate({
 				transform: node.transform().localMatrix.translate(moveDelta, 0)
-			}, this.config.collapsingDuration);
+			}, animDuration);
 
 			var childNodesGroup = this.findNodesGroupByParentId(id);
 			if (childNodesGroup !== null) {

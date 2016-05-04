@@ -8,6 +8,7 @@ export interface NodeOptions {
 	textColor: string;
 	nodeClass: string;
 	clickableBoxClass: string;
+	collapseButtonClass: string;
 	nodeAttribute: string;
 	collapsible: boolean;
 }

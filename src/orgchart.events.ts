@@ -72,3 +72,10 @@ export interface BoxClickEventArgs {
 	 */
 	node: RenderedChartNode;
 }
+
+export interface NodeToggleEventArgs extends BoxClickEventArgs {
+	/**
+	 * Determines if the corresponding node's children was collapsed (true) or not (false).
+	 */
+	isCollapsed: boolean;
+}

@@ -4,6 +4,7 @@ import {NodeMargin} from "./node.options";
 import {RenderEventArgs} from "./orgchart.events";
 import {RenderBoxEventArgs} from "./orgchart.events";
 import {BoxClickEventArgs} from "./orgchart.events";
+import {NodeToggleEventArgs} from "./orgchart.events";
 
 
 
@@ -845,7 +846,7 @@ config.onBoxRender = (args: RenderBoxEventArgs) => {
 
 
 
-config.onBoxClick = (args: BoxClickEventArgs) => {
+config.onNodeToggle = (args: NodeToggleEventArgs) => {
 	console.log(args);
 };
 
