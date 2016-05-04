@@ -19,8 +19,10 @@ export class OrgChartSvg {
 	private levels:ChartLevelInfo[] = [];
 	private snap:Snap.Paper;
 	private lineGroups:{[id: string] : Snap.Element} = {};
-	private lineIdAttribute:string = 'orgchart-line-id';
-	private groupIdPrefix:string = 'orgchartGroup';
+	private linesGroupIdPrefix:string = 'orgchartLinesGroup';
+	private lineParentIdAttribute:string = 'orgchart-line-parent-id';
+	private lineToAttr:string = 'orgchart-line-to';
+	private lineHorizontal:string = 'orgchart-line-horizontal';
 	private rootNodePosition:{
 		x: number,
 		y: number,
@@ -580,13 +582,28 @@ export class OrgChartSvg {
 		}
 	}
 
-	private renderConnectorLine(x:number, y:number, x2:number, y2:number, node:OrgChartLevelNode, connectorType:ConnectorType) {
-		var line = this.snap.line(x, y, x2, y2).attr({
+	private renderConnectorLine(x:number, y:number, x2:number, y2:number, node:OrgChartLevelNode, connectorType:ConnectorType, fromToHorizontal:string = null) {
+		var params = {
 			strokeWidth: this.config.connectorOptions.strokeWidth,
 			stroke: this.config.connectorOptions.color,
-			"data-node-parent-id": node.parentId,
-			"data-line-type": ConnectorType[connectorType]
-		});
+		};
+
+		params[this.lineParentIdAttribute] = node.parentId;
+		params[this.lineToAttr] = '';
+		params['orgchart-line-type'] = ConnectorType[connectorType];
+
+		if (connectorType === ConnectorType.horizontal) {
+			params[this.lineHorizontal] = fromToHorizontal;
+		}
+
+		if (connectorType === ConnectorType.left ||
+		    connectorType === ConnectorType.right ||
+			connectorType === ConnectorType.up) {
+			params[this.lineToAttr] = node.id;
+		}
+
+
+		var line = this.snap.line(x, y, x2, y2).attr(params);
 		var id, parentId;
 		var group:Snap.Element;
 
@@ -601,9 +618,9 @@ export class OrgChartSvg {
 
 		group = this.lineGroups[id];
 		if (!group) {
-			var params = {};
-			params[this.lineIdAttribute] = id;
-			group = this.snap.group().attr(params);
+			group = this.snap.group().attr({
+				id: this.linesGroupIdPrefix + id
+			});
 			this.lineGroups[id] = group;
 
 			if (parentId !== null) {
@@ -665,7 +682,9 @@ export class OrgChartSvg {
 			args.node.rowIndex
 		];
 
-		var group = '<g class="' + this.config.nodeOptions.nodeClass + '" width="' + args.width + '" ' +
+		var group = '<g ' +
+			'id="' + this.nodeIdPrefix + args.node.id + '"' +
+			'class="' + this.config.nodeOptions.nodeClass + '" width="' + args.width + '" ' +
 			'height="' + args.height + '" ' +
 			'transform="translate(' + args.x + ', ' + args.y + ')" ' +
 			this.config.nodeOptions.nodeAttribute + '="' + JSON.stringify(nodeInfo) + '" ' +
@@ -677,7 +696,7 @@ export class OrgChartSvg {
 	private surroundWithColumnGroup(fragment:string, parent:OrgChartLevelNode):string {
 		var prefix = '',
 			suffix = '';
-		prefix = '<g id="' + this.groupIdPrefix + parent.id + '">';
+		prefix = '<g id="' + this.nodesGroupIdPrefix + parent.id + '">';
 		suffix = '</g>';
 
 		return prefix + fragment + suffix;
