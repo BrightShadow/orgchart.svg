@@ -385,7 +385,7 @@ export class OrgChartSvg {
 			currentNodeParentId:string = null, // actual node parent id, to check if the h line should be drawn
 			firstNodeParentId:string = null; // parent id of first node of the current h line, needed to determine if h line should be drawn
 		var halfLineWidth = this.config.connectorOptions.strokeWidth / 2;
-		var groupsCount = 0;
+		var horizontalLineStartId = '';
 
 		// BEFORE RENDER EVENT
 		templatesFragment = this.fireEventBeforeRender(templatesFragment);
@@ -434,6 +434,7 @@ export class OrgChartSvg {
 					if (hLineNodes === 0) {
 						hLineX1 = x + node.width / 2;
 						hLineY = y - gapY / 2;
+						horizontalLineStartId = node.id;
 						firstNodeParentId = node.parentNode !== null && node.parentNode !== undefined ? node.parentNode.id : null;
 					}
 
@@ -469,7 +470,12 @@ export class OrgChartSvg {
 								if ((nextParent === null || (node.parentId !== nextParent.parentId))) {
 									// parent was changed, lets draw line
 									// horizontal line - default
-									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, ConnectorType.horizontal);
+									var hInfo = '';
+									if (horizontalLineStartId !== '') {
+										hInfo = horizontalLineStartId + '-' + node.id;
+									}
+
+									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, ConnectorType.horizontal, hInfo);
 									hLineNodes = 0;
 								}
 							}
@@ -547,14 +553,12 @@ export class OrgChartSvg {
 							if ((!lastColumn && !evenColumn)) {
 								// down line (on the right box site)
 								this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height, node, ConnectorType.rightUp);
-
 							}
 							else if (lastColumn && node.tipOverColumns % 2 === 1) {
 								// down line (on the left box site)
 								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y + node.height, node, ConnectorType.leftDown);								//
 							}
 						}
-
 					}
 					else {
 						// placeholder
