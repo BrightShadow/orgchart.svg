@@ -455,23 +455,11 @@ export class OrgChartSvg {
 						if (levelIdx !== 0) {
 							// top line
 							this.renderConnectorLine(x + node.width / 2, y - gapY / 2, x + node.width / 2, y - margin.top, node, ConnectorType.up);
-							//this.snap.line(x + node.width / 2, y - gapY / 2, x + node.width / 2, y - margin.top).attr({
-							//	strokeWidth: this.config.connectorOptions.strokeWidth,
-							//	stroke: this.config.connectorOptions.color,
-							//	"data-node-parent-id": node.parentId,
-							//	"data-line-type": 'up'
-							//});
 						}
 
 						if (node.children !== null && node.children.length > 0) {
 							// bottom line
 							this.renderConnectorLine(x + node.width / 2, y + node.height + gapY / 2, x + node.width / 2, y + node.height + margin.bottom, node, ConnectorType.down);
-							//this.snap.line(x + node.width / 2, y + node.height + gapY / 2, x + node.width / 2, y + node.height + margin.bottom).attr({
-							//	strokeWidth: this.config.connectorOptions.strokeWidth,
-							//	stroke: this.config.connectorOptions.color,
-							//	"data-node-parent-id": node.id,
-							//	"data-line-type": 'down'
-							//});
 						}
 
 						// draw horizontal lines
@@ -482,12 +470,6 @@ export class OrgChartSvg {
 									// parent was changed, lets draw line
 									// horizontal line - default
 									this.renderConnectorLine(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY, node, ConnectorType.horizontal);
-									//this.snap.line(hLineX1 - halfLineWidth, hLineY, hLineX2 + halfLineWidth, hLineY).attr({
-									//	strokeWidth: this.config.connectorOptions.strokeWidth,
-									//	stroke: this.config.connectorOptions.color,
-									//	"data-node-parent-id": node.parentId,
-									//	"data-line-type": 'h'
-									//});
 									hLineNodes = 0;
 								}
 							}
@@ -519,12 +501,6 @@ export class OrgChartSvg {
 						// parent was changed, lets draw line
 						// horizontal line - tip-over
 						this.renderConnectorLine(x1, lineY, x2, lineY, node, ConnectorType.horizontalTipOver);
-						//this.snap.line(x1, lineY, x2, lineY).attr({
-						//	strokeWidth: this.config.connectorOptions.strokeWidth,
-						//	stroke: this.config.connectorOptions.color,
-						//	"data-node-parent-id": node.parentId,
-						//	"data-line-type": 'h-tip-over'
-						//});
 					}
 					else if (node.tipOverFirstChild && node.tipOverColumns === 1) {
 						// one single column
@@ -534,12 +510,6 @@ export class OrgChartSvg {
 						// parent was changed, lets draw line
 						// horizontal line - tip-over
 						this.renderConnectorLine(x1, lineY, x2, lineY, node, ConnectorType.horizontalSingleTipOver);
-						//this.snap.line(x1, lineY, x2, lineY).attr({
-						//	strokeWidth: this.config.connectorOptions.strokeWidth,
-						//	stroke: this.config.connectorOptions.color,
-						//	"data-node-parent-id": node.parentId,
-						//	"data-line-type": 'h-tip-over-single'
-						//});
 					}
 
 					left += node.containerWidth;
@@ -551,44 +521,19 @@ export class OrgChartSvg {
 						if (levelIdx !== 0 && !lastColumn && !evenColumn) {
 							// right line
 							this.renderConnectorLine(x + node.width + gapX + halfLineWidth, y + node.height / 2, x + node.width + margin.right, y + node.height / 2, node, ConnectorType.right);
-							//this.snap.line(x + node.width + gapX + halfLineWidth, y + node.height / 2, x + node.width + margin.right, y + node.height / 2).attr({
-							//	strokeWidth: this.config.connectorOptions.strokeWidth,
-							//	stroke: this.config.connectorOptions.color,
-							//	"data-node-parent-id": node.parentId,
-							//	"data-line-type": 'right'
-							//});
 						}
 
 						if ((node.tipOverColumnIndex > 0 && evenColumn) || lastColumn) {
 							// left line
 							this.renderConnectorLine(x - gapX - halfLineWidth, y + node.height / 2, x - margin.left, y + node.height / 2, node, ConnectorType.left);
-							//this.snap.line(x - gapX - halfLineWidth, y + node.height / 2, x - margin.left, y + node.height / 2).attr({
-							//	strokeWidth: this.config.connectorOptions.strokeWidth,
-							//	stroke: this.config.connectorOptions.color,
-							//	"data-node-parent-id": node.parentId,
-							//	"data-line-type": 'left'
-							//});
 
 							if (firstLine) {
 								// up line
 								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2, node, ConnectorType.leftUp);
-								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY / 2).attr({
-								//	strokeWidth: this.config.connectorOptions.strokeWidth,
-								//	stroke: this.config.connectorOptions.color,
-								//	"data-node-parent-id": node.parentId,
-								//	"data-line-type": 'left-up' +
-								//	''
-								//});
 							}
 							else {
 								// up line to cross
 								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y - gapY, node, ConnectorType.leftUp);
-								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y - gapY).attr({
-								//	strokeWidth: this.config.connectorOptions.strokeWidth,
-								//	stroke: this.config.connectorOptions.color,
-								//	"data-node-parent-id": node.parentId,
-								//	"data-line-type": 'left-up'
-								//});
 							}
 						}
 
@@ -596,45 +541,25 @@ export class OrgChartSvg {
 							&& node.tipOverColumnIndex < node.tipOverColumns - 1) {
 							// up line to cross
 							this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY, node, ConnectorType.rightUp);
-							//this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y - gapY).attr({
-							//	strokeWidth: this.config.connectorOptions.strokeWidth,
-							//	stroke: this.config.connectorOptions.color,
-							//	"data-node-parent-id": node.parentId,
-							//	"data-line-type": 'right-up'
-							//});
 						}
 
 						if (node.tipOverHasNodeBelow) {
 							if ((!lastColumn && !evenColumn)) {
 								// down line (on the right box site)
 								this.renderConnectorLine(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height, node, ConnectorType.rightUp);
-								//this.snap.line(x + node.width + gapX, y + node.height / 2, x + node.width + gapX, y + node.height).attr({
-								//	strokeWidth: this.config.connectorOptions.strokeWidth,
-								//	stroke: this.config.connectorOptions.color,
-								//	"data-node-parent-id": node.parentId,
-								//	"data-line-type": 'right-up'
-								//});
 
 							}
 							else if (lastColumn && node.tipOverColumns % 2 === 1) {
 								// down line (on the left box site)
 								this.renderConnectorLine(x - gapX, y + node.height / 2, x - gapX, y + node.height, node, ConnectorType.leftDown);								//
-								//this.snap.line(x - gapX, y + node.height / 2, x - gapX, y + node.height).attr({
-								//	strokeWidth: this.config.connectorOptions.strokeWidth,
-								//	stroke: this.config.connectorOptions.color,
-								//	"data-node-parent-id": node.parentId,
-								//	"data-line-type": 'left-down'
-								//});
 							}
 						}
 
-						//this.snap.text(x + 20, y + 26, [node.data.text]).attr({fill: this.config.nodeOptions.textColor});
 					}
 					else {
 						// placeholder
 						if (this.config.debugOptions.showPlaceholderBoxes) {
 							this.fireEventBoxRender(onRenderBoxArgs, node);
-							//this.snap.rect(x, y, node.width, node.height).attr({fill: this.config.debugOptions.placeholderBoxesColor});
 						}
 					}
 				}
@@ -664,35 +589,10 @@ export class OrgChartSvg {
 		if (connectorType === ConnectorType.down) {
 			id = node.id;
 			parentId = node.parentId ? node.parentId : null;
-
-
-			//group = this.lineGroups[node.id];
-			//if (!group) {
-			//	var params = {};
-			//	params[this.lineIdAttribute] = node.id;
-			//	group = this.snap.group().attr(params);
-			//	this.lineGroups[node.id] = group;
-			//
-			//	if (node.parentId && node.parentId !== null) {
-			//		this.lineGroups[node.parentId].add(group);
-			//	}
-			//}
 		}
 		else {
 			id = node.parentId;
 			parentId = node.parentNode && node.parentNode.parentId ? node.parentNode.parentId : null;
-
-			//group = this.lineGroups[node.parentId];
-			//if (!group) {
-			//	var params = {};
-			//	params[this.lineIdAttribute] = node.parentId;
-			//	group = this.snap.group().attr(params);
-			//	this.lineGroups[node.parentId] = group;
-			//
-			//	if (node.parentNode && node.parentNode.parentId && node.parentNode.parentId !== null) {
-			//		this.lineGroups[node.parentNode.parentId].add(group);
-			//	}
-			//}
 		}
 
 		group = this.lineGroups[id];
