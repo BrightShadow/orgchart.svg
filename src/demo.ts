@@ -763,7 +763,7 @@ let nodeTemplateFemale = `
         <path d="M57.12,41q-1.55.23-3.09,0.4l-1.75.18-1.36.11c-2.09.16-4.17,0.23-6.25,0.22V62.11l0.18,0.32,2.94-5.69h0V53.25A12.13,12.13,0,0,0,56.49,45,2.07,2.07,0,1,0,57.12,41Z" fill="#e5e5e5" opacity="0.5" style="mix-blend-mode: multiply"/>
         <path d="M61,61.44a6.53,6.53,0,0,0-6.27-4.7h-7l-2.94,5.69-0.18-.32V70.9H61.31V63.28A6.52,6.52,0,0,0,61,61.44Z" fill="#f27ba9" style="mix-blend-mode: multiply"/>
       </g>
-      <path d="M205,73.92A5.07,5.07,0,0,1,200,79H20a5.07,5.07,0,0,1-5-5.08V20.08A5.07,5.07,0,0,1,20,15H200a5.07,5.07,0,0,1,5,5.08V73.92Z"  class="orgchart-box" fill="transparent" style="cursor:pointer"/>
+      <path d="M205,73.92A5.07,5.07,0,0,1,200,79H20a5.07,5.07,0,0,1-5-5.08V20.08A5.07,5.07,0,0,1,20,15H200a5.07,5.07,0,0,1,5,5.08V73.92Z"  class="orgchart-box orgchart-collapse-btn" fill="transparent" style="cursor:pointer"/>
     </g>`;
 
 let nodeTemplateMale = `
@@ -789,7 +789,7 @@ let nodeTemplateMale = `
         <path d="M45.69,45V46.7c0.57-.1,3.23.07,3.23,1.67s-2.65,1.71-3.23,1.71v6.28a9.74,9.74,0,0,0,2.92-1c2.25-1.09,4.85-3.07,4.91-5.8,0,0,0-.07,0-0.1C53.52,44.56,46.78,44.9,45.69,45Z" fill="#4e4e4e" opacity="0.5" style="mix-blend-mode: multiply"/>
         <path d="M45.69,46.7v3.39c0.57,0,3.23-.11,3.23-1.71S46.26,46.6,45.69,46.7Z" fill="#4e4e4e" opacity="0.5" style="mix-blend-mode: multiply"/>
       </g>
-      <path d="M205,73.92A5.07,5.07,0,0,1,200,79H20a5.07,5.07,0,0,1-5-5.08V20.08A5.07,5.07,0,0,1,20,15H200a5.07,5.07,0,0,1,5,5.08V73.92Z" class="orgchart-box" fill="transparent" style="cursor:pointer"/>
+      <path d="M205,73.92A5.07,5.07,0,0,1,200,79H20a5.07,5.07,0,0,1-5-5.08V20.08A5.07,5.07,0,0,1,20,15H200a5.07,5.07,0,0,1,5,5.08V73.92Z" class="orgchart-box orgchart-collapse-btn" fill="transparent" style="cursor:pointer"/>
     </g>`;
 
 let defs = '<clipPath id="a"><circle cx="45.17" cy="46.33" r="23.5" fill="none"/></clipPath>';

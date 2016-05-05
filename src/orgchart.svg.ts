@@ -825,9 +825,12 @@ export class OrgChartSvg {
 		if (!this.collapseCentralNode(levelNode, infoRecord)) return; // cancel
 
 		// transforming neighbors
-		var widthDelta = levelNode.containerWidth - levelNode.width;
+		var containerWidth = levelNode.containerWidth;
+		var widthDelta = containerWidth - levelNode.width;
 		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
 		var isCollapsed = levelNode.childrenCollapsed;
+
+		//
 
 		// adjust all siblings of center node and its parents
 		while (levelNode !== null) {
@@ -835,6 +838,12 @@ export class OrgChartSvg {
 			this.adjustSiblingNodesByDelta(levelNode, isCollapsed, moveDelta, siblings);
 
 			levelNode = levelNode.parentNode;
+
+			// change parent container width
+			if (levelNode !== null) {
+				levelNode.containerWidth += isCollapsed ? -widthDelta : widthDelta;
+				//levelNode.containerWidth = Math.max(levelNode.containerWidth, levelNode.width);
+			}
 		}
 	}
 
@@ -860,7 +869,7 @@ export class OrgChartSvg {
 					if (left) {
 						result.left.push(child);
 					} else {
-						result.right.push(child);
+						result.right.push(child);7
 					}
 				}
 			}
