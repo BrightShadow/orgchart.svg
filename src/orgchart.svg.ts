@@ -26,6 +26,8 @@ export class OrgChartSvg {
 	private lineHorizontal:string = 'orgchart-line-horizontal';
 	private nodesGroupIdPrefix:string = 'orgchartGroup';
 	private nodeIdPrefix:string = 'orgchartNode';
+	private overlayGroupId = 'orgchartOverlay';
+	private animationsLeft = 0;
 	private rootNodePosition:{
 		x: number,
 		y: number,
@@ -580,9 +582,10 @@ export class OrgChartSvg {
 			var str = this.joinTemplatesFragments(this.levels[0].nodes[0], templatesFragment);
 			parsedFragment = Snap.parse(str);
 			this.snap.append(parsedFragment);
-
 			this.attachOrgChartEvents();
 		}
+
+		this.hideOverlay();
 	}
 
 	private renderConnectorLine(x:number, y:number, x2:number, y2:number, node:OrgChartLevelNode, connectorType:ConnectorType, fromToHorizontal:string = null) {
@@ -645,6 +648,16 @@ export class OrgChartSvg {
 		renderedNode.rowIndex = level;
 		renderedNode.columnIndex = index;
 		return renderedNode;
+	}
+
+	private showOverlay() {
+		//var overlay = document.getElementById(this.overlayGroupId);
+		//overlay.style.display = 'block';
+	}
+
+	private hideOverlay() {
+		//var overlay = document.getElementById(this.overlayGroupId);
+		//overlay.style.display = 'none';
 	}
 
 	/**
