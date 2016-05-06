@@ -299,6 +299,7 @@ export class OrgChartSvg {
 		levelNode = this.buildLevelNode(node, level, true);
 		levelNode.parentNode = parentNode; // assign parent reference
 		if (parentNode && parentNode !== null) {
+			levelNode.isFirstChildOfParent = parentNode.childNodes.length === 0;
 			parentNode.childNodes.push(levelNode); // add level node child
 		}
 
@@ -434,7 +435,7 @@ export class OrgChartSvg {
 				onRenderBoxArgs.config = this.config;
 
 				if (!node.tipOverChild) {
-					if (i > 0 && level.nodes[i - 1].tipOverChild) {
+					if ((i > 0 && level.nodes[i - 1].tipOverChild) || node.isFirstChildOfParent) {
 						hLineNodes = 0;
 					}
 
@@ -609,7 +610,8 @@ export class OrgChartSvg {
 		}
 
 
-		var line = this.snap.line(x, y, x2, y2).attr(params);
+		var line = this.snap.line(x, y, x2, y2);
+			line.attr(<any>params);
 		var id, parentId;
 		var group:Snap.Element;
 

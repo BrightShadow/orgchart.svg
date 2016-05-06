@@ -3,6 +3,7 @@ import {OrgChartNode} from "./orgchart.node";
 export interface OrgChartLevelNode extends OrgChartNode{
 	level: number;
 	isPlaceholder: boolean;
+	isFirstChildOfParent: boolean;
 	nodeIndexInLevel: number;
 	containerWidth: number;
 	width: number;
