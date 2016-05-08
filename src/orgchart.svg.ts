@@ -586,6 +586,7 @@ export class OrgChartSvg {
 			this.attachOrgChartEvents();
 		}
 
+		this.fireEventAfterRender();
 		this.hideOverlay();
 	}
 
@@ -734,6 +735,21 @@ export class OrgChartSvg {
 		}
 
 		return templatesFragment;
+	}
+
+	private fireEventAfterRender():void {
+		if (this.config.onAfterRender) {
+			var onRenderArgs = <RenderEventArgs>{};
+			onRenderArgs.paper = this.snap;
+			onRenderArgs.config = this.config;
+
+			try {
+				this.config.onAfterRender(onRenderArgs);
+			}
+			catch (e) {
+				console.log(e);
+			}
+		}
 	}
 
 	private fireEventBoxRender(onRenderBoxArgs:RenderBoxEventArgs, node:OrgChartLevelNode) {

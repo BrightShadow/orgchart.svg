@@ -39,6 +39,13 @@ export class OrgChartConfig {
 	onBeforeRender: (args: RenderEventArgs) => string;
 
 	/**
+	 * An event handler called after nodes are drawn to the SVG canvas.
+	 *
+	 * NOTE: Use this method to add event handlers to already existing nodes.
+	 */
+	onAfterRender: (args: RenderEventArgs) => void;
+
+	/**
 	 * An event handler called when a node box SVG tag was clicked.
 	 * NOTE: Remember that only boxes with a class set in config.clickableBoxClass are used.
 	 * So if you are using custom template remember to add this class to the clickable area.
