@@ -1,3 +1,6 @@
+/**
+ * A set of options use to configure tipping-over / stacking layout of nodes.
+ */
 export interface TipOverOptions {
 	/**
 	 * Minimum amount of node children to start tipping-over.

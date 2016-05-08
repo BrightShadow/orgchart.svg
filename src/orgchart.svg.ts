@@ -101,7 +101,7 @@ export class OrgChartSvg {
 	private createPlaceholder(levelNode:OrgChartLevelNode, level:number):OrgChartLevelNode {
 		var placeholderNode = <OrgChartLevelNode>{};
 		placeholderNode.width = levelNode.width;
-		placeholderNode.height = this.config.nodeOptions.height; // TODO: use probably 0 as height
+		placeholderNode.height = this.config.nodeOptions.height;
 		placeholderNode.containerWidth = levelNode.containerWidth;
 		placeholderNode.isPlaceholder = true;
 		placeholderNode.level = level;
@@ -352,7 +352,7 @@ export class OrgChartSvg {
 		for (var i = 1; i <= levels; i++) {
 			level++;
 			for (var x = 0; x < columnsCount; x++) {
-				var levelNodeAbove:OrgChartLevelNode = this.levels[level].nodes[x];
+				var levelNodeAbove:OrgChartLevelNode = this.levels[level-1].nodes[x];
 				var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
 				this.levels[level].nodes.push(placeholderNode);
 			}
