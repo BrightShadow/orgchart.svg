@@ -1,16 +1,12 @@
 {
     "name": "orgchart.svg",
-    "version": "1.0.0-beta.2",
+    "version": "1.0.0-beta.2.1",
     "description": "Modern typescript organisational chart in pure SVG.",
     "main": "./dist/orgchartsvg.js",
 	"files": [
-		"dist",
-		"fonts",
-		"grunt",
-		"js/*.js",
-		"less/**/*.less",
-		"Gruntfile.js",
-		"LICENSE"
+		"dist/*.js",
+        "dist/*.d.ts",
+		"LICENSE.txt"
 	  ],
     "scripts": {},
     "repository": {
@@ -65,7 +61,7 @@
 		"directories": {
 			"lib": "dist"
 		  },
-        "main": "orgchartsvg",
+        "main": "orgchart.svg",
         "dependencies": {
             "snap.svg.zpd": "npm:snap.svg.zpd@^0.0.11",
             "snapsvg": "npm:snapsvg@^0.4.0"

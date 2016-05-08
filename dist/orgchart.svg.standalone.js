@@ -1,7 +1,11 @@
-"bundle";
+!function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in p||(p[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==v.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=p[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(v.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=p[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return x[e]||(x[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=p[s],v=x[s];v?l=v.exports:c&&!c.declarative?l=c.esModule:c?(d(c),v=c.module,l=v.exports):l=f(s),v&&v.importers?(v.importers.push(t),t.dependencies.push(v)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=p[e];if(t)t.declarative?c(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=f(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=p[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){if(r===e)return r;var t={};if("object"==typeof r||"function"==typeof r)if(g){var n;for(var o in r)(n=Object.getOwnPropertyDescriptor(r,o))&&h(t,o,n)}else{var a=r&&r.hasOwnProperty;for(var o in r)(!a||r.hasOwnProperty(o))&&(t[o]=r[o])}return t["default"]=r,h(t,"__useDefault",{value:!0}),t}function c(r,t){var n=p[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==v.call(t,u)&&(p[u]?c(u,t):f(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function f(e){if(D[e])return D[e];if("@node/"==e.substr(0,6))return y(e.substr(6));var r=p[e];if(!r)throw"Module "+e+" not present.";return a(e),c(e,[]),p[e]=void 0,r.declarative&&h(r.module.exports,"__esModule",{value:!0}),D[e]=r.declarative?r.module.exports:r.esModule}var p={},v=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},g=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(m){g=!1}var h;!function(){try{Object.defineProperty({},"a",{})&&(h=Object.defineProperty)}catch(e){h=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var x={},y="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,D={"@empty":{}};return function(e,n,o){return function(a){a(function(a){for(var u={_nodeRequire:y,register:r,registerDynamic:t,get:f,set:function(e,r){D[e]=r},newModule:function(e){return e}},d=0;d<n.length;d++)(function(e,r){r&&r.__esModule?D[e]=r:D[e]=s(r)})(n[d],arguments[d]);o(u);var i=f(e[0]);if(e.length>1)for(var d=1;d<e.length;d++)f(e[d]);return i.__useDefault?i["default"]:i})}}}("undefined"!=typeof self?self:global)
+
+(["1"], [], function($__System) {
+
+!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
 (function() {
-var define = System.amdDefine;
-define("node.options.js", ["require", "exports"], function(require, exports) {
+var define = $__System.amdDefine;
+define("2", ["require", "exports"], function(require, exports) {
   "use strict";
   var NodeMargin = (function() {
     function NodeMargin(all) {
@@ -24,8 +28,8 @@ define("node.options.js", ["require", "exports"], function(require, exports) {
 
 })();
 (function() {
-var define = System.amdDefine;
-define("org.chart.config.js", ["require", "exports", "node.options.js"], function(require, exports, node_options_1) {
+var define = $__System.amdDefine;
+define("3", ["require", "exports", "2"], function(require, exports, node_options_1) {
   "use strict";
   var OrgChartConfig = (function() {
     function OrgChartConfig() {}
@@ -83,8 +87,8 @@ define("org.chart.config.js", ["require", "exports", "node.options.js"], functio
 
 })();
 (function() {
-var define = System.amdDefine;
-define("connector.type.js", ["require", "exports"], function(require, exports) {
+var define = $__System.amdDefine;
+define("4", ["require", "exports"], function(require, exports) {
   "use strict";
   (function(ConnectorType) {
     ConnectorType[ConnectorType["up"] = 0] = "up";
@@ -102,7 +106,7 @@ define("connector.type.js", ["require", "exports"], function(require, exports) {
 });
 
 })();
-System.registerDynamic("npm:eve@0.4.2/eve.js", [], true, function($__require, exports, module) {
+$__System.registerDynamic("5", [], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -374,16 +378,16 @@ System.registerDynamic("npm:eve@0.4.2/eve.js", [], true, function($__require, ex
   return module.exports;
 });
 
-System.registerDynamic("npm:eve@0.4.2.js", ["npm:eve@0.4.2/eve.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("6", ["5"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = $__require('npm:eve@0.4.2/eve.js');
+  module.exports = $__require('5');
   return module.exports;
 });
 
-System.registerDynamic("npm:process@0.11.2/browser.js", [], true, function($__require, exports, module) {
+$__System.registerDynamic("7", [], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -474,34 +478,34 @@ System.registerDynamic("npm:process@0.11.2/browser.js", [], true, function($__re
   return module.exports;
 });
 
-System.registerDynamic("npm:process@0.11.2.js", ["npm:process@0.11.2/browser.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("8", ["7"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = $__require('npm:process@0.11.2/browser.js');
+  module.exports = $__require('7');
   return module.exports;
 });
 
-System.registerDynamic("github:jspm/nodelibs-process@0.1.2/index.js", ["npm:process@0.11.2.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("9", ["8"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = System._nodeRequire ? process : $__require('npm:process@0.11.2.js');
+  module.exports = $__System._nodeRequire ? process : $__require('8');
   return module.exports;
 });
 
-System.registerDynamic("github:jspm/nodelibs-process@0.1.2.js", ["github:jspm/nodelibs-process@0.1.2/index.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("a", ["9"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = $__require('github:jspm/nodelibs-process@0.1.2/index.js');
+  module.exports = $__require('9');
   return module.exports;
 });
 
-System.registerDynamic("npm:snapsvg@0.4.0/dist/snap.svg.js", ["npm:eve@0.4.2.js", "github:jspm/nodelibs-process@0.1.2.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("b", ["6", "a"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -777,7 +781,7 @@ System.registerDynamic("npm:snapsvg@0.4.0/dist/snap.svg.js", ["npm:eve@0.4.2.js"
           return factory(glob, eve);
         });
       } else if (typeof exports != 'undefined') {
-        var eve = $__require('npm:eve@0.4.2.js');
+        var eve = $__require('6');
         module.exports = factory(glob, eve);
       } else {
         factory(glob, glob.eve);
@@ -6119,20 +6123,20 @@ System.registerDynamic("npm:snapsvg@0.4.0/dist/snap.svg.js", ["npm:eve@0.4.2.js"
       });
       return Snap;
     }));
-  })($__require('github:jspm/nodelibs-process@0.1.2.js'));
+  })($__require('a'));
   return module.exports;
 });
 
-System.registerDynamic("npm:snapsvg@0.4.0.js", ["npm:snapsvg@0.4.0/dist/snap.svg.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("c", ["b"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = $__require('npm:snapsvg@0.4.0/dist/snap.svg.js');
+  module.exports = $__require('b');
   return module.exports;
 });
 
-System.registerDynamic("npm:snap.svg.zpd@0.0.11/snap.svg.zpd.js", [], true, function($__require, exports, module) {
+$__System.registerDynamic("d", [], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -6506,18 +6510,18 @@ System.registerDynamic("npm:snap.svg.zpd@0.0.11/snap.svg.zpd.js", [], true, func
   return module.exports;
 });
 
-System.registerDynamic("npm:snap.svg.zpd@0.0.11.js", ["npm:snap.svg.zpd@0.0.11/snap.svg.zpd.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("e", ["d"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = $__require('npm:snap.svg.zpd@0.0.11/snap.svg.zpd.js');
+  module.exports = $__require('d');
   return module.exports;
 });
 
 (function() {
-var define = System.amdDefine;
-define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connector.type.js", "npm:snapsvg@0.4.0.js", "npm:snap.svg.zpd@0.0.11.js"], function(require, exports, org_chart_config_1, connector_type_1) {
+var define = $__System.amdDefine;
+define("1", ["require", "exports", "3", "4", "c", "e"], function(require, exports, org_chart_config_1, connector_type_1) {
   "use strict";
   var OrgChartSvg = (function() {
     function OrgChartSvg(config) {
@@ -6716,6 +6720,7 @@ define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connect
       levelNode = this.buildLevelNode(node, level, true);
       levelNode.parentNode = parentNode;
       if (parentNode && parentNode !== null) {
+        levelNode.isFirstChildOfParent = parentNode.childNodes.length === 0;
         parentNode.childNodes.push(levelNode);
       }
       level++;
@@ -6755,7 +6760,7 @@ define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connect
       for (var i = 1; i <= levels; i++) {
         level++;
         for (var x = 0; x < columnsCount; x++) {
-          var levelNodeAbove = this.levels[level].nodes[x];
+          var levelNodeAbove = this.levels[level - 1].nodes[x];
           var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
           this.levels[level].nodes.push(placeholderNode);
         }
@@ -6816,7 +6821,7 @@ define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connect
           onRenderBoxArgs.paper = this.snap;
           onRenderBoxArgs.config = this.config;
           if (!node.tipOverChild) {
-            if (i > 0 && level.nodes[i - 1].tipOverChild) {
+            if ((i > 0 && level.nodes[i - 1].tipOverChild) || node.isFirstChildOfParent) {
               hLineNodes = 0;
             }
             if (hLineNodes === 0) {
@@ -6934,7 +6939,8 @@ define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connect
       if (connectorType === connector_type_1.ConnectorType.left || connectorType === connector_type_1.ConnectorType.right || connectorType === connector_type_1.ConnectorType.up) {
         params[this.lineToAttr] = node.id;
       }
-      var line = this.snap.line(x, y, x2, y2).attr(params);
+      var line = this.snap.line(x, y, x2, y2);
+      line.attr(params);
       var id,
           parentId;
       var group;
@@ -7272,4 +7278,8 @@ define("orgchart.svg.js", ["require", "exports", "org.chart.config.js", "connect
 });
 
 })();
-//# sourceMappingURL=orgchartsvg.js.map
+})
+(function(factory) {
+  factory();
+});
+//# sourceMappingURL=orgchart.svg.standalone.js.map

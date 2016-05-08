@@ -62,7 +62,7 @@ export interface RenderEventArgs {
 	/**
 	 * A Snap.svg Paper object giving an access to the current underlying SVG paper.
 	 */
-	paper: Snap.Paper;
+	paper: any;
 	/**
 	 * A configuration settings actual used.
 	 */
