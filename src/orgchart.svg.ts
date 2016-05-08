@@ -353,7 +353,7 @@ export class OrgChartSvg {
 		for (var i = 1; i <= levels; i++) {
 			level++;
 			for (var x = 0; x < columnsCount; x++) {
-				var levelNodeAbove:OrgChartLevelNode = this.levels[level].nodes[x];
+				var levelNodeAbove:OrgChartLevelNode = this.levels[level-1].nodes[x];
 				var placeholderNode = this.createPlaceholder(levelNodeAbove, i);
 				this.levels[level].nodes.push(placeholderNode);
 			}
