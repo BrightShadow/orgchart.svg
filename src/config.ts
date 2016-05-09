@@ -1,19 +1,19 @@
 import {NodeOptions} from "./node.options";
 import {OrgChartNode} from "./orgchart.node";
-import {OrgChartConnectorOptions} from "./orghcart.connector.options";
+import {ConnectorOptions} from "./connector.options";
 import {TipOverOptions} from "./tip.over.options";
 import {ConfigDebugOptions} from "./config.debug.options";
-import {RenderBoxEventArgs} from "./orgchart.events";
-import {RenderEventArgs} from "./orgchart.events";
-import {NodeMargin} from "./node.options";
-import {BoxClickEventArgs} from "./orgchart.events";
-import {NodeToggleEventArgs} from "./orgchart.events";
+import {RenderBoxEventArgs} from "./events";
+import {RenderEventArgs} from "./events";
+import {NodeMargin} from "./node.margin";
+import {BoxClickEventArgs} from "./events";
+import {NodeToggleEventArgs} from "./events";
 
-export class OrgChartConfig {
+export class Config {
 	selector:string;
 	nodes:OrgChartNode;
 	nodeOptions:NodeOptions;
-	connectorOptions:OrgChartConnectorOptions;
+	connectorOptions:ConnectorOptions;
 	tipOverOptions:TipOverOptions;
 	debugOptions:ConfigDebugOptions;
 
@@ -52,8 +52,8 @@ export class OrgChartConfig {
 	 */
 	onNodeToggle: (args: NodeToggleEventArgs) => void;
 
-	public static defaultConfig():OrgChartConfig {
-		var config = <OrgChartConfig>{};
+	public static defaultConfig():Config {
+		var config = <Config>{};
 		config.selector = '#orgChartSvg';
 		config.collapsingDuration = 300;
 		config.nodeOptions = <NodeOptions>{
@@ -70,7 +70,7 @@ export class OrgChartConfig {
 			clickableBoxClass: 'orgchart-box',
 			collapseButtonClass: 'orgchart-collapse-btn'
 		};
-		config.connectorOptions = <OrgChartConnectorOptions>{};
+		config.connectorOptions = <ConnectorOptions>{};
 		config.connectorOptions.strokeWidth = 1;
 		config.connectorOptions.color = '#bcbec0';
 		config.tipOverOptions = <TipOverOptions>{

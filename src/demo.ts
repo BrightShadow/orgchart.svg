@@ -1,14 +1,14 @@
 import {OrgChartSvg} from "orgchart.svg";
-import {OrgChartConfig} from "org.chart.config";
-import {NodeMargin} from "./node.options";
-import {RenderEventArgs} from "./orgchart.events";
-import {RenderBoxEventArgs} from "./orgchart.events";
-import {BoxClickEventArgs} from "./orgchart.events";
-import {NodeToggleEventArgs} from "./orgchart.events";
+import {Config} from "config";
+import {NodeMargin} from "./node.margin";
+import {RenderEventArgs} from "./events";
+import {RenderBoxEventArgs} from "./events";
+import {BoxClickEventArgs} from "./events";
+import {NodeToggleEventArgs} from "./events";
 
 
 
-let config = OrgChartConfig.defaultConfig();
+let config = Config.defaultConfig();
 
 config.nodes = {
 	id: '1',

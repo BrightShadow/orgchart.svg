@@ -1,5 +1,5 @@
 import {OrgChartNode} from "./orgchart.node";
-import {OrgChartConfig} from "./org.chart.config";
+import {Config} from "./config";
 
 /**
  * Provides information about rendering environment.
@@ -13,7 +13,7 @@ export interface RenderEventArgs {
 	/**
 	 * A configuration settings actual used.
 	 */
-	config: OrgChartConfig;
+	config: Config;
 }
 
 /**

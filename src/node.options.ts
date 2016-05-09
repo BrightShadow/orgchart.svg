@@ -1,3 +1,5 @@
+import {NodeMargin} from "./node.margin";
+
 export interface NodeOptions {
     width: number;
     height: number;
@@ -11,18 +13,4 @@ export interface NodeOptions {
 	collapseButtonClass: string;
 	nodeAttribute: string;
 	collapsible: boolean;
-}
-
-export class NodeMargin {
-	top: number = 0;
-	right: number = 0;
-	bottom: number = 0;
-	left: number = 0;
-
-	constructor (all: number = 0) {
-		this.top = all;
-		this.right = all;
-		this.bottom = all;
-		this.left = all;
-	}
 }
