@@ -8,6 +8,7 @@ import {RenderEventArgs} from "./orgchart.events";
 import {NodeMargin} from "./node.options";
 import {BoxClickEventArgs} from "./orgchart.events";
 import {NodeToggleEventArgs} from "./orgchart.events";
+import {CustomClickEventArgs} from "./orgchart.events";
 
 export class OrgChartConfig {
 	selector:string;
@@ -21,6 +22,11 @@ export class OrgChartConfig {
 	 * Duration of expand/collapse animation in milliseconds. Default set to 300ms.
 	 */
 	collapsingDuration: number;
+
+	/**
+	 * Name of the attribute added to the template element which will invoke custom click events.
+	 */
+	customClickEventAttr: string;
 
 	/**
 	 * An event handler called each time the node box is drawn to the SVG canvas.
@@ -53,6 +59,10 @@ export class OrgChartConfig {
 	onBoxClick: (args: BoxClickEventArgs) => void;
 
 	/**
+	 * An event handler called when a custom part of node box template was clicked.
+	 */
+	onCustomClick: (args: CustomClickEventArgs) => void;
+	/**
 	 * An event handler called when a collapse button was clicked and the node is beaing collapsed.
 	 * NOTE: Remember that only boxes with a class set in config.collapseButtonClass are used.
 	 * So if you are using custom template remember to add this class to the clickable area.
@@ -62,6 +72,7 @@ export class OrgChartConfig {
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
 		config.selector = '#orgChartSvg';
+		config.customClickEventAttr = 'orgchart-click-event';
 		config.collapsingDuration = 300;
 		config.nodeOptions = <NodeOptions>{
 			width: 150,
@@ -109,5 +120,10 @@ export class OrgChartConfig {
 		};
 
 		return config;
+	}
+
+	public static getFullNodeSelectorId(node: OrgChartNode): string {
+		// TODO: remove hardcoded prefix and use variable/const instead
+		return '#orgchartNode' + node.id;
 	}
 }

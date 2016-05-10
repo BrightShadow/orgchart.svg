@@ -15,6 +15,7 @@ import {RenderEventArgs} from "./orgchart.events";
 import {BoxClickEventArgs} from "./orgchart.events";
 import {ConnectorType} from "./connector.type";
 import {NodeToggleEventArgs} from "./orgchart.events";
+import {CustomClickEventArgs} from "./orgchart.events";
 
 export class OrgChartSvg {
 	private levels:ChartLevelInfo[] = [];
@@ -839,6 +840,43 @@ export class OrgChartSvg {
 
 					if (self.config.nodeOptions.collapsible) {
 						self.toggleNodeCollapse(levelNode, info);
+					}
+				});
+			}
+		}
+
+		if (this.config.onCustomClick) {
+			var self = this;
+			var nodesSet:Snap.Element[] = <any>this.snap.selectAll('[' + this.config.customClickEventAttr+ ']');
+			for (var i = 0; i < nodesSet.length; i++) {
+				nodesSet[i].click((event:MouseEvent) => {
+					var args = <CustomClickEventArgs>{};
+					var element = <HTMLElement>event.currentTarget;
+					var tagName = element.tagName.toUpperCase();
+
+					args.customName = element.getAttribute(this.config.customClickEventAttr);
+
+					// find parent wrapping group for node box
+					while (tagName !== 'BODY' && !element.hasAttribute(self.config.nodeOptions.nodeAttribute)) {
+						element = element.parentElement;
+					}
+
+					var info:Array<number> = JSON.parse(element.getAttribute(self.config.nodeOptions.nodeAttribute));
+					// [0] = x
+					// [1] = y
+					// [2] = width
+					// [3] = height
+					// [4] = index
+					// [5] = level
+					var level = info[5],
+						index = info[4],
+						levelNode = self.levels[level].nodes[index];
+
+					args.node = this.buildRenderedChartNode(levelNode, level, index);
+					args.event = event;
+
+					if (self.config.onCustomClick) {
+						self.config.onCustomClick(args);
 					}
 				});
 			}
