@@ -79,3 +79,10 @@ export interface NodeToggleEventArgs extends BoxClickEventArgs {
 	 */
 	isCollapsed: boolean;
 }
+
+export interface CustomClickEventArgs extends BoxClickEventArgs {
+	/**
+	 * Contains a custom click event attribute value set in template.
+	 */
+	customName: string;
+}
