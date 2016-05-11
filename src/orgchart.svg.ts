@@ -1,6 +1,7 @@
 /// <reference path="../typings/browser.d.ts" />
 import 'snapsvg';
 import 'snap.svg.zpd';
+import {Promise} from 'es6-promise';
 import {OrgChartConfig} from "./org.chart.config";
 import {OrgChartNode} from "./orgchart.node";
 import {NodeOptions} from "./node.options";
@@ -28,7 +29,6 @@ export class OrgChartSvg {
 	private nodesGroupIdPrefix:string = 'orgchartGroup';
 	private nodeIdPrefix:string = 'orgchartNode';
 	private overlayElement: HTMLElement;
-	private animationsLeft = 0;
 	private rootNodePosition:{
 		x: number,
 		y: number,
@@ -911,30 +911,46 @@ export class OrgChartSvg {
 	 * @param infoRecord Additional information record for node - it is saved in the node element attribute.
      */
 	private toggleNodeCollapse(levelNode:OrgChartLevelNode, infoRecord:number[]) {
-		levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
+		if (levelNode.children && levelNode.children !== null && levelNode.children.length > 0) {
+			this.showOverlay();
+			levelNode.childrenCollapsed = !levelNode.childrenCollapsed;
 
-		if (!this.collapseCentralNode(levelNode, infoRecord)) return; // cancel
+			var centerNodePromise = this.collapseCentralNode(levelNode, infoRecord);
 
-		// transforming neighbors
-		var containerWidth = levelNode.containerWidth;
-		var widthDelta = containerWidth - levelNode.width;
-		var moveDelta = widthDelta / 2; // half of total delta for each neighbor
-		var isCollapsed = levelNode.childrenCollapsed;
+			var neighborsPromise = new Promise((resolve: any) => {
+				// transforming neighbors
+				var containerWidth = levelNode.containerWidth;
+				var widthDelta = containerWidth - levelNode.width;
+				var moveDelta = widthDelta / 2; // half of total delta for each neighbor
+				var isCollapsed = levelNode.childrenCollapsed;
+				var siblingsPromises: Promise<any>[] = [];
 
-		//
 
-		// adjust all siblings of center node and its parents
-		while (levelNode !== null) {
-			var siblings = this.getNodeSiblings(levelNode);
-			this.adjustSiblingNodesByDelta(levelNode, isCollapsed, moveDelta, siblings);
+				// adjust all siblings of center node and its parents
+				while (levelNode !== null) {
+					var siblings = this.getNodeSiblings(levelNode);
+					siblingsPromises.push(this.adjustSiblingNodesByDelta(levelNode, isCollapsed, moveDelta, siblings));
 
-			levelNode = levelNode.parentNode;
+					levelNode = levelNode.parentNode;
 
-			// change parent container width
-			if (levelNode !== null) {
-				levelNode.containerWidth += isCollapsed ? -widthDelta : widthDelta;
-				//levelNode.containerWidth = Math.max(levelNode.containerWidth, levelNode.width);
-			}
+					// change parent container width
+					if (levelNode !== null) {
+						levelNode.containerWidth += isCollapsed ? -widthDelta : widthDelta;
+						//levelNode.containerWidth = Math.max(levelNode.containerWidth, levelNode.width);
+					}
+				}
+
+				Promise.all(siblingsPromises).then(() => {
+					resolve();
+				});
+			});
+
+			Promise.all([centerNodePromise, neighborsPromise]).then(() => {
+				this.hideOverlay();
+			});
+		}
+		else {
+
 		}
 	}
 
@@ -975,7 +991,7 @@ export class OrgChartSvg {
 	 * @param infoRecord An additional record information.
 	 * @returns {boolean} True if the operation succeeded or false when not or when was canceled.
      */
-	private collapseCentralNode(levelNode: OrgChartLevelNode, infoRecord:number[]) : boolean {
+	private collapseCentralNode(levelNode: OrgChartLevelNode, infoRecord:number[]) : Promise<any> {
 		// [0] = x
 		// [1] = y
 		// [2] = width
@@ -994,7 +1010,7 @@ export class OrgChartSvg {
 
 		groupNode = this.findNodesGroupByParentId(levelNode.id);// this.snap.select(selector);
 
-		if (!groupNode || groupNode === null) return false;
+		if (!groupNode || groupNode === null) return Promise.reject(null);
 
 		groupNodeMatrix = groupNode.transform().localMatrix;
 		var levelNodeElement = this.findNodeById(levelNode.id);
@@ -1002,33 +1018,49 @@ export class OrgChartSvg {
 		var lineGroupNode = this.findLinesGroupById(levelNode.id);
 		var lineNodeMatrix = lineGroupNode.transform().localMatrix;
 
+		var animPromises: Promise<any>[] = [];
+
 		if (levelNode.childrenCollapsed) {
-			groupMatrix = groupNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
-			lineMatrix = lineNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
-			groupNode.animate({transform: groupMatrix}, animDuration, mina.easein, () => {
-				groupNode.attr({opacity: 0});
-				groupNode.transform('s1,1');
-			});
+			animPromises.push(new Promise<any>((resolve: any) => {
+				groupMatrix = groupNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
+				groupNode.animate({transform: groupMatrix}, animDuration, mina.easein, () => {
+					groupNode.attr({opacity: 0});
+					groupNode.transform('s1,1');
+					resolve();
+				});
+			}));
 
-			lineGroupNode.animate({transform: lineMatrix}, animDuration, mina.easein, () => {
-				lineGroupNode.attr({opacity: 0});
-				lineGroupNode.transform('s1,1');
-			});
+			animPromises.push(new Promise<any>((resolve: any) => {
+				lineMatrix = lineNodeMatrix.scale(0, 0, x + width / 2, y + height / 2);
+				lineGroupNode.animate({transform: lineMatrix}, animDuration, mina.easein, () => {
+					lineGroupNode.attr({opacity: 0});
+					lineGroupNode.transform('s1,1');
+					resolve();
+				});
+			}));
 		} else {
-			groupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
-				groupNode.attr({opacity: 1});
-				groupMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
-				groupNode.animate({transform: groupMatrix}, animDuration);
-			});
+			animPromises.push(new Promise<any>((resolve: any) => {
+				groupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
+					groupNode.attr({opacity: 1});
+					groupMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
+					groupNode.animate({transform: groupMatrix}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				});
+			}));
 
-			lineGroupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
-				lineGroupNode.attr({opacity: 1});
-				lineMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
-				lineGroupNode.animate({transform: lineMatrix}, animDuration);
-			});
+			animPromises.push(new Promise<any>((resolve: any) => {
+				lineGroupNode.animate({transform: new Snap.Matrix().translate(groupNodeDeltaX, 0).scale(0, 0, x + width / 2, y + height / 2)}, 0, mina.easein, () => {
+					lineGroupNode.attr({opacity: 1});
+					lineMatrix.scale(1, 1).translate(groupNodeDeltaX, 0);
+					lineGroupNode.animate({transform: lineMatrix}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				});
+			}));
 		}
 
-		return true;
+		return Promise.all(animPromises);
 	}
 
 	/**
@@ -1037,12 +1069,13 @@ export class OrgChartSvg {
 	 * @param moveDelta A width by whom the sibling nodes are moved.
 	 * @param siblings A collection of siblings found for levelNode.
      */
-	private adjustSiblingNodesByDelta(levelNode: OrgChartLevelNode, isCollapsed: boolean, moveDelta: number, siblings: SiblingNodesSet) {
+	private adjustSiblingNodesByDelta(levelNode: OrgChartLevelNode, isCollapsed: boolean, moveDelta: number, siblings: SiblingNodesSet): Promise<any> {
 		var animDuration = this.config.collapsingDuration;
 		var neighbors = siblings;
 		var startNode = neighbors.left.length > 0 ? neighbors.left[0] : levelNode,
 			endNode = neighbors.right.length > 0 ? neighbors.right[neighbors.right.length - 1] : levelNode;
 
+		var promises: Promise<any>[] = [];
 		if (!isCollapsed) {
 			moveDelta = -moveDelta;
 		}
@@ -1061,7 +1094,11 @@ export class OrgChartSvg {
 					attrs.x2 = parseFloat(line.attr('x2')) - moveDelta;
 				}
 
-				line.animate(attrs, animDuration);
+				promises.push(new Promise<any>((resolve: any) => {
+					line.animate(attrs, animDuration, mina.easein, () => {
+						resolve();
+					});
+				}));
 			}
 		}
 
@@ -1069,22 +1106,34 @@ export class OrgChartSvg {
 		for (var i = 0; i < neighbors.left.length; i++) {
 			var id = neighbors.left[i].id;
 			var node = this.findNodeById(id);
-			node.animate({
-				transform: node.transform().localMatrix.translate(moveDelta, 0)
-			}, animDuration);
+			promises.push(new Promise<any>((resolve: any) => {
+				node.animate({
+					transform: node.transform().localMatrix.translate(moveDelta, 0)
+				}, animDuration, mina.easein, () => {
+					resolve();
+				});
+			}));
 
 			var childNodesGroup = this.findNodesGroupByParentId(id);
 			if (childNodesGroup !== null) {
-				childNodesGroup.animate({
-					transform: childNodesGroup.transform().localMatrix.translate(moveDelta, 0)
-				}, animDuration);
+				promises.push(new Promise<any>((resolve: any) => {
+					childNodesGroup.animate({
+						transform: childNodesGroup.transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				}));
 			}
 
 			var childLinesGroup = this.findLinesGroupById(id);
 			if (childLinesGroup && childLinesGroup !== null) {
-				childLinesGroup.animate({
-					transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
-				}, animDuration);
+				promises.push(new Promise<any>((resolve: any) => {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(moveDelta, 0)
+					}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				}));
 			}
 
 			var filter = new FindLinesFilter();
@@ -1092,9 +1141,13 @@ export class OrgChartSvg {
 			var topLines = this.findLinesByFilter(filter);
 			if (topLines && topLines !== null) {
 				for (var c = 0; c < topLines.length; c++) {
-					topLines[c].animate({
-						transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
-					}, animDuration);
+					promises.push(new Promise<any>((resolve: any) => {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(moveDelta, 0)
+						}, animDuration, mina.easein, () => {
+							resolve();
+						});
+					}));
 				}
 			}
 
@@ -1116,23 +1169,35 @@ export class OrgChartSvg {
 			var id = neighbors.right[i].id;
 			var node = this.findNodeById(id);
 			var matrix = node.transform().localMatrix.translate(-moveDelta, 0);
-			node.animate({
-				transform: matrix
-			}, animDuration);
+			promises.push(new Promise<any>((resolve: any) => {
+				node.animate({
+					transform: matrix
+				}, animDuration, mina.easein, () => {
+					resolve();
+				});
+			}));
 
 			var childNodesGroup = this.findNodesGroupByParentId(id);
 			if (childNodesGroup !== null) {
 				matrix = childNodesGroup.transform().localMatrix.translate(-moveDelta, 0);
-				childNodesGroup.animate({
-					transform: matrix
-				}, animDuration);
+				promises.push(new Promise<any>((resolve: any) => {
+					childNodesGroup.animate({
+						transform: matrix
+					}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				}));
 			}
 
 			var childLinesGroup = this.findLinesGroupById(id);
 			if (childLinesGroup && childLinesGroup !== null) {
-				childLinesGroup.animate({
-					transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
-				}, animDuration);
+				promises.push(new Promise<any>((resolve: any) => {
+					childLinesGroup.animate({
+						transform: childLinesGroup.transform().localMatrix.translate(-moveDelta, 0)
+					}, animDuration, mina.easein, () => {
+						resolve();
+					});
+				}));
 			}
 
 			var filter = new FindLinesFilter();
@@ -1140,9 +1205,13 @@ export class OrgChartSvg {
 			var topLines = this.findLinesByFilter(filter);
 			if (topLines && topLines !== null) {
 				for (var c = 0; c < topLines.length; c++) {
-					topLines[c].animate({
-						transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
-					}, animDuration);
+					promises.push(new Promise<any>((resolve: any) => {
+						topLines[c].animate({
+							transform: topLines[c].transform().localMatrix.translate(-moveDelta, 0)
+						}, animDuration, mina.easein, () => {
+							resolve();
+						});
+					}));
 				}
 			}
 
@@ -1158,6 +1227,8 @@ export class OrgChartSvg {
 				});
 			}
 		}
+
+		return Promise.all(promises);
 	}
 
 	/**
