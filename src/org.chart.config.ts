@@ -11,7 +11,10 @@ import {NodeToggleEventArgs} from "./orgchart.events";
 import {CustomClickEventArgs} from "./orgchart.events";
 
 export class OrgChartConfig {
-	selector:string;
+	/**
+	 * An ID of the SVG element where the chart will be rendered.
+	 */
+	svgId:string;
 	nodes:OrgChartNode;
 	nodeOptions:NodeOptions;
 	connectorOptions:OrgChartConnectorOptions;
@@ -71,7 +74,7 @@ export class OrgChartConfig {
 
 	public static defaultConfig():OrgChartConfig {
 		var config = <OrgChartConfig>{};
-		config.selector = '#orgChartSvg';
+		config.svgId = 'orgChartSvg';
 		config.customClickEventAttr = 'orgchart-click-event';
 		config.collapsingDuration = 300;
 		config.nodeOptions = <NodeOptions>{

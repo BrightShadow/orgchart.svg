@@ -27,7 +27,7 @@ export class OrgChartSvg {
 	private lineHorizontal:string = 'orgchart-line-horizontal';
 	private nodesGroupIdPrefix:string = 'orgchartGroup';
 	private nodeIdPrefix:string = 'orgchartNode';
-	private overlayGroupId = 'orgchartOverlay';
+	private overlayElement: HTMLElement;
 	private animationsLeft = 0;
 	private rootNodePosition:{
 		x: number,
@@ -37,12 +37,20 @@ export class OrgChartSvg {
 	};
 
 	constructor(private config?:OrgChartConfig) {
-		var self = this;
 		if (!config) {
 			this.initDefaultConfig();
 		}
+
+		// verify if SVG exists
+		if (!document.getElementById(this.config.svgId)) {
+			alert('The SVG element is missing or the given name "' + this.config.svgId + '" is icorrect.');
+			return;
+		}
+
+		this.createOverlayElement();
+
 		//
-		this.snap = Snap('#orgChartSvg');
+		this.snap = Snap('#' + this.config.svgId);
 		this.analyzeTreeLevels(this.config.nodes); // create all levels for tree
 		this.calcChildren(this.config.nodes);
 		this.render();
@@ -55,16 +63,6 @@ export class OrgChartSvg {
 				3
 			]
 		});
-
-		//var matrix: any = (<any>this.snap).zpd('save');
-		//var id = '#snapsvg-zpd-'+ (<any>this.snap).id;
-		//var canvas: Snap.Element = Snap.select(id);
-		//
-		//
-		//
-		//canvas.attr({
-		//	transform: "matrix(1,0,0,1," + (-this.rootNodePosition.x) + "," + (-this.rootNodePosition.y) + ")"
-		//});
 	}
 
 	private initDefaultConfig() {
@@ -379,6 +377,7 @@ export class OrgChartSvg {
 	}
 
 	private render() {
+		this.showOverlay();
 		var margin = this.config.nodeOptions.margin;
 		var templatesFragment:string = '';
 		var parsedFragment:any;
@@ -654,14 +653,37 @@ export class OrgChartSvg {
 		return renderedNode;
 	}
 
+	/**
+	 * Creates an overlay element in the DOM using internal template.
+	 */
+	private createOverlayElement() {
+		this.overlayElement = document.createElement("div");
+		this.overlayElement.style.backgroundColor = 'transparent';
+		this.overlayElement.style.position = 'fixed';
+		this.overlayElement.style.left = '0';
+		this.overlayElement.style.top = '0';
+		this.overlayElement.style.bottom = '0';
+		this.overlayElement.style.right = '0';
+		this.overlayElement.style.display = 'block';
+		this.overlayElement.setAttribute('id', 'orgChartOverlay');
+
+		var insertAfter = (referenceNode: HTMLElement, newNode: HTMLElement) => {
+			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+		}
+
+		var svgHost = document.getElementById(this.config.svgId);
+
+		if (svgHost) {
+			insertAfter(svgHost, this.overlayElement);
+		}
+	}
+
 	private showOverlay() {
-		//var overlay = document.getElementById(this.overlayGroupId);
-		//overlay.style.display = 'block';
+		this.overlayElement.style.display = 'block';
 	}
 
 	private hideOverlay() {
-		//var overlay = document.getElementById(this.overlayGroupId);
-		//overlay.style.display = 'none';
+		this.overlayElement.style.display = 'none';
 	}
 
 	/**
