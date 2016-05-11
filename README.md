@@ -6,7 +6,16 @@ Modern typescript organisational chart in pure SVG.
 Currently there is no documentation or API reference. Sorry for that. The documentation will be provided as soon as possible. Now I'm really busy with pure development of this component.
 
 ## Demo
-You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Working demo example") or try to build it yourself using the steps below:
+You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Working demo example").
+
+- Demo has a custom templates created in Adobe Illustrator - a green personal two-sided card
+![Card Front](https://nabuiw-bn1305.files.1drv.com/y3mHIZik-T3MH0Y-1BcAzlBWK6lQPVu8iceP7_1c-6xyumiSK6q5DRTYYkhfgRcQQdpxJ2Odb1cpnLe1w_5JrkrrDHnex1ujeoloRhkze0ZylMW9sDPFIlLEvPkrdFvej0hayp0duPNImLmh7NZiVps9Q?width=256&height=135&cropmode=none "OrgChart box front side")
+![Card Back](https://nqbuiw-bn1305.files.1drv.com/y3mI8s7ux3rjC5LXSYGSzOSEx-gg7AN2TqECgG9CJsjaf5cPpB42rbzIFfNxsQFPqs-G2z5Fwr1ZAauoywPxWSYgS3fRcBc_fkHljPr6mtmrjFcBz6csfRqlEQnKxg_Ljf7eIQfvB1lt851i-zcGXznDw?width=256&height=129&cropmode=none "OrgChart box back side")
+- Cards can be flipped horizontally by clicking the arrow in the right upper corner
+- By cliking the node box you can expand/collapse child nodes if some
+
+### Building
+If you want to build it yourself use the steps below:
 
 1. Download the whole repo
 2. Install required packages and toolset
