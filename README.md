@@ -74,6 +74,6 @@ Below you can find some example layouts created using OrgChart.svg.
 
 ## Known issues
 Currently known problems regard performance and browsers support for SVG engine and [Snap.svg](http://snapsvg.io/ "Snap.svg library home page") library.
- - Seroius performance problems on Mozilla Firefox, due to the poor support of SVG technology
- - Problems with performance on Internet Explorer
- - Problems with some click events handling on OSX Safari
+ - Seroius performance problems on Mozilla Firefox, due to the poor support of SVG technology  (take a look on [#9](../../issues/9))
+ - Problems with performance on Internet Explorer (take a look on [#10](../../issues/10))
+ - Problems with some click events handling on OSX Safari (take a look on [#11](../../issues/11))
