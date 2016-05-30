@@ -70,3 +70,10 @@ Below you can find some example layouts created using OrgChart.svg.
 [example3]: https://bkjiug-bn1305.files.1drv.com/y3mGlf0eI0YcOK1wN8SviGgR5E6amPnOLm9ZnelYbjchm-i9s-JTX9xbUkzPkHKn3HWDpGhDODCKhazibdZS5Oss9dlVm2ZxdTnw6LMwDwoACeA3DaQuuMkgbfACzYTiuWk4dhEaDd70UsRjiTyO4F5f7NTULdOc-OigxWgwZmy4dI?width=589&height=580&cropmode=none "Example nodes 3"
 [example4]: https://zkizga-bn1305.files.1drv.com/y3m8lmFguK5fUyf6zk27OTVVX6Ozv2X9VfkDzhnIfDeYG88Y3Dnv7twLY9J1l74QMQbZ4tDUY4z_85JK9327RNC70XULZXRfNezLRNQN2vPk6HrWw0kwedP9qtRzHbjAjo7Qk_sFIQLvFxAY9xp9utkzL7tyPDS6lQydupgAvJrCmQ?width=1052&height=587&cropmode=none "Example nodes 4"
 [example5]: https://a6jiug-bn1305.files.1drv.com/y3mSwhgRzEp59e0lkhJoVUP0iR1BAudYqz9CztBeWhhUD7GFZPHn8rDOTmwzVS8Xezw8j9keAJzsJ0uPgld1MjJHhXehAps7AqE5Jh5AjdjWOiAnHLeeIVpoobL06N4YjDi5Cw0T7bt05WwJwKiI1vvaZuVUM9G3bgC6yIqpeoX_gk?width=722&height=579&cropmode=none "Example nodes 5"
+
+
+## Known issues
+Currently known problems regard performance and browsers support for SVG engine and [Snap.svg](http://snapsvg.io/ "Snap.svg library home page") library.
+ - Seroius performance problems on Mozilla Firefox, due to the poor support of SVG technology
+ - Problems with performance on Internet Explorer
+ - Problems with some click events handling on OSX Safari
