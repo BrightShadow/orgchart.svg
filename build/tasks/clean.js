@@ -8,3 +8,9 @@ gulp.task('clean', function() {
   return gulp.src([paths.output])
     .pipe(vinylPaths(del));
 });
+
+
+gulp.task('clean-release', function() {
+	return gulp.src(["dist"])
+		.pipe(vinylPaths(del));
+});
