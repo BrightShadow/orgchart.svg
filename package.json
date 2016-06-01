@@ -1,6 +1,6 @@
 {
   "name": "orgchart.svg",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.3.1.0",
   "description": "Modern typescript organisational chart in pure SVG.",
   "main": "./dist/orgchartsvg.js",
   "typings": "./dist/orgchartsvg.d.ts",
