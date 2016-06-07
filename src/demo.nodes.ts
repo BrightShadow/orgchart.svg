@@ -8,7 +8,7 @@ export let allNodes = {
 		{
 			id: '2',
 			parentId: '1',
-			data: { text: "child 1" },
+			data: { text: "child 111111111" },
 			children: [
 				{
 					id: '50',
