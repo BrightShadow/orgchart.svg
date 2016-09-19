@@ -9,8 +9,8 @@ Currently there is no documentation or API reference. Sorry for that. The docume
 You can check the [working DEMO example](http://52.174.5.36/orgchart.svg/ "Working demo example").
 
 - Demo has a custom templates created in Adobe Illustrator - a green personal two-sided card
-![Card Front](https://nabuiw-bn1305.files.1drv.com/y3mHIZik-T3MH0Y-1BcAzlBWK6lQPVu8iceP7_1c-6xyumiSK6q5DRTYYkhfgRcQQdpxJ2Odb1cpnLe1w_5JrkrrDHnex1ujeoloRhkze0ZylMW9sDPFIlLEvPkrdFvej0hayp0duPNImLmh7NZiVps9Q?width=256&height=135&cropmode=none "OrgChart box front side")
-![Card Back](https://nqbuiw-bn1305.files.1drv.com/y3mI8s7ux3rjC5LXSYGSzOSEx-gg7AN2TqECgG9CJsjaf5cPpB42rbzIFfNxsQFPqs-G2z5Fwr1ZAauoywPxWSYgS3fRcBc_fkHljPr6mtmrjFcBz6csfRqlEQnKxg_Ljf7eIQfvB1lt851i-zcGXznDw?width=256&height=129&cropmode=none "OrgChart box back side")
+![Card Front](https://zarqzg-bn1305.files.1drv.com/y3mjsqEDZDQAEEZXBPiPAWN3h5HkRm_xP7icWd0aj7e8SZNynw5bvEVQJATEnYIyQG0ZvtkjZLqNRydFy-KsCcOjxFURKZ1v1lkiM1K_O7hgPi0tdAZz5YngmnQzqPZWXKCN-7MIRhwSPeTh-8Ojhu2vlG_mKffgF5RaZqSy0JIx5I?width=518&height=518&cropmode=none "OrgChart box front side")
+![Card Back](https://zkrqzg-bn1305.files.1drv.com/y3m1vsnbTNt0xe9dyl7dhkmiuUp2hucxDXZe7FgshS9pkghjgLt3hb519gNlpGmaR0oLdk2EaVzjnDiFmM0KbsNJoj-F19GlBKs6IVA_-lg48MKAj706i1LxjFGvDd9Ph9U3hQtuUzMrRMQ66t9ThJqj_ugu8l0aV4tngNr0JLl5PA?width=518&height=518&cropmode=none "OrgChart box back side")
 - Cards can be flipped horizontally by clicking the arrow in the right upper corner
 - By cliking the node box you can expand/collapse child nodes if some
 
@@ -57,19 +57,13 @@ Below you can find some example layouts created using OrgChart.svg.
 
 ![alt text][example3]
 
-![alt text][example4]
-
-![alt text][example5]
-
 
 
 [example_template]: https://ddbsoa-bn1305.files.1drv.com/y3mV6C3lS_MjSQFvuHT4xQH3NYi9-phnei6_Kb5RBP6LpzT9KAlcyXt_MXGp0_7Vf1HWQD8Sxn_Y_5K0WTCEebYe-6kqX6mOwA9cQtfCerqOf_SCtb2mNeLn_Mu2WdbW9uEYAhKJkWWRTAC4GVEfNi4Rg?width=1690&height=954&cropmode=none "Example templated layout using custom SVG code"
 
 [example1]: https://0kqaqw-bn1305.files.1drv.com/y3ms8R9IJvFaGlI71T3-SvSFGRMdKoplP-fbopkpj9maEI0v81dcNKmJADLwBvejPa8GNuXBx97SWqRm6lWSJCEjKH0xhwFuhp_mTPseZs3r-NheC-oVKZoIQeCtGY_V6F1XTAb_lhbu7IxqaRmJrncPnqYrG7ZonXhIWvCevLpmzk?width=1159&height=778&cropmode=none "Example nodes 1"
-[example2]: https://zqjiug-bn1305.files.1drv.com/y3mJ5RQmH5Ms2i7AUi_Qz_DSnOEk08ylPzX9Bv1FOsuPLJMYfh44ES_4Por00RsDGKqPINf48OcEx88dxngG3OsI_hwhdt6htMvkj0ioCUH0EXFVbqbljRejtG66n1oFGy_Dfew_sCgeoruiu5-qp3yTnDHC1NN3qIUSPH7U0deSZY?width=1473&height=587&cropmode=none "Example nodes 2"
-[example3]: https://bkjiug-bn1305.files.1drv.com/y3mGlf0eI0YcOK1wN8SviGgR5E6amPnOLm9ZnelYbjchm-i9s-JTX9xbUkzPkHKn3HWDpGhDODCKhazibdZS5Oss9dlVm2ZxdTnw6LMwDwoACeA3DaQuuMkgbfACzYTiuWk4dhEaDd70UsRjiTyO4F5f7NTULdOc-OigxWgwZmy4dI?width=589&height=580&cropmode=none "Example nodes 3"
-[example4]: https://zkizga-bn1305.files.1drv.com/y3m8lmFguK5fUyf6zk27OTVVX6Ozv2X9VfkDzhnIfDeYG88Y3Dnv7twLY9J1l74QMQbZ4tDUY4z_85JK9327RNC70XULZXRfNezLRNQN2vPk6HrWw0kwedP9qtRzHbjAjo7Qk_sFIQLvFxAY9xp9utkzL7tyPDS6lQydupgAvJrCmQ?width=1052&height=587&cropmode=none "Example nodes 4"
-[example5]: https://a6jiug-bn1305.files.1drv.com/y3mSwhgRzEp59e0lkhJoVUP0iR1BAudYqz9CztBeWhhUD7GFZPHn8rDOTmwzVS8Xezw8j9keAJzsJ0uPgld1MjJHhXehAps7AqE5Jh5AjdjWOiAnHLeeIVpoobL06N4YjDi5Cw0T7bt05WwJwKiI1vvaZuVUM9G3bgC6yIqpeoX_gk?width=722&height=579&cropmode=none "Example nodes 5"
+[example2]: https://0aqaqw-bn1305.files.1drv.com/y3m0FwFeJBYzLpIzceEdhlHUUxxQcW9b3hMHazI51qrgHw1jYKBnNId7u0NUwqPe8PjPbxKQU9D6jbbo49PgvT1mnfbFySnJdix0dJBrH51E4NdJE5U9M0vxMWKe4Zmr__mkGipdgSOSzMLTfUe8oyuY7YtKuwOg8GGJEatXDTNhSk?width=875&height=894&cropmode=none "Example nodes 2"
+[example3]: https://06qaqw-bn1305.files.1drv.com/y3m-FNisILqqSzdS415qTjUvrY0-W9zIoCf36oQe2mP8P4iGz4x5DJ8iaEkDUi-JujvVTMv-_hPWnYmWjXWyMcsKqoGUwToMSfWH_N8SHkevmwMWzYlB7EVqHCFw_7yvWf-RBlmrm4aQ5mCkfVeh2jOJJU6CR3Gna9_1HhyArI3Rp8?width=1138&height=929&cropmode=none "Example nodes 3"
 
 
 ## Known issues
