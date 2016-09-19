@@ -44,6 +44,7 @@ Enjoy!
 Library supports a very useful feature, **custom SVG string templates**. You can create your own design in Adobe Illustrator or other vector tool, export your node box to SVG and after slight changes adopt it as a template to the OrgChart.svg.
 
 ![alt text][example_template]
+![alt text][example_template_2]
 
 ## Example layouts
 
@@ -59,7 +60,9 @@ Below you can find some example layouts created using OrgChart.svg.
 
 
 
-[example_template]: https://ddbsoa-bn1305.files.1drv.com/y3mV6C3lS_MjSQFvuHT4xQH3NYi9-phnei6_Kb5RBP6LpzT9KAlcyXt_MXGp0_7Vf1HWQD8Sxn_Y_5K0WTCEebYe-6kqX6mOwA9cQtfCerqOf_SCtb2mNeLn_Mu2WdbW9uEYAhKJkWWRTAC4GVEfNi4Rg?width=1690&height=954&cropmode=none "Example templated layout using custom SVG code"
+[example_template]: https://z6rqzg-bn1305.files.1drv.com/y3m7vBAFP67i9g6fTx0r4NBupWmBvD-jZayVfrIPNTdGsEBLKoBeI3HJgiAflCN8knq5iXx4TZ1_KkboG3hoWC3iPHCqmBB8zA8dmMdUOM5IhTkLF9V8-8X3BzNQZ-cIjnD0Q6uL4mhAvQWYbeTY3TlazSzuX0vUSb5HqGczPZvDO0?width=661&height=328&cropmode=none "Example templated layout using custom SVG code"
+
+[example_template_2]: https://zqrqzg-bn1305.files.1drv.com/y3mTIcmF1Zwc6Jl4CJWOooTpHKblOT-RRRYpDpGUuvufDK8s0GtyDBWz2a3ularIuDYJKFhFzUbIVqb9DYfnWoVUAYkV0d2hSzGY3YnEj6xXhaxlq_8jRaihhvwG8OtOrqjAFhNspoRdJphwd02EDaLHjD44qaY52sN0C0iQqjkY5g?width=699&height=371&cropmode=none "Example templated layout using custom SVG code"
 
 [example1]: https://0kqaqw-bn1305.files.1drv.com/y3ms8R9IJvFaGlI71T3-SvSFGRMdKoplP-fbopkpj9maEI0v81dcNKmJADLwBvejPa8GNuXBx97SWqRm6lWSJCEjKH0xhwFuhp_mTPseZs3r-NheC-oVKZoIQeCtGY_V6F1XTAb_lhbu7IxqaRmJrncPnqYrG7ZonXhIWvCevLpmzk?width=1159&height=778&cropmode=none "Example nodes 1"
 [example2]: https://0aqaqw-bn1305.files.1drv.com/y3m0FwFeJBYzLpIzceEdhlHUUxxQcW9b3hMHazI51qrgHw1jYKBnNId7u0NUwqPe8PjPbxKQU9D6jbbo49PgvT1mnfbFySnJdix0dJBrH51E4NdJE5U9M0vxMWKe4Zmr__mkGipdgSOSzMLTfUe8oyuY7YtKuwOg8GGJEatXDTNhSk?width=875&height=894&cropmode=none "Example nodes 2"
