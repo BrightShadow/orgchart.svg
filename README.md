@@ -6,7 +6,7 @@ Modern typescript organisational chart in pure SVG.
 Currently there is no documentation or API reference. Sorry for that. The documentation will be provided as soon as possible. Now I'm really busy with pure development of this component.
 
 ## Demo
-You can check the [working DEMO example](http://13.80.66.33/orgchart.svg/ "Working demo example").
+You can check the [working DEMO example](http://52.174.5.36/orgchart.svg/ "Working demo example").
 
 - Demo has a custom templates created in Adobe Illustrator - a green personal two-sided card
 ![Card Front](https://nabuiw-bn1305.files.1drv.com/y3mHIZik-T3MH0Y-1BcAzlBWK6lQPVu8iceP7_1c-6xyumiSK6q5DRTYYkhfgRcQQdpxJ2Odb1cpnLe1w_5JrkrrDHnex1ujeoloRhkze0ZylMW9sDPFIlLEvPkrdFvej0hayp0duPNImLmh7NZiVps9Q?width=256&height=135&cropmode=none "OrgChart box front side")
