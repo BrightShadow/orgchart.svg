@@ -9,8 +9,8 @@ Currently there is no documentation or API reference. Sorry for that. The docume
 You can check the [working DEMO example](http://52.174.5.36/orgchart.svg/ "Working demo example").
 
 - Demo has a custom templates created in Adobe Illustrator - a green personal two-sided card
-![Card Front](https://zarqzg-bn1305.files.1drv.com/y3mjsqEDZDQAEEZXBPiPAWN3h5HkRm_xP7icWd0aj7e8SZNynw5bvEVQJATEnYIyQG0ZvtkjZLqNRydFy-KsCcOjxFURKZ1v1lkiM1K_O7hgPi0tdAZz5YngmnQzqPZWXKCN-7MIRhwSPeTh-8Ojhu2vlG_mKffgF5RaZqSy0JIx5I?width=518&height=518&cropmode=none "OrgChart box front side")
-![Card Back](https://zkrqzg-bn1305.files.1drv.com/y3m1vsnbTNt0xe9dyl7dhkmiuUp2hucxDXZe7FgshS9pkghjgLt3hb519gNlpGmaR0oLdk2EaVzjnDiFmM0KbsNJoj-F19GlBKs6IVA_-lg48MKAj706i1LxjFGvDd9Ph9U3hQtuUzMrRMQ66t9ThJqj_ugu8l0aV4tngNr0JLl5PA?width=518&height=518&cropmode=none "OrgChart box back side")
+![Card Front](https://zarqzg-bn1305.files.1drv.com/y3mTT3GdAhWkWuRcjeeiZb-RQX5sfRZ4Oj8XnP4Tbs0fmU8evmlgSU_89dPEV1VEP8G7kSR1Q0v9Nu0Dhkh52kk6uF5NeO7smFhxb2uK47hLOFq55oqOKgueXIpZWR6nIKkM7Q0YS5DH41kKorokivUyKGAkgIFH-8x6-suC5CnKbA?width=518&height=518&cropmode=none "OrgChart box front side")
+![Card Back](https://zkrqzg-bn1305.files.1drv.com/y3mGWg5fMIwYoM1j5zsIBDzi72tdHOKdT_NZX5ucIFs-OmToHVMlc50tWvijv8FH-kIBbNLvsPz1y_n8JvMHaAvI81MzAFiOp3Izc4QEglqV4TJ-voNPsVZArXBj8BFgIw46ouJxi3OZXFZVcA_vfv3RYo5HMbPRD-278n1SPBCfaQ?width=518&height=518&cropmode=none "OrgChart box back side")
 - Cards can be flipped horizontally by clicking the arrow in the right upper corner
 - By cliking the node box you can expand/collapse child nodes if some
 
