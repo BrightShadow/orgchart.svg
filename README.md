@@ -40,6 +40,51 @@ If you want to build it yourself use the steps below:
 
 Enjoy!
 
+## Distribution files
+In order to fill all need I've created two types of distribution for the library.
+
+1. System.js module diustribution
+	* `orgchart.svg.js`
+	* `orgchart.svg.min.js`
+	* Example module loading over SystemJS
+	```html
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		</head>
+		<body>
+			<svg id="orgChartSvg"></svg>
+			<script src="jspm_packages/system.js"></script>
+			<script src="config.js"></script>
+			<script src="jspm_packages/github/BrightShadow/orgchart.svg@1.0.0-beta.2.1/orgchart.svg.min.js"></script>
+			<script>
+				System.import('BrightShadow/orgchart.svg').then(function(m) {
+					
+				});
+			</script>
+		</body>
+	</html>
+	```
+	
+2. Standalone all-in-one version which you can just reference in your HTML file
+	* `orgchart.svg.standalone.js`
+	* `orgchart.svg.standalone.min.js`
+	* Loading standalone version
+	```html
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		</head>
+		<body>
+			<svg id="orgChartSvg"></svg>
+			<script src="orgchart.svg.standalone.min.js"></script>
+		</body>
+	</html>
+	```
+	
+
 ## Full custom templating (SVG)
 Library supports a very useful feature, **custom SVG string templates**. You can create your own design in Adobe Illustrator or other vector tool, export your node box to SVG and after slight changes adopt it as a template to the OrgChart.svg.
 
